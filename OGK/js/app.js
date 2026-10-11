@@ -191,7 +191,7 @@ qrArea.innerHTML = "";
  
 new QRCode(qrArea, {
 text:
-"https://web-librarysystem.github.io/map-mobile.html?area="
+"https://web-librarysystem.github.io/OGK/map-mobile.html?area="
 + areaId,
 width: 120,
 height: 120

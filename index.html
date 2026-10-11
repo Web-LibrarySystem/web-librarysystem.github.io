@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+ 
+<link rel="stylesheet" href="css/common.css">
+ 
+<title>図書館アプリ</title>
+</head>
+ 
+<body>
+ 
+<h1>📚 図書館アプリ</h1>
+ 
+<p>
+☆を押して、お気に入りの図書館を登録してね
+</p>
+ 
+<div id="library-list" class="library-list"></div>
+ 
+<br>
+ 
+<p>
+読んだ本の履歴はここから登録してね
+</p>
+ 
+<div class="footer">
+<a href="shared/rireki.html" class="note-button">
+📚 読書ノート
+</a>
+</div>
+ 
+<br>
+ 
+<button onclick="location.href='mennseki.html'"
+style="width:65%; padding:15px; margin:10px; font-size:18px;">
+利用方法・免責事項
+</button>
+ 
+<script>
+ 
+const libraries = [
+{
+id:"ogk-honkan",
+name:"大垣市　本館",
+url:"./OGK/index.html"
+},
+{
+id:"ogk-kamishizu",
+name:"大垣市　上石津",
+url:"./KAMI/index.html"
+},
+{
+id:"ogk-sunomata",
+name:"大垣市　墨俣",
+url:"./SUNO/index.html"
+},
+{
+id:"gif-honkan",
+name:"岐阜県　本館",
+url:"./gif-honkan/index.html"
+}
+];
+ 
+function getFavorites() {
+return JSON.parse(
+localStorage.getItem("favoriteLibraries") || "[]"
+);
+}
+ 
+function saveFavorites(data) {
+localStorage.setItem(
+"favoriteLibraries",
+JSON.stringify(data)
+);
+}
+ 
+function toggleFavorite(id) {
+ 
+let favorites = getFavorites();
+ 
+if (favorites.includes(id)) {
+favorites = favorites.filter(x => x !== id);
+} else {
+favorites.push(id);
+}
+ 
+saveFavorites(favorites);
+renderLibraries();
+}
+ 
+function renderLibraries() {
+ 
+const favorites = getFavorites();
+ 
+const sorted = [...libraries].sort((a, b) => {
+ 
+const af = favorites.includes(a.id);
+const bf = favorites.includes(b.id);
+ 
+if (af && !bf) return -1;
+if (!af && bf) return 1;
+ 
+return a.name.localeCompare(b.name, 'ja');
+});
+ 
+const area =
+document.getElementById("library-list");
+ 
+area.innerHTML = "";
+ 
+sorted.forEach(lib => {
+ 
+const isFav =
+favorites.includes(lib.id);
+ 
+const card =
+document.createElement("div");
+ 
+card.className = "library-card";
+ 
+
+card.innerHTML =
+'<span class="favorite ' + (isFav ? 'on' : 'off') +
+'" onclick="toggleFavorite(\'' + lib.id + '\')">' +
+(isFav ? '★' : '☆') +
+'</span>' +
+ 
+'<a class="library-button" href="' + lib.url + '">' +
+lib.name +
+'</a>';
+
+area.appendChild(card);
+});
+}
+ 
+renderLibraries();
+ 
+</script>
+ 
+</body>
+</html>

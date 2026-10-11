@@ -1,0 +1,149 @@
+/* 画面全体の設定 */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+    font-family: sans-serif;
+    text-align: left;   /* ← 左揃え */
+    line-height: 1.1;
+}
+
+br {
+    line-height: 1.1;
+}
+
+
+/* 地図を中央に配置するエリア */
+#map-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;   /* iPadで見やすいサイズ */
+    margin: 0 auto;
+}
+
+/* 地図画像 */
+#map {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* ハイライト画像（地図の上に重ねる） */
+#highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;   /* クリックを地図に通す */
+}
+
+/* 非表示用クラス */
+.hidden {
+    display: none;
+}
+
+/* ボタンエリア */
+#buttons {
+    margin-top: 20px;
+}
+
+/* ボタンの見た目 */
+#buttons button {
+    padding: 10px 15px;
+    margin: 5px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #888;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+/* ボタンを押したときの反応 */
+#buttons button:active {
+    background-color: #d0d0d0;
+}
+
+#buttons button.active {
+  background-color: #4da3ff;
+  color: white;
+  border-color: #1e7fe5;
+}
+
+#buttons{
+display:flex;
+align-items:flex-start;
+gap:20px;
+}
+ 
+#genre-area{
+width:70%;
+}
+ 
+#qr-area{
+width:200px;
+text-align:center;
+}
+ 
+.qr-title{
+color:#000;
+font-size:14px;
+font-weight:bold;
+margin-bottom:8px;
+}
+
+#buttons{
+display:flex;
+align-items:flex-start;
+gap:20px;
+}
+ 
+#qr-area{
+margin-top:-20px;
+text-align:center;
+}
+
+#top-area{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+}
+ 
+#left-area{
+flex:1;
+}
+ 
+#qr-area{
+width:180px;
+text-align:center;
+margin-left:20px;
+}
+ 
+.qr-title{
+font-size:15px;
+line-height:1.2;
+color:black;
+margin-bottom:8px;
+}
+
+#top-container{
+display:flex;
+justify-content:space-between;
+align-items:flex-start;
+}
+ 
+#left-container{
+flex:1;
+padding-right:20px;
+}
+ 
+#right-container{
+width:220px;
+text-align:center;
+}
+ 
+/* 地図は次の行から開始 */
+#map-container{
+clear:both;
+margin-top:10px;
+}

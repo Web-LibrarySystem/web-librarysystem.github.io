@@ -93,6 +93,7 @@ const genreMessage = {
     "スポーツ": "スポーツの本は 2階・一般書（棚番号７）にあります。",
     "文学": "文学の本は 2階・一般（棚番号８以降）にあります。",
     "洋書": "洋書・図書館関連の本は、洋書コーナーにあります。",
+    "郷土": "郷土資料・住宅地図・調べ物は３階郷土資料室です。",
 };
 // URLパラメータ対応
 const params = new URLSearchParams(window.location.search);
@@ -122,7 +123,8 @@ technology: ["gizyutu.png", "技術・産業"],
 art: ["geizyutu.png", "芸術"],
 sports: ["supotu.png", "スポーツ"],
 literature: ["bunngaku.png", "文学"],
-yousyo: ["yousyo.png", "洋書"]
+yousyo: ["yousyo.png", "洋書"],
+kyoudo: ["kyoudo.png", "郷土"]
 };
  
 if(areaMap[area]){
@@ -172,7 +174,8 @@ const areaIdMap = {
 "芸術": "art",
 "スポーツ": "sports",
 "文学": "literature",
-"洋書": "yousyo"
+"洋書": "yousyo",
+"郷土": "kyoudo"
 };
  
 // QR更新

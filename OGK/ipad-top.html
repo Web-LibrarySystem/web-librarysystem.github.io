@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest-map.json">
+<title>iPadトップ画面</title>
+<style>
+html,
+body{
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    background:white;
+}
+
+.full-width-img{
+    max-width:95vw;
+    max-height:95vh;
+
+    width:auto;
+    height:auto;
+
+    display:block;
+    border:none;
+}
+
+    /* クリック時の視覚効果（任意） */
+    .full-width-img:hover {
+        opacity: 0.85;
+        cursor: pointer;
+        transition: opacity 0.3s ease;
+    }
+</style>
+</head>
+
+<body onclick="location.href='map-ipad.html'">
+
+<img
+    src="ipad-top.jpg"
+    alt="マップ"
+    class="full-width-img">
+
+</body>
+</html>

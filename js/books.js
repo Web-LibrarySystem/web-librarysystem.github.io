@@ -5,9 +5,25 @@ const BooksManager = {
     /* -----------------------------------
        1. データ取得
     ----------------------------------- */
-    getBooks() {
-        return JSON.parse(localStorage.getItem("books") || "[]");
-    },
+getBooks() {
+    const books =
+        JSON.parse(localStorage.getItem("books") || "[]");
+
+    books.forEach(book => {
+
+if (book.status === undefined) {
+    book.status = "read";
+}
+
+if (book.comment === undefined) {
+    book.comment = "";
+}
+
+    });
+
+    return books;
+},
+
 
     /* -----------------------------------
        2. 保存

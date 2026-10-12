@@ -73,6 +73,7 @@ padding: 6px;
   <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'ラ行')">ら行</button>
   <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'ワ行')">わ行</button>
   <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'その他')">その他</button>
+  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'読みたい本')">読みたい本</button>
 </div>
 
 <!-- 中段：読み取り終了ボタン -->
@@ -80,7 +81,7 @@ padding: 6px;
 
 <!-- 下段：一覧 -->
 <div id="bottom-area" style="margin:20px;">
-  <h3>読んだ本一覧</h3>
+  <h3 id="list-title">読んだ本一覧</h3>
   <div id="book-list"></div>
 </div>
 
@@ -161,9 +162,20 @@ window.currentGroup = group;
 const allBooks = this.getBooks();
 let books = [...allBooks];
  
-books = books.filter(book =>
-this.getGroupFromYomi(book.yomi) === window.currentGroup
-);
+if (window.currentGroup === "読みたい本") {
+
+    books = books.filter(book =>
+        book.status === "wishlist"
+    );
+
+} else {
+
+    books = books.filter(book =>
+        book.status === "read" &&
+        this.getGroupFromYomi(book.yomi) === window.currentGroup
+    );
+
+}
  
 books.sort((a, b) =>
 (a.yomi || "").localeCompare(b.yomi || "")
@@ -185,7 +197,17 @@ const colors = [
 "#FFEFF6",
 "#FFF0DB"
 ];
- 
+
+const title =
+document.getElementById("list-title");
+
+if (window.currentGroup === "読みたい本") {
+    title.textContent = "読みたい本一覧";
+} else {
+    title.textContent =
+        window.currentGroup + " の読んだ本";
+}
+
 const list = document.getElementById("book-list");
  
 list.innerHTML = "";
@@ -240,9 +262,9 @@ border-radius:6px;
 <div style="flex:1; min-width:0;">
 <div class="book-title">${book.title}</div>
 <div class="book-meta">著者：${book.author}</div>
-<div class="book-meta">よみ：${displayYomi}</div>
-<div class="book-meta">ISBN：${book.isbn}
-</div>
+${book.comment? `<div class="book-meta">感想：${book.comment}</div>`
+: ""}
+
 </div>
 </div>
 <div class="book-buttons"
@@ -271,6 +293,21 @@ padding:8px;
 onclick="BooksManager.confirmDelete(${originalIndex})">
 削除
 </button>
+
+${window.currentGroup === "読みたい本"
+? `
+<button
+style="
+flex:1;
+font-size:16px;
+padding:8px;
+"
+onclick="moveToRead(${originalIndex})">
+読んだ本へ移動
+</button>
+`
+: ""}
+
  
 </div>
 
@@ -603,6 +640,38 @@ type="text"
 style="font-size:16px; width:70%;"
 oninput="this.value=this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g,'');">
 </div>
+<div style="margin-bottom:12px;">
+感想：<br>
+<textarea
+id="m-comment"
+maxlength="100"
+style="
+font-size:16px;
+width:70%;
+height:80px;
+"></textarea>
+</div>
+<div style="margin-bottom:12px;">
+登録先：
+
+<label style="margin-left:10px;">
+<input
+type="radio"
+name="book-status"
+value="read"
+checked>
+読んだ本
+</label>
+
+<label style="margin-left:15px;">
+<input
+type="radio"
+name="book-status"
+value="wishlist">
+読みたい本
+</label>
+
+</div>
 <button
 onclick="manualSave()"
 style="
@@ -717,6 +786,18 @@ value="${book.yomi}"
 style="font-size:16px; width:70%;"
 oninput="this.value = this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g, '');">
 </div>
+<div style="margin-bottom:12px;">
+感想：<br>
+
+<textarea
+id="e-comment"
+maxlength="100"
+style="
+font-size:16px;
+width:70%;
+height:80px;
+">${book.comment || ""}</textarea>
+</div>
 <button
 onclick="saveEdit(${index})"
 style="
@@ -747,11 +828,17 @@ behavior: "smooth"
 ----------------------------------- */
 function saveEdit(index) {
  
+const books = BooksManager.getBooks();
+
 const info = {
-isbn: document.getElementById("e-isbn").value,
-title: document.getElementById("e-title").value,
-author: document.getElementById("e-author").value,
-yomi: document.getElementById("e-yomi").value
+    isbn: document.getElementById("e-isbn").value,
+    title: document.getElementById("e-title").value,
+    author: document.getElementById("e-author").value,
+    yomi: document.getElementById("e-yomi").value,
+
+    status: books[index].status || "read",
+    comment:
+document.getElementById("e-comment").value,
 };
  
 BooksManager.updateBook(index, info);
@@ -766,17 +853,47 @@ alert("更新しました");
 drawTopButtons();
  
 }
+
+/* -----------------------------------
+   読んだ本へ移動
+----------------------------------- */
+function moveToRead(index) {
+
+    const books = BooksManager.getBooks();
+
+    books[index].status = "read";
+
+    localStorage.setItem(
+        "books",
+        JSON.stringify(books)
+    );
+
+    alert("読んだ本へ移動しました");
+
+    BooksManager.renderBookList(
+        currentSort,
+        "読みたい本"
+    );
+}
+
 /* -----------------------------------
    手動登録保存
 ----------------------------------- */
 function manualSave() {
 
-    const info = {
-        isbn: document.getElementById("m-isbn").value.trim(),
-        title: document.getElementById("m-title").value.trim(),
-        author: document.getElementById("m-author").value.trim(),
-        yomi: document.getElementById("m-yomi").value.trim()
-    };
+const info = {
+    isbn: document.getElementById("m-isbn").value.trim(),
+    title: document.getElementById("m-title").value.trim(),
+    author: document.getElementById("m-author").value.trim(),
+    yomi: document.getElementById("m-yomi").value.trim(),
+
+    status:
+document.querySelector(
+'input[name="book-status"\]:checked'
+).value,
+    comment:
+document.getElementById("m-comment").value,
+};
 
     // 必須チェック
     if (!info.title) {
@@ -1012,33 +1129,56 @@ top.appendChild(stopBtn);
       isProcessing = false;
       return;
     }
+const result = prompt(
+`タイトル：${info.title}
+著者：${info.author}
 
-    const ok = confirm(
-      `タイトル：${info.title}\n著者：${info.author}\n\n取り込みますか？`
-    );
+登録先を入力してください
 
-    if (ok) {
-      BooksManager.saveBook(info);
+read      = 読んだ本
+wishlist  = 読みたい本`,
+"read"
+);
 
-      const group = BooksManager.getGroupFromYomi(info.yomi);
-      BooksManager.renderBookList("yomi", group, info.isbn);
-
-      alert("登録しました");
-
-      cameraStopped = true;
-      Quagga.stop();
-      isProcessing = false;
-
-      setTimeout(drawTopButtons, 10);
-      document.getElementById("middle-area").innerHTML = "";
-      return;
-    }
+if (result === null) {
 
     cameraStopped = true;
     Quagga.stop();
-    document.getElementById("middle-area").innerHTML = "";    
+
     drawTopButtons();
+
     isProcessing = false;
+
+    return;
+}
+
+info.status =
+(result === "wishlist")
+? "wishlist"
+: "read";
+
+info.comment = "";
+
+BooksManager.saveBook(info);
+
+const group =
+    info.status === "wishlist"
+    ? "読みたい本"
+    : BooksManager.getGroupFromYomi(info.yomi);
+
+BooksManager.renderBookList(
+    "yomi",
+    group,
+    info.isbn
+);
+
+alert("登録しました");
+
+cameraStopped = true;
+Quagga.stop();
+document.getElementById("middle-area").innerHTML = "";
+drawTopButtons();
+isProcessing = false;
   });
 }
 

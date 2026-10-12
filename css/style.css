@@ -147,3 +147,70 @@ text-align:center;
 clear:both;
 margin-top:10px;
 }
+
+/* 図書館一覧　10月12追加 */
+.library-list{
+    width:95%;
+    margin:0 auto;
+}
+
+/* 1件分のカード */
+.library-card{
+    display:flex;
+    align-items:center;
+
+    margin:8px 0;
+    padding:12px 14px;
+
+    border:1px solid #cccccc;
+    border-radius:10px;
+
+    background:#f0f0f0;
+}
+
+/* 星マーク */
+.favorite{
+    cursor:pointer;
+    font-size:28px;
+    margin-right:12px;
+    user-select:none;
+}
+
+/* お気に入り */
+.favorite.on{
+    color:#ffd700;   /* 黄色 */
+}
+
+/* 未登録 */
+.favorite.off{
+    color:#999999;   /* グレー */
+}
+
+/* 図書館ボタン */
+.library-button{
+    flex:1;
+    display:block;
+
+    text-decoration:none;
+    color:#000000;
+
+    padding:12px;
+
+    background:transparent;
+    border:none;
+
+    font-size:20px;
+    font-weight:bold;
+}
+
+.favorite{
+    cursor:pointer;
+    font-size:32px;
+    margin-right:12px;
+    user-select:none;
+}
+
+/* 押した時　10月12追加ここまで */
+.library-button:active{
+    background:#dceeff;
+}

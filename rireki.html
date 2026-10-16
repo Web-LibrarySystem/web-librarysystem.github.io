@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>読書ノート2</title>
+  <title>読書ノート</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <style>
@@ -62,20 +62,96 @@ padding: 6px;
 
 <!-- タブ分類 -->
 <div id="tabs" style="margin:20px; text-align:center;">
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'ア行')">あ行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'カ行')">か行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'サ行')">さ行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'タ行')">た行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'ナ行')">な行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'ハ行')">は行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'マ行')">ま行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'ヤ行')">や行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'ラ行')">ら行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'ワ行')">わ行</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'その他')">その他</button>
-  <button class="tab-button" onclick="BooksManager.renderBookList(currentSort,'読みたい本')">読みたい本</button>
-</div>
 
+  <button class="tab-button"
+    onclick="
+    closeReadTabs();
+    BooksManager.renderBookList(
+    currentSort,
+    '読みたい本'
+    )">
+    読みたい本
+  </button>
+
+  <button class="tab-button"
+    onclick="
+    closeReadTabs();
+    BooksManager.renderBookList(
+    currentSort,
+    '読んでいる本'
+    )">
+    読んでいる本
+  </button>
+
+  <button
+    id="read-book-button"
+    class="tab-button"
+    onclick="toggleReadTabs()">
+    ▶ 読んだ本
+  </button>
+
+  <div
+    id="read-tabs"
+    style="display:none; margin-top:10px;">
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'ア行')">
+      あ行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'カ行')">
+      か行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'サ行')">
+      さ行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'タ行')">
+      た行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'ナ行')">
+      な行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'ハ行')">
+      は行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'マ行')">
+      ま行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'ヤ行')">
+      や行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'ラ行')">
+      ら行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'ワ行')">
+      わ行
+    </button>
+
+    <button class="tab-button"
+      onclick="BooksManager.renderBookList(currentSort,'その他')">
+      その他
+    </button>
+
+  </div>
+
+</div>
 <!-- 中段：読み取り終了ボタン -->
 <div id="middle-area" style="margin:20px; text-align:center;"></div>
 
@@ -148,6 +224,71 @@ let cameraStopped = false;
 let lastCode = "";
 let isProcessing = false;
 
+function toggleReadTabs() {
+
+    const area =
+        document.getElementById(
+            "read-tabs"
+        );
+
+    const button =
+        document.getElementById(
+            "read-book-button"
+        );
+
+    if (
+        area.style.display === "none"
+    ) {
+
+        area.style.display = "block";
+
+        button.textContent =
+            "▼ 読んだ本";
+
+    } else {
+
+area.style.display = "none";
+
+button.textContent =
+    "▶ 読んだ本";
+
+document.getElementById(
+    "book-list"
+).innerHTML = "";
+
+document.getElementById(
+    "list-title"
+).textContent = "";
+    }
+}
+
+/* -----------------------------------
+   予約済へ移動
+----------------------------------- */
+function moveToReserved(index) {
+
+    const books =
+        BooksManager.getBooks();
+
+    books[index].status =
+        "wishlist";
+
+    books[index].reserved =
+        true;
+
+    localStorage.setItem(
+        "books",
+        JSON.stringify(books)
+    );
+
+    alert("予約済の本へ移動しました");
+
+    BooksManager.renderBookList(
+        currentSort,
+        "読みたい本"
+    );
+}
+
 /* -----------------------------------
    一覧表示（カード風＋書影フォールバック）
 ----------------------------------- */
@@ -168,11 +309,20 @@ if (window.currentGroup === "読みたい本") {
         book.status === "wishlist"
     );
 
+} else if (
+    window.currentGroup === "読んでいる本"
+) {
+
+    books = books.filter(book =>
+        book.status === "reading"
+    );
+
 } else {
 
     books = books.filter(book =>
         book.status === "read" &&
-        this.getGroupFromYomi(book.yomi) === window.currentGroup
+        this.getGroupFromYomi(book.yomi)
+            === window.currentGroup
     );
 
 }
@@ -202,10 +352,23 @@ const title =
 document.getElementById("list-title");
 
 if (window.currentGroup === "読みたい本") {
-    title.textContent = "読みたい本一覧";
-} else {
+
     title.textContent =
-        window.currentGroup + " の読んだ本";
+        "読みたい本一覧";
+
+} else if (
+    window.currentGroup === "読んでいる本"
+) {
+
+    title.textContent =
+        "読んでいる本一覧";
+
+} else {
+
+    title.textContent =
+        window.currentGroup
+        + " の読んだ本";
+
 }
 
 const list = document.getElementById("book-list");
@@ -259,9 +422,25 @@ object-fit:cover;
 border-radius:6px;
 ">
 </div>
+
 <div style="flex:1; min-width:0;">
+
+${book.reserved
+? `<div style="
+color:red;
+font-weight:bold;
+font-size:18px;
+">
+予約済
+</div>`
+: ""}
+
 <div class="book-title">${book.title}</div>
-<div class="book-meta">著者：${book.author}</div>
+
+<div class="book-meta">
+著者：${book.author}
+</div>
+
 ${book.comment? `<div class="book-meta">感想：${book.comment}</div>`
 : ""}
 
@@ -296,19 +475,60 @@ onclick="BooksManager.confirmDelete(${originalIndex})">
 
 ${window.currentGroup === "読みたい本"
 ? `
+
 <button
-style="
-flex:1;
-font-size:16px;
-padding:8px;
-"
-onclick="moveToRead(${originalIndex})">
-読んだ本へ移動
+onclick="toggleReserved(${originalIndex})">
+${book.reserved
+? "予約済解除"
+: "予約したら押す"}
 </button>
+
+<button
+onclick="moveToReading(${originalIndex})">
+読んでいる本へ
+</button>
+
+<button
+onclick="moveToRead(${originalIndex})">
+読んだ本へ
+</button>
+
 `
 : ""}
 
- 
+${window.currentGroup === "読んでいる本"
+? `
+<button onclick="moveToWishlist(${originalIndex})">
+読みたい本へ
+</button>
+
+<button onclick="moveToRead(${originalIndex})">
+読んだ本へ
+</button>
+`
+: ""} 
+
+${book.status === "read"
+? `
+
+<button
+onclick="moveToWishlist(${originalIndex})">
+読みたい本へ
+</button>
+
+<button
+onclick="moveToReserved(${originalIndex})">
+予約済へ
+</button>
+
+<button
+onclick="moveToReading(${originalIndex})">
+読んでいる本へ
+</button>
+
+`
+: ""}
+
 </div>
 
 `;
@@ -588,14 +808,47 @@ const btn3 = document.createElement("button");
 btn3.textContent = "作成";
 btn3.style = "padding:10px 20px; font-size:18px;";
 btn3.onclick = showBackupData;
+
+const btnJson = document.createElement("button");
+btnJson.textContent = "JSON作成";
+btnJson.style =
+"padding:10px 20px; font-size:18px;";
+btnJson.onclick = exportJsonBackup;
  
 const btn4 = document.createElement("button");
 btn4.textContent = "復元";
 btn4.style = "padding:10px 20px; font-size:18px;";
 btn4.onclick = showRestoreTextUI;
- 
+
+const btnJsonRestore =
+    document.createElement("button");
+
+btnJsonRestore.textContent =
+    "JSON復元";
+
+btnJsonRestore.style =
+    "padding:10px 20px; font-size:18px;";
+
+btnJsonRestore.onclick = function() {
+
+    const input =
+        document.createElement("input");
+
+    input.type = "file";
+
+    input.accept = ".json";
+
+    input.onchange =
+        importJsonBackup;
+
+    input.click();
+
+};
+
 backupRow.appendChild(btn3);
+backupRow.appendChild(btnJson);
 backupRow.appendChild(btn4);
+backupRow.appendChild(btnJsonRestore);
  
 top.appendChild(backupRow);
 
@@ -613,10 +866,22 @@ top.innerHTML = `
 手動登録</h3>
 <div style="margin-bottom:12px;">
 ISBN：
+
 <input
 id="m-isbn"
 type="text"
-style="font-size:16px; width:70%;">
+style="font-size:16px; width:50%;">
+
+<button
+onclick="searchIsbn()"
+style="
+font-size:16px;
+padding:6px 12px;
+margin-left:5px;
+">
+検索
+</button>
+
 </div>
 <div style="margin-bottom:12px;">
 タイトル：
@@ -667,6 +932,14 @@ checked>
 <input
 type="radio"
 name="book-status"
+value="reading">
+読んでいる本
+</label>
+
+<label style="margin-left:15px;">
+<input
+type="radio"
+name="book-status"
 value="wishlist">
 読みたい本
 </label>
@@ -696,6 +969,45 @@ window.scrollTo({
 top: 0,
 behavior: "smooth"
 });
+}
+
+/* -----------------------------------
+   ISBN検索
+----------------------------------- */
+async function searchIsbn() {
+
+    let isbn =
+    document.getElementById("m-isbn")
+    .value
+    .trim();
+
+    isbn = isbn.replace(/-/g, "");
+
+    if (!isbn) {
+        alert("ISBNを入力してください");
+        return;
+    }
+
+    const info =
+    await fetchBookInfo(isbn);
+
+    if (!info) {
+
+        alert(
+            "該当のデータが見つかりませんでした"
+        );
+
+        return;
+    }
+
+    document.getElementById("m-title")
+        .value = info.title || "";
+
+    document.getElementById("m-author")
+        .value = info.author || "";
+
+    document.getElementById("m-yomi")
+        .value = info.yomi || "";
 }
 
 /* -----------------------------------
@@ -839,12 +1151,35 @@ const info = {
     status: books[index].status || "read",
     comment:
 document.getElementById("e-comment").value,
+
+regDate:
+books[index].regDate || "",
+
+reserved:
+books[index].reserved || false
+
 };
  
 BooksManager.updateBook(index, info);
  
-const group =
-BooksManager.getGroupFromYomi(info.yomi);
+let group;
+
+if (info.status === "wishlist") {
+
+    group = "読みたい本";
+
+} else if (info.status === "reading") {
+
+    group = "読んでいる本";
+
+} else {
+
+    group =
+        BooksManager.getGroupFromYomi(
+            info.yomi
+        );
+
+}
  
 BooksManager.renderBookList("yomi", group);
  
@@ -863,6 +1198,8 @@ function moveToRead(index) {
 
     books[index].status = "read";
 
+    books[index].reserved = false;
+
     localStorage.setItem(
         "books",
         JSON.stringify(books)
@@ -872,8 +1209,38 @@ function moveToRead(index) {
 
     BooksManager.renderBookList(
         currentSort,
-        "読みたい本"
+        currentGroup
     );
+}
+
+/* -----------------------------------
+   読んでいる本へ移動
+----------------------------------- */
+function moveToReading(index) {
+
+    const books =
+        BooksManager.getBooks();
+
+    books[index].status =
+        "reading";
+
+    books[index].reserved =
+        false;
+
+    localStorage.setItem(
+        "books",
+        JSON.stringify(books)
+    );
+
+    alert(
+        "読んでいる本へ移動しました"
+    );
+
+BooksManager.renderBookList(
+    currentSort,
+    currentGroup
+);
+
 }
 
 /* -----------------------------------
@@ -881,21 +1248,42 @@ function moveToRead(index) {
 ----------------------------------- */
 function manualSave() {
 
-const info = {
-    isbn: document.getElementById("m-isbn").value.trim(),
-    title: document.getElementById("m-title").value.trim(),
-    author: document.getElementById("m-author").value.trim(),
-    yomi: document.getElementById("m-yomi").value.trim(),
+    const info = {
+        isbn: document.getElementById("m-isbn")
+            .value
+            .trim()
+            .replace(/-/g, ""),
 
-    status:
-document.querySelector(
-'input[name="book-status"\]:checked'
-).value,
-    comment:
-document.getElementById("m-comment").value,
-};
+        title: document.getElementById("m-title")
+            .value
+            .trim(),
 
-    // 必須チェック
+        author: document.getElementById("m-author")
+            .value
+            .trim(),
+
+        yomi: document.getElementById("m-yomi")
+            .value
+            .trim(),
+
+        status:
+        document.querySelector(
+            'input[name="book-status"\]:checked'
+        ).value,
+
+        comment:
+        document.getElementById("m-comment")
+            .value,
+
+        regDate:
+        new Date()
+            .toISOString()
+            .split("T")[0],
+
+        reserved: false
+    };
+
+    /* 必須チェック */
     if (!info.title) {
         alert("タイトルを入力してください");
         return;
@@ -906,20 +1294,119 @@ document.getElementById("m-comment").value,
         return;
     }
 
-    // 重複チェック
-    if (BooksManager.isDuplicate(info)) {
-        alert("この本は既に登録されています");
+    /* 重複チェック */
+    const existing =
+        BooksManager.findBookByIsbn(
+            info.isbn
+        );
+
+    if (existing) {
+
+        const result = prompt(
+`この本は既に登録されています
+
+現在：${existing.status}
+
+移動先を入力してください
+
+read      = 読んだ本
+reading   = 読んでいる本
+wishlist  = 読みたい本`,
+            existing.status
+        );
+
+        if (
+            result === "read" ||
+            result === "reading" ||
+            result === "wishlist"
+        ) {
+
+            const books =
+                BooksManager.getBooks();
+
+            const index =
+                books.findIndex(
+                    b => b.isbn === info.isbn
+                );
+
+            books[index].status =
+                result;
+
+            /* ------------------------------
+               読みたい本以外へ移動したら
+               予約状態解除
+            ------------------------------ */
+            if (
+                result === "read" ||
+                result === "reading"
+            ) {
+
+                books[index].reserved =
+                    false;
+
+            }
+
+            localStorage.setItem(
+                "books",
+                JSON.stringify(books)
+            );
+
+            alert("状態を更新しました");
+
+            let group;
+
+            if (result === "wishlist") {
+
+                group = "読みたい本";
+
+            } else if (
+                result === "reading"
+            ) {
+
+                group = "読んでいる本";
+
+            } else {
+
+                group =
+                    BooksManager.getGroupFromYomi(
+                        existing.yomi
+                    );
+
+            }
+
+            BooksManager.renderBookList(
+                "yomi",
+                group
+            );
+        }
+
         return;
     }
 
-    // 保存
+    /* 新規保存 */
     BooksManager.saveBook(info);
 
-    // グループ判定
-    const group =
-        BooksManager.getGroupFromYomi(info.yomi);
+    let group;
 
-    // 再表示
+    if (info.status === "wishlist") {
+
+        group = "読みたい本";
+
+    } else if (
+        info.status === "reading"
+    ) {
+
+        group = "読んでいる本";
+
+    } else {
+
+        group =
+            BooksManager.getGroupFromYomi(
+                info.yomi
+            );
+
+    }
+
     BooksManager.renderBookList(
         "yomi",
         group,
@@ -1049,6 +1536,92 @@ function restoreBackupFromText() {
   }
 }
 
+
+/* -----------------------------------
+   JSONバックアップ作成
+----------------------------------- */
+function exportJsonBackup() {
+
+    const data =
+        BooksManager.getBooks();
+
+    const json =
+        JSON.stringify(data, null, 2);
+
+    const blob = new Blob(
+        [json],
+        { type: "application/json" }
+    );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+    a.download = "rireki-backup.json";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+    alert("JSONバックアップを保存しました");
+}
+
+/* -----------------------------------
+   JSONバックアップ復元
+----------------------------------- */
+function importJsonBackup(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+
+        try {
+
+            const books =
+                JSON.parse(e.target.result);
+
+            if (!confirm(
+                "現在のデータを上書きして復元しますか？"
+            )) {
+                return;
+            }
+
+            localStorage.setItem(
+                "books",
+                JSON.stringify(books)
+            );
+
+            alert("JSONバックアップを復元しました");
+
+            BooksManager.renderBookList(
+                currentSort,
+                currentGroup
+            );
+
+        } catch {
+
+            alert(
+                "JSONファイルの読み込みに失敗しました"
+            );
+
+        }
+
+    };
+
+    reader.readAsText(file);
+
+}
+
+
 /* -----------------------------------
    カメラ読み取り（ISBN）
 ----------------------------------- */
@@ -1116,19 +1689,96 @@ top.appendChild(stopBtn);
       isProcessing = false;
       return;
     }
+const existing =
+    BooksManager.findBookByIsbn(
+        info.isbn
+    );
 
-    if (BooksManager.isDuplicate(info)) {
-      if (!duplicateAlertShown) {
-        alert("この本はすでに登録されています");
-        duplicateAlertShown = true;
-      }
-      cameraStopped = true;
-      Quagga.stop();
-      document.getElementById("middle-area").innerHTML = "";
-      drawTopButtons();
-      isProcessing = false;
-      return;
+if (existing) {
+
+    const result = prompt(
+`この本は既に登録されています
+
+現在：${existing.status}
+
+移動先を入力してください
+
+read      = 読んだ本
+reading   = 読んでいる本
+wishlist  = 読みたい本`,
+existing.status
+    );
+
+    if (
+        result === "read" ||
+        result === "reading" ||
+        result === "wishlist"
+    ) {
+
+        const books =
+            BooksManager.getBooks();
+
+        const index =
+            books.findIndex(
+                b => b.isbn === info.isbn
+            );
+
+books[index].status =
+    result;
+
+/* ------------------------------
+   読みたい本以外へ移動したら
+   予約状態解除
+------------------------------ */
+if (
+    result === "read" ||
+    result === "reading"
+) {
+
+    books[index].reserved = false;
+
+}
+
+localStorage.setItem(
+    "books",
+    JSON.stringify(books)
+);
+alert("状態を更新しました");
+
+let group;
+
+if (result === "wishlist") {
+
+    group = "読みたい本";
+
+} else if (result === "reading") {
+
+    group = "読んでいる本";
+
+} else {
+
+    group =
+        BooksManager.getGroupFromYomi(
+            existing.yomi
+        );
+
+}
+
+BooksManager.renderBookList(
+    currentSort,
+    group
+);
     }
+
+    cameraStopped = true;
+    Quagga.stop();
+    document.getElementById("middle-area").innerHTML = "";
+    drawTopButtons();
+    isProcessing = false;
+
+    return;
+}
+
 const result = prompt(
 `タイトル：${info.title}
 著者：${info.author}
@@ -1136,6 +1786,7 @@ const result = prompt(
 登録先を入力してください
 
 read      = 読んだ本
+reading   = 読んでいる本
 wishlist  = 読みたい本`,
 "read"
 );
@@ -1152,19 +1803,53 @@ if (result === null) {
     return;
 }
 
-info.status =
-(result === "wishlist")
-? "wishlist"
-: "read";
+if (
+    result !== "read" &&
+    result !== "reading" &&
+    result !== "wishlist"
+) {
+
+    alert("登録先が不正です");
+
+    cameraStopped = true;
+    Quagga.stop();
+
+    drawTopButtons();
+
+    isProcessing = false;
+
+    return;
+}
+
+info.status = result;
 
 info.comment = "";
 
+info.regDate =
+new Date().toISOString().split("T")[0];
+
+info.reserved = false;
+
 BooksManager.saveBook(info);
 
-const group =
-    info.status === "wishlist"
-    ? "読みたい本"
-    : BooksManager.getGroupFromYomi(info.yomi);
+let group;
+
+if (info.status === "wishlist") {
+
+    group = "読みたい本";
+
+} else if (info.status === "reading") {
+
+    group = "読んでいる本";
+
+} else {
+
+    group =
+        BooksManager.getGroupFromYomi(
+            info.yomi
+        );
+
+}
 
 BooksManager.renderBookList(
     "yomi",
@@ -1196,11 +1881,108 @@ document.getElementById("middle-area").innerHTML = "";
 drawTopButtons();
 }
 
+
+function moveToWishlist(index) {
+
+    const books = BooksManager.getBooks();
+
+    books[index].status = "wishlist";
+
+    books[index].reserved = false;
+
+    localStorage.setItem(
+        "books",
+        JSON.stringify(books)
+    );
+
+    alert("読みたい本へ移動しました");
+
+    BooksManager.renderBookList(
+        currentSort,
+        currentGroup
+    );
+}
+
+function closeReadTabs() {
+
+    const area =
+        document.getElementById(
+            "read-tabs"
+        );
+
+    const button =
+        document.getElementById(
+            "read-book-button"
+        );
+
+    area.style.display = "none";
+
+    button.textContent =
+        "▶ 読んだ本";
+
+    document.getElementById(
+        "book-list"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "list-title"
+    ).textContent = "";
+}
+
+/* -----------------------------------
+   予約状態切替
+----------------------------------- */
+function toggleReserved(index) {
+
+    const books =
+        BooksManager.getBooks();
+
+    const book = books[index];
+
+    if (!book.reserved) {
+
+        const ok = confirm(
+            "実際に図書館で予約しましたか？\n\nここで予約済みにしても、図書館で予約したことにはなりません。\n\n予約済みにしますか？"
+        );
+
+        if (!ok) {
+            return;
+        }
+    }
+
+    book.reserved = !book.reserved;
+
+    localStorage.setItem(
+        "books",
+        JSON.stringify(books)
+    );
+
+    alert(
+        book.reserved
+        ? "予約済にしました"
+        : "予約済を解除しました"
+    );
+
+    BooksManager.renderBookList(
+        currentSort,
+        currentGroup
+    );
+}
+
+
 /* -----------------------------------
    初期表示
 ----------------------------------- */
 drawTopButtons();
-BooksManager.renderBookList("yomi", "ア行");
+
+document.getElementById(
+    "book-list"
+).innerHTML = "";
+
+document.getElementById(
+    "list-title"
+).textContent = "";
+
 </script>
 
 </body>

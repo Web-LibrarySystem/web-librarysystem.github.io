@@ -19,6 +19,14 @@ if (book.comment === undefined) {
     book.comment = "";
 }
 
+if (book.regDate === undefined) {
+    book.regDate = "";
+}
+
+if (book.reserved === undefined) {
+    book.reserved = false;
+}
+
     });
 
     return books;
@@ -70,6 +78,11 @@ if (book.comment === undefined) {
         return this.getBooks().some(book => book.isbn === info.isbn);
     },
 
+    findBookByIsbn(isbn) {
+        return this.getBooks().find(
+            book => book.isbn === isbn
+        );
+    },
     /* -----------------------------------
        7. カタカナ → ひらがな
     ----------------------------------- */

@@ -7,7 +7,7 @@
 
   <style>
     .tab-button {
-      padding: 10px 15px;
+      padding: 5px 5px;
       margin: 4px;
       font-size: 16px;
       border-radius: 8px;
@@ -46,7 +46,7 @@ padding: 6px;
 
 <div style="text-align:left; margin:10px;">
   <button onclick="location.href='index.html'"
-          style="padding:10px 20px; font-size:16px;">
+          style="padding:5px 5px; font-size:16px;">
     ← 戻る
   </button>
 </div>
@@ -215,7 +215,7 @@ z-index:1000;
 id="description-toggle"
 onclick="toggleDescription()"
 style="
-padding:10px 20px;
+padding:5px 5px;
 font-size:18px;
 ">
 説明文を表示
@@ -807,12 +807,12 @@ min-width:90px;
 `;
 const btn1 = document.createElement("button");
 btn1.textContent = "読み取り";
-btn1.style = "padding:10px 20px; font-size:18px;";
+btn1.style = "padding:5px 5px; font-size:18px;";
 btn1.onclick = showCamera;
  
 const btn2 = document.createElement("button");
 btn2.textContent = "手動登録";
-btn2.style = "padding:10px 20px; font-size:18px;";
+btn2.style = "padding:5px 5px; font-size:18px;";
 btn2.onclick = showManualEntryForm;
  
 regRow.appendChild(btn1);
@@ -843,7 +843,7 @@ const searchBtn =
 searchBtn.textContent = "検索";
 
 searchBtn.style =
-    "padding:10px 20px; font-size:18px;";
+    "padding:5px 5px; font-size:18px;";
 
 searchBtn.onclick =
     showSearchForm;
@@ -885,18 +885,18 @@ ${lastBackup
  
 const btn3 = document.createElement("button");
 btn3.textContent = "文字列で作成";
-btn3.style = "padding:10px 20px; font-size:18px;";
+btn3.style = "padding:5px 5px; font-size:18px;";
 btn3.onclick = showBackupData;
 
 const btnJson = document.createElement("button");
 btnJson.textContent = "ファイルを作成";
 btnJson.style =
-"padding:10px 20px; font-size:18px;";
+"padding:5px 5px; font-size:18px;";
 btnJson.onclick = exportJsonBackup;
  
 const btn4 = document.createElement("button");
 btn4.textContent = "文字列から復元";
-btn4.style = "padding:10px 20px; font-size:18px;";
+btn4.style = "padding:5px 5px; font-size:18px;";
 btn4.onclick = showRestoreTextUI;
 
 const btnJsonRestore =
@@ -906,7 +906,7 @@ btnJsonRestore.textContent =
     "ファイルから復元";
 
 btnJsonRestore.style =
-    "padding:10px 20px; font-size:18px;";
+    "padding:5px 5px;; font-size:18px;";
 
 btnJsonRestore.onclick = function() {
 
@@ -957,7 +957,7 @@ function showSearchForm() {
         onclick="searchBooks()"
         style="
         font-size:18px;
-        padding:10px 20px;">
+        padding:5px 5px;">
         検索する
     </button>
 
@@ -966,7 +966,7 @@ function showSearchForm() {
         style="
         margin-left:10px;
         font-size:18px;
-        padding:10px 20px;">
+        padding:5px 5px;">
         キャンセル
     </button>
 
@@ -1083,7 +1083,7 @@ function showSearchResults(results) {
         html += `
         <div style="
             border:1px solid #ccc;
-            padding:10px;
+            padding:5px;
             margin-bottom:10px;
             border-radius:8px;
         ">
@@ -1111,7 +1111,7 @@ function showSearchResults(results) {
         onclick="showSearchForm()"
         style="
         font-size:18px;
-        padding:10px 20px;">
+        padding:5px 5px;">
         戻る
     </button>
     `;
@@ -1222,7 +1222,7 @@ value="reserved">
 onclick="manualSave()"
 style="
 font-size:18px;
-padding:10px 20px;
+padding:5px 5px;
 ">
 登録する
 </button>
@@ -1232,7 +1232,7 @@ onclick="drawTopButtons()"
 style="
 margin-left:10px;
 font-size:18px;
-padding:10px 20px;
+padding:5px 5px;
 ">
 キャンセル
 </button>
@@ -1306,8 +1306,8 @@ top.innerHTML = `
 background:#fff5cc;
 border:2px solid #e0c860;
 border-radius:10px;
-padding:10px;
-margin-bottom:20px;
+padding:5px;
+margin-bottom:5px;
 ">
 <div style="display:flex; gap:12px;">
 <img src="${googleUrl}"
@@ -1398,7 +1398,7 @@ height:80px;
 onclick="saveEdit(${index})"
 style="
 font-size:18px;
-padding:10px 20px;
+padding:5px 5px;
 ">
 更新
 </button>
@@ -1408,7 +1408,7 @@ onclick="drawTopButtons()"
 style="
 margin-left:10px;
 font-size:18px;
-padding:10px 20px;
+padding:5px 5px;
 ">
 キャンセル
 </button>
@@ -1786,7 +1786,7 @@ saveLastBackupDate();
 onclick="copyBackup()"
 style="
 font-size:18px;
-padding:10px 20px;
+padding:5px 5px;
 ">
 コピー
 </button>
@@ -1796,7 +1796,7 @@ onclick="drawTopButtons()"
 style="
 margin-left:10px;
 font-size:18px;
-padding:10px 20px;
+padding:5px 5px;
 ">
 戻る
 </button>
@@ -1837,7 +1837,7 @@ function showRestoreTextUI() {
 onclick="restoreBackupFromText()"
 style="
 font-size:18px;
-padding:10px 20px;
+padding:5px 5px;
 ">
 復元する
 </button>
@@ -1847,7 +1847,7 @@ onclick="drawTopButtons()"
 style="
 margin-left:10px;
 font-size:18px;
-padding:10px 20px;
+padding:5px 5px;
 ">
 戻る
 </button>
@@ -2025,7 +2025,7 @@ function showCameraRegisterForm(info) {
     onclick="saveCameraBook('${info.isbn}')"
     style="
     font-size:18px;
-    padding:10px 20px;
+    padding:5px 5px;
     ">
     登録
     </button>
@@ -2035,7 +2035,7 @@ function showCameraRegisterForm(info) {
     style="
     margin-left:10px;
     font-size:18px;
-    padding:10px 20px;
+    padding:5px 5px;
     ">
     キャンセル
     </button>
@@ -2212,7 +2212,7 @@ function showCamera() {
         "読み取りを終わる";
 
     stopBtn.style =
-        "padding:10px 20px; font-size:18px; margin-top:10px;";
+        "padding:5px 5px; font-size:18px; margin-top:10px;";
 
     stopBtn.onclick =
         stopCamera;

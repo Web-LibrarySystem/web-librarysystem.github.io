@@ -9,7 +9,7 @@
     .tab-button {
       padding: 10px 15px;
       margin: 4px;
-      font-size: 18px;
+      font-size: 16px;
       border-radius: 8px;
       border: 1px solid #666;
       background-color: #f0f0f0;
@@ -58,7 +58,7 @@ padding: 6px;
 <!-- 上段：ボタン -->
 <div id="top-area" style="margin:0 20px 20px 20px; text-align:center;"></div>
 
-<h3>　タイトル別</h3>
+<h3>　読書記録</h3>
 
 <!-- タブ分類 -->
 <div id="tabs" style="margin:20px; text-align:center;">
@@ -171,7 +171,22 @@ let currentSort = "yomi";
 let currentGroup = "ア行";
  
 let descriptionVisible = false;
- 
+
+function formatDateJP(dateStr) {
+
+    if (!dateStr) {
+        return "未登録";
+    }
+
+    const parts = dateStr.split("-");
+
+    return (
+        Number(parts[0]) + "年" +
+        Number(parts[1]) + "月" +
+        Number(parts[2]) + "日"
+    );
+}
+
 function toggleDescription() {
 const body = document.getElementById("description-body");
 const btn = document.getElementById("description-toggle");
@@ -236,15 +251,22 @@ function toggleReadTabs() {
             "read-book-button"
         );
 
-    if (
-        area.style.display === "none"
-    ) {
+if (
+    area.style.display === "none"
+) {
 
-        area.style.display = "block";
+    document.getElementById(
+        "book-list"
+    ).innerHTML = "";
 
-        button.textContent =
-            "▼ 読んだ本";
+    document.getElementById(
+        "list-title"
+    ).textContent = "";
 
+    area.style.display = "block";
+
+    button.textContent =
+        "▼ 読んだ本";
     } else {
 
 area.style.display = "none";
@@ -275,6 +297,11 @@ function moveToReserved(index) {
 
     books[index].reserved =
         true;
+
+    books[index].regDate =
+        new Date()
+        .toISOString()
+        .split("T")[0];
 
     localStorage.setItem(
         "books",
@@ -439,6 +466,10 @@ font-size:18px;
 
 <div class="book-meta">
 著者：${book.author}
+</div>
+
+<div class="book-meta">
+最終更新日：${formatDateJP(book.regDate)}
 </div>
 
 ${book.comment? `<div class="book-meta">感想：${book.comment}</div>`
@@ -788,12 +819,50 @@ regRow.appendChild(btn1);
 regRow.appendChild(btn2);
  
 top.appendChild(regRow);
+
+
+// ▼ 本を探す
+const searchRow = document.createElement("div");
+
+searchRow.style =
+"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:15px;";
+
+searchRow.innerHTML = `
+<span style="
+font-size:1.17em;
+font-weight:bold;
+min-width:90px;
+">
+本を探す
+</span>
+`;
+
+const searchBtn =
+    document.createElement("button");
+
+searchBtn.textContent = "検索";
+
+searchBtn.style =
+    "padding:10px 20px; font-size:18px;";
+
+searchBtn.onclick =
+    showSearchForm;
+
+searchRow.appendChild(searchBtn);
+
+top.appendChild(searchRow);
  
+
 // ▼ バックアップ
 const backupRow = document.createElement("div");
 backupRow.style =
 "display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
  
+const lastBackup =
+    localStorage.getItem(
+        "lastBackupDate"
+    );
+
 backupRow.innerHTML = `
 <span style="
 font-size:1.17em;
@@ -802,21 +871,31 @@ min-width:90px;
 ">
 バックアップ
 </span>
+
+<span style="
+font-size:14px;
+color:#666;
+">
+最終：
+${lastBackup
+ ? formatDateJP(lastBackup)
+ : "未作成"}
+</span>
 `;
  
 const btn3 = document.createElement("button");
-btn3.textContent = "作成";
+btn3.textContent = "文字列で作成";
 btn3.style = "padding:10px 20px; font-size:18px;";
 btn3.onclick = showBackupData;
 
 const btnJson = document.createElement("button");
-btnJson.textContent = "JSON作成";
+btnJson.textContent = "ファイルを作成";
 btnJson.style =
 "padding:10px 20px; font-size:18px;";
 btnJson.onclick = exportJsonBackup;
  
 const btn4 = document.createElement("button");
-btn4.textContent = "復元";
+btn4.textContent = "文字列から復元";
 btn4.style = "padding:10px 20px; font-size:18px;";
 btn4.onclick = showRestoreTextUI;
 
@@ -824,7 +903,7 @@ const btnJsonRestore =
     document.createElement("button");
 
 btnJsonRestore.textContent =
-    "JSON復元";
+    "ファイルから復元";
 
 btnJsonRestore.style =
     "padding:10px 20px; font-size:18px;";
@@ -853,6 +932,192 @@ backupRow.appendChild(btnJsonRestore);
 top.appendChild(backupRow);
 
 } // ←追加
+
+function showSearchForm() {
+
+    const top =
+        document.getElementById(
+            "top-area"
+        );
+
+    top.innerHTML = `
+    <div style="text-align:left;">
+
+    <h3>本を探す</h3>
+
+    <div style="margin-bottom:15px;">
+    検索文字：
+    <input
+        id="search-keyword"
+        type="text"
+        style="width:70%; font-size:16px;">
+    </div>
+
+    <button
+        onclick="searchBooks()"
+        style="
+        font-size:18px;
+        padding:10px 20px;">
+        検索する
+    </button>
+
+    <button
+        onclick="drawTopButtons()"
+        style="
+        margin-left:10px;
+        font-size:18px;
+        padding:10px 20px;">
+        キャンセル
+    </button>
+
+    </div>
+    `;
+}
+
+function searchBooks() {
+
+    const keyword =
+    document.getElementById(
+        "search-keyword"
+    )
+    .value
+    .trim()
+    .normalize("NFKC")
+    .toLowerCase();
+
+    if (!keyword) {
+
+        alert(
+            "検索文字を入力してください"
+        );
+
+        return;
+    }
+
+    const books =
+        BooksManager.getBooks();
+
+    const results =
+        books.filter(book => {
+
+        return (
+            (book.title || "")
+                .normalize("NFKC")
+                .toLowerCase()
+                .includes(keyword)
+
+            ||
+
+            (book.author || "")
+                .normalize("NFKC")
+                .toLowerCase()
+                .includes(keyword)
+
+            ||
+
+            (book.isbn || "")
+                .normalize("NFKC")
+                .includes(keyword)
+
+        );
+
+    });
+
+    showSearchResults(results);
+}
+
+function showSearchResults(results) {
+
+    const top =
+        document.getElementById(
+            "top-area"
+        );
+
+    if (results.length === 0) {
+
+        top.innerHTML = `
+        <h3>検索結果</h3>
+
+        該当する本はありませんでした。
+
+        <br><br>
+
+        <button
+            onclick="showSearchForm()">
+            戻る
+        </button>
+        `;
+
+        return;
+    }
+
+    let html =
+        `<h3>検索結果（${results.length}件）</h3>`;
+
+    results.forEach(book => {
+
+        let statusName;
+
+        if (book.reserved) {
+
+            statusName = "予約済";
+
+        } else if (
+            book.status === "wishlist"
+        ) {
+
+            statusName = "読みたい本";
+
+        } else if (
+            book.status === "reading"
+        ) {
+
+            statusName = "読んでいる本";
+
+        } else {
+
+            statusName = "読んだ本";
+
+        }
+
+        html += `
+        <div style="
+            border:1px solid #ccc;
+            padding:10px;
+            margin-bottom:10px;
+            border-radius:8px;
+        ">
+
+        <b style="font-size:18px;">
+        ${book.title}
+        </b><br>
+
+        著者：${book.author}<br>
+
+        ISBN：
+        <b>${book.isbn}</b><br>
+
+        状態：
+        <b>${statusName}</b><br>
+
+        最終更新日：
+        ${formatDateJP(book.regDate)}
+        </div>
+        `;
+    });
+
+    html += `
+    <button
+        onclick="showSearchForm()"
+        style="
+        font-size:18px;
+        padding:10px 20px;">
+        戻る
+    </button>
+    `;
+
+    top.innerHTML = html;
+}
 
 /* -----------------------------------
    手動登録フォーム
@@ -942,6 +1207,14 @@ type="radio"
 name="book-status"
 value="wishlist">
 読みたい本
+</label>
+
+<label style="margin-left:15px;">
+<input
+type="radio"
+name="book-status"
+value="reserved">
+予約済
 </label>
 
 </div>
@@ -1098,6 +1371,17 @@ value="${book.yomi}"
 style="font-size:16px; width:70%;"
 oninput="this.value = this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g, '');">
 </div>
+
+<div style="margin-bottom:12px;">
+最終更新日：
+
+<input
+id="e-regdate"
+type="date"
+value="${book.regDate}"
+style="font-size:16px; width:70%;">
+</div>
+
 <div style="margin-bottom:12px;">
 感想：<br>
 
@@ -1139,7 +1423,7 @@ behavior: "smooth"
    更新処理
 ----------------------------------- */
 function saveEdit(index) {
- 
+ 
 const books = BooksManager.getBooks();
 
 const info = {
@@ -1152,11 +1436,13 @@ const info = {
     comment:
 document.getElementById("e-comment").value,
 
-regDate:
-books[index].regDate || "",
+    regDate:
+    document.getElementById(
+        "e-regdate"
+    ).value,
 
-reserved:
-books[index].reserved || false
+    reserved:
+    books[index].reserved || false
 
 };
  
@@ -1200,6 +1486,11 @@ function moveToRead(index) {
 
     books[index].reserved = false;
 
+    books[index].regDate =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
     localStorage.setItem(
         "books",
         JSON.stringify(books)
@@ -1227,6 +1518,11 @@ function moveToReading(index) {
     books[index].reserved =
         false;
 
+    books[index].regDate =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
     localStorage.setItem(
         "books",
         JSON.stringify(books)
@@ -1248,6 +1544,11 @@ BooksManager.renderBookList(
 ----------------------------------- */
 function manualSave() {
 
+    const selectedStatus =
+        document.querySelector(
+            'input[name="book-status"]:checked'
+        ).value;
+
     const info = {
         isbn: document.getElementById("m-isbn")
             .value
@@ -1267,9 +1568,9 @@ function manualSave() {
             .trim(),
 
         status:
-        document.querySelector(
-            'input[name="book-status"\]:checked'
-        ).value,
+            selectedStatus === "reserved"
+            ? "wishlist"
+            : selectedStatus,
 
         comment:
         document.getElementById("m-comment")
@@ -1280,7 +1581,8 @@ function manualSave() {
             .toISOString()
             .split("T")[0],
 
-        reserved: false
+        reserved:
+            selectedStatus === "reserved"
     };
 
     /* 必須チェック */
@@ -1302,86 +1604,100 @@ function manualSave() {
 
     if (existing) {
 
-        const result = prompt(
+    let statusName;
+
+    if (existing.reserved) {
+
+        statusName = "予約済";
+
+    } else if (
+        existing.status === "wishlist"
+    ) {
+
+        statusName = "読みたい本";
+
+    } else if (
+        existing.status === "reading"
+    ) {
+
+        statusName = "読んでいる本";
+
+    } else {
+
+        statusName = "読んだ本";
+
+    }
+
+    const ok = confirm(
 `この本は既に登録されています
 
-現在：${existing.status}
+現在の状態：
+${statusName}
 
-移動先を入力してください
+選択した状態へ変更しますか？`
+    );
 
-read      = 読んだ本
-reading   = 読んでいる本
-wishlist  = 読みたい本`,
-            existing.status
+    if (!ok) {
+
+        drawTopButtons();
+        return;
+
+    }
+
+    const books =
+        BooksManager.getBooks();
+
+    const index =
+        books.findIndex(
+            b => b.isbn === info.isbn
         );
 
-        if (
-            result === "read" ||
-            result === "reading" ||
-            result === "wishlist"
-        ) {
+    books[index].status =
+        info.status;
 
-            const books =
-                BooksManager.getBooks();
+    books[index].reserved =
+        info.reserved;
 
-            const index =
-                books.findIndex(
-                    b => b.isbn === info.isbn
-                );
+    books[index].regDate =
+        new Date()
+        .toISOString()
+        .split("T")[0];
 
-            books[index].status =
-                result;
+    localStorage.setItem(
+        "books",
+        JSON.stringify(books)
+    );
 
-            /* ------------------------------
-               読みたい本以外へ移動したら
-               予約状態解除
-            ------------------------------ */
-            if (
-                result === "read" ||
-                result === "reading"
-            ) {
+    alert("状態を更新しました");
 
-                books[index].reserved =
-                    false;
+    let group;
 
-            }
+    if (info.status === "wishlist") {
 
-            localStorage.setItem(
-                "books",
-                JSON.stringify(books)
+        group = "読みたい本";
+
+    } else if (
+        info.status === "reading"
+    ) {
+
+        group = "読んでいる本";
+
+    } else {
+
+        group =
+            BooksManager.getGroupFromYomi(
+                existing.yomi
             );
 
-            alert("状態を更新しました");
-
-            let group;
-
-            if (result === "wishlist") {
-
-                group = "読みたい本";
-
-            } else if (
-                result === "reading"
-            ) {
-
-                group = "読んでいる本";
-
-            } else {
-
-                group =
-                    BooksManager.getGroupFromYomi(
-                        existing.yomi
-                    );
-
-            }
-
-            BooksManager.renderBookList(
-                "yomi",
-                group
-            );
-        }
-
-        return;
     }
+
+    BooksManager.renderBookList(
+        "yomi",
+        group
+    );
+
+    return;
+}
 
     /* 新規保存 */
     BooksManager.saveBook(info);
@@ -1423,10 +1739,27 @@ wishlist  = 読みたい本`,
     });
 }
 
+
+function saveLastBackupDate() {
+
+    const today =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
+    localStorage.setItem(
+        "lastBackupDate",
+        today
+    );
+}
+
+
 /* -----------------------------------
    バックアップ（文字列）
 ----------------------------------- */
 function showBackupData() {
+
+saveLastBackupDate();
 
   // ★ 説明文をバックアップ用に変更
   setDescription(`
@@ -1440,6 +1773,14 @@ function showBackupData() {
 
   top.innerHTML = `
     <h3>バックアップ（文字列）</h3>
+    最終バックアップ日：
+    ${formatDateJP(
+    localStorage.getItem(
+        "lastBackupDate"
+    ))
+    }
+    <br><br>
+
     <textarea id="backup-view" style="width:90%; height:150px;">${backupStr}</textarea><br><br>
 <button
 onclick="copyBackup()"
@@ -1538,9 +1879,11 @@ function restoreBackupFromText() {
 
 
 /* -----------------------------------
-   JSONバックアップ作成
+   ファイルでバックアップ作成
 ----------------------------------- */
 function exportJsonBackup() {
+
+    saveLastBackupDate();
 
     const data =
         BooksManager.getBooks();
@@ -1566,7 +1909,7 @@ function exportJsonBackup() {
 
     URL.revokeObjectURL(url);
 
-    alert("JSONバックアップを保存しました");
+    alert("バックアップファイルを保存しました");
 }
 
 /* -----------------------------------
@@ -1600,7 +1943,7 @@ function importJsonBackup(event) {
                 JSON.stringify(books)
             );
 
-            alert("JSONバックアップを復元しました");
+            alert("バックアップファイルから復元しました");
 
             BooksManager.renderBookList(
                 currentSort,
@@ -1610,7 +1953,7 @@ function importJsonBackup(event) {
         } catch {
 
             alert(
-                "JSONファイルの読み込みに失敗しました"
+                "バックアップファイルの読み込みに失敗しました"
             );
 
         }
@@ -1622,98 +1965,156 @@ function importJsonBackup(event) {
 }
 
 
-/* -----------------------------------
-   カメラ読み取り（ISBN）
------------------------------------ */
-function showCamera() {
-  duplicateAlertShown = false;
-  cameraStopped = false;
-  isProcessing = false;
-  lastCode = "";
+function showCameraRegisterForm(info) {
 
-  const top = document.getElementById("top-area");
-  top.innerHTML = "";
-  const camDiv = document.createElement("div");
-  camDiv.id = "camera";
-  camDiv.style = "width:100%; max-width:400px; margin:auto;";
-  top.appendChild(camDiv);
+    const top =
+        document.getElementById("top-area");
 
-const stopBtn = document.createElement("button");
-stopBtn.textContent = "読み取りを終わる";
-stopBtn.style =
-"padding:10px 20px; font-size:18px; margin-top:10px;";
-stopBtn.onclick = stopCamera;
- 
-top.appendChild(stopBtn);
+    top.innerHTML = `
+    <div style="text-align:left;">
 
-  let lastScanTime = 0;
+    <h3>本を登録</h3>
 
-  Quagga.init({
-    inputStream: {
-      name: "Live",
-      type: "LiveStream",
-      target: document.querySelector('#camera'),
-      constraints: { facingMode: "environment" }
-    },
-    decoder: { readers: ["ean_reader"] }
-  }, function(err) {
-    if (err) { console.log(err); return; }
-    Quagga.start();
-  });
+    <div style="margin-bottom:10px;">
+    <b>${info.title}</b>
+    </div>
 
-  Quagga.onDetected(async function(data) {
-    if (cameraStopped) return;
+    <div style="margin-bottom:15px;">
+    著者：${info.author}
+    </div>
 
-    const now = Date.now();
-    const code = data.codeResult.code;
+    <div style="margin-bottom:15px;">
+    登録先：
 
-    if (!code.startsWith("978") && !code.startsWith("979")) return;
+    <label style="margin-left:10px;">
+    <input
+    type="radio"
+    name="camera-status"
+    value="read"
+    checked>
+    読んだ本
+    </label>
 
-    if (code === lastCode && now - lastScanTime < 3000) return;
+    <label style="margin-left:15px;">
+    <input
+    type="radio"
+    name="camera-status"
+    value="reading">
+    読んでいる本
+    </label>
 
-    lastCode = code;
-    lastScanTime = now;
+    <label style="margin-left:15px;">
+    <input
+    type="radio"
+    name="camera-status"
+    value="wishlist">
+    読みたい本
+    </label>
 
-    if (isProcessing) return;
-    isProcessing = true;
+    <label style="margin-left:15px;">
+    <input
+    type="radio"
+    name="camera-status"
+    value="reserved">
+    予約済
+    </label>
 
-    const isbn = code;
-    const info = await fetchBookInfo(isbn);
+    </div>
 
-    if (!info) {
-      alert("書誌データがありません。\n手動登録できます。");
+    <button
+    onclick="saveCameraBook('${info.isbn}')"
+    style="
+    font-size:18px;
+    padding:10px 20px;
+    ">
+    登録
+    </button>
 
-      cameraStopped = true;
-      Quagga.stop();
-      showManualEntryForm();
-      isProcessing = false;
-      return;
-    }
-const existing =
-    BooksManager.findBookByIsbn(
-        info.isbn
-    );
+    <button
+    onclick="drawTopButtons()"
+    style="
+    margin-left:10px;
+    font-size:18px;
+    padding:10px 20px;
+    ">
+    キャンセル
+    </button>
 
-if (existing) {
+    </div>
+    `;
+}
 
-    const result = prompt(
+async function saveCameraBook(isbn) {
+
+    const info =
+        await fetchBookInfo(isbn);
+
+    const result =
+        document.querySelector(
+            'input[name="camera-status"]:checked'
+        ).value;
+
+    info.status =
+        result === "reserved"
+        ? "wishlist"
+        : result;
+
+    info.comment = "";
+
+    info.regDate =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+    info.reserved =
+        result === "reserved";
+
+    const existing =
+        BooksManager.findBookByIsbn(
+            info.isbn
+        );
+
+    if (existing) {
+
+        let statusName;
+
+        if (existing.reserved) {
+
+            statusName = "予約済";
+
+        } else if (
+            existing.status === "wishlist"
+        ) {
+
+            statusName = "読みたい本";
+
+        } else if (
+            existing.status === "reading"
+        ) {
+
+            statusName = "読んでいる本";
+
+        } else {
+
+            statusName = "読んだ本";
+
+        }
+
+        const ok = confirm(
 `この本は既に登録されています
 
-現在：${existing.status}
+現在の状態：
+${statusName}
 
-移動先を入力してください
+選択した状態へ変更しますか？`
+        );
 
-read      = 読んだ本
-reading   = 読んでいる本
-wishlist  = 読みたい本`,
-existing.status
-    );
+        if (!ok) {
 
-    if (
-        result === "read" ||
-        result === "reading" ||
-        result === "wishlist"
-    ) {
+            drawTopButtons();
+            return;
+
+        }
 
         const books =
             BooksManager.getBooks();
@@ -1723,211 +2124,230 @@ existing.status
                 b => b.isbn === info.isbn
             );
 
-books[index].status =
-    result;
+        books[index].status =
+            info.status;
 
-/* ------------------------------
-   読みたい本以外へ移動したら
-   予約状態解除
------------------------------- */
-if (
-    result === "read" ||
-    result === "reading"
-) {
+        books[index].reserved =
+            info.reserved;
 
-    books[index].reserved = false;
+        books[index].regDate =
+            info.regDate;
 
-}
-
-localStorage.setItem(
-    "books",
-    JSON.stringify(books)
-);
-alert("状態を更新しました");
-
-let group;
-
-if (result === "wishlist") {
-
-    group = "読みたい本";
-
-} else if (result === "reading") {
-
-    group = "読んでいる本";
-
-} else {
-
-    group =
-        BooksManager.getGroupFromYomi(
-            existing.yomi
+        localStorage.setItem(
+            "books",
+            JSON.stringify(books)
         );
 
-}
+        alert("状態を更新しました");
 
-BooksManager.renderBookList(
-    currentSort,
-    group
-);
+    } else {
+
+        BooksManager.saveBook(info);
+
+        alert("登録しました");
+
     }
 
-    cameraStopped = true;
-    Quagga.stop();
-    document.getElementById("middle-area").innerHTML = "";
-    drawTopButtons();
-    isProcessing = false;
+    let group;
 
-    return;
-}
+    if (info.status === "wishlist") {
 
-const result = prompt(
-`タイトル：${info.title}
-著者：${info.author}
+        group = "読みたい本";
 
-登録先を入力してください
+    } else if (
+        info.status === "reading"
+    ) {
 
-read      = 読んだ本
-reading   = 読んでいる本
-wishlist  = 読みたい本`,
-"read"
-);
+        group = "読んでいる本";
 
-if (result === null) {
+    } else {
 
-    cameraStopped = true;
-    Quagga.stop();
+        group =
+            BooksManager.getGroupFromYomi(
+                info.yomi
+            );
 
-    drawTopButtons();
-
-    isProcessing = false;
-
-    return;
-}
-
-if (
-    result !== "read" &&
-    result !== "reading" &&
-    result !== "wishlist"
-) {
-
-    alert("登録先が不正です");
-
-    cameraStopped = true;
-    Quagga.stop();
-
-    drawTopButtons();
-
-    isProcessing = false;
-
-    return;
-}
-
-info.status = result;
-
-info.comment = "";
-
-info.regDate =
-new Date().toISOString().split("T")[0];
-
-info.reserved = false;
-
-BooksManager.saveBook(info);
-
-let group;
-
-if (info.status === "wishlist") {
-
-    group = "読みたい本";
-
-} else if (info.status === "reading") {
-
-    group = "読んでいる本";
-
-} else {
-
-    group =
-        BooksManager.getGroupFromYomi(
-            info.yomi
-        );
-
-}
-
-BooksManager.renderBookList(
-    "yomi",
-    group,
-    info.isbn
-);
-
-alert("登録しました");
-
-cameraStopped = true;
-Quagga.stop();
-document.getElementById("middle-area").innerHTML = "";
-drawTopButtons();
-isProcessing = false;
-  });
-}
-
-function stopCamera() {
-cameraStopped = true;
-try {
-Quagga.stop();
-} catch(e) {}
-const cam = document.querySelector('#camera');
-if (cam) {
-cam.innerHTML = "";
-cam.remove();
-}
-document.getElementById("middle-area").innerHTML = "";
-drawTopButtons();
-}
-
-
-function moveToWishlist(index) {
-
-    const books = BooksManager.getBooks();
-
-    books[index].status = "wishlist";
-
-    books[index].reserved = false;
-
-    localStorage.setItem(
-        "books",
-        JSON.stringify(books)
-    );
-
-    alert("読みたい本へ移動しました");
+    }
 
     BooksManager.renderBookList(
-        currentSort,
-        currentGroup
+        "yomi",
+        group,
+        info.isbn
     );
+
+    drawTopButtons();
+
 }
 
-function closeReadTabs() {
 
-    const area =
-        document.getElementById(
-            "read-tabs"
+/* -----------------------------------
+   カメラ読み取り（ISBN）
+----------------------------------- */
+function showCamera() {
+
+    duplicateAlertShown = false;
+    cameraStopped = false;
+    isProcessing = false;
+    lastCode = "";
+
+    const top =
+        document.getElementById("top-area");
+
+    top.innerHTML = "";
+
+    const camDiv =
+        document.createElement("div");
+
+    camDiv.id = "camera";
+
+    camDiv.style =
+        "width:100%; max-width:400px; margin:auto;";
+
+    top.appendChild(camDiv);
+
+    const stopBtn =
+        document.createElement("button");
+
+    stopBtn.textContent =
+        "読み取りを終わる";
+
+    stopBtn.style =
+        "padding:10px 20px; font-size:18px; margin-top:10px;";
+
+    stopBtn.onclick =
+        stopCamera;
+
+    top.appendChild(stopBtn);
+
+    let lastScanTime = 0;
+
+    Quagga.init({
+
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector(
+                "#camera"
+            ),
+            constraints: {
+                facingMode: "environment"
+            }
+        },
+
+        decoder: {
+            readers: ["ean_reader"]
+        }
+
+    }, function(err) {
+
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        Quagga.start();
+
+    });
+
+    Quagga.onDetected(
+        async function(data) {
+
+        if (cameraStopped) {
+            return;
+        }
+
+        const now =
+            Date.now();
+
+        const code =
+            data.codeResult.code;
+
+        if (
+            !code.startsWith("978") &&
+            !code.startsWith("979")
+        ) {
+            return;
+        }
+
+        if (
+            code === lastCode &&
+            now - lastScanTime < 3000
+        ) {
+            return;
+        }
+
+        lastCode = code;
+        lastScanTime = now;
+
+        if (isProcessing) {
+            return;
+        }
+
+        isProcessing = true;
+
+        const isbn = code;
+
+        const info =
+            await fetchBookInfo(isbn);
+
+        if (!info) {
+
+            alert(
+                "書誌データがありません。\n手動登録できます。"
+            );
+
+            cameraStopped = true;
+
+            Quagga.stop();
+
+            showManualEntryForm();
+
+            isProcessing = false;
+
+            return;
+        }
+
+        cameraStopped = true;
+
+        Quagga.stop();
+
+        showCameraRegisterForm(info);
+
+        isProcessing = false;
+
+    });
+
+}
+
+
+function stopCamera() {
+
+    cameraStopped = true;
+
+    try {
+        Quagga.stop();
+    } catch(e) {}
+
+    const cam =
+        document.querySelector(
+            "#camera"
         );
 
-    const button =
-        document.getElementById(
-            "read-book-button"
-        );
+    if (cam) {
 
-    area.style.display = "none";
+        cam.innerHTML = "";
 
-    button.textContent =
-        "▶ 読んだ本";
+        cam.remove();
+
+    }
 
     document.getElementById(
-        "book-list"
+        "middle-area"
     ).innerHTML = "";
 
-    document.getElementById(
-        "list-title"
-    ).textContent = "";
+    drawTopButtons();
 }
+
 
 /* -----------------------------------
    予約状態切替
@@ -1952,6 +2372,11 @@ function toggleReserved(index) {
 
     book.reserved = !book.reserved;
 
+    book.regDate =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
     localStorage.setItem(
         "books",
         JSON.stringify(books)
@@ -1965,7 +2390,7 @@ function toggleReserved(index) {
 
     BooksManager.renderBookList(
         currentSort,
-        currentGroup
+        "読みたい本"
     );
 }
 

@@ -51,7 +51,7 @@ padding: 6px;
   </button>
 </div>
 
-<h2 style="margin-bottom:5px;">読書ノート</h2>
+<h2 style="margin-bottom:30px;">読書ノート</h2>
 
 <div id="description"></div>
 
@@ -167,7 +167,7 @@ padding: 6px;
 
 <!-- 自前のスクリプト -->
 <script>
-let currentSort = "yomi";
+let currentSort = "yomiAsc";
 let currentGroup = "ア行";
  
 let descriptionVisible = false;
@@ -204,11 +204,14 @@ btn.textContent = "説明文を表示";
  
 function setDescription(html) {
 document.getElementById("description").innerHTML = `
-<div style="
+<div
+id="right-menu"
+style="
 position:absolute;
-top:10px;
+top:0px;
 right:10px;
 z-index:1000;
+text-align:right;
 ">
  
 <button
@@ -284,6 +287,24 @@ document.getElementById(
     }
 }
 
+function closeReadTabs() {
+
+    const area =
+        document.getElementById(
+            "read-tabs"
+        );
+
+    const button =
+        document.getElementById(
+            "read-book-button"
+        );
+
+    area.style.display = "none";
+
+    button.textContent =
+        "▶ 読んだ本";
+}
+
 /* -----------------------------------
    予約済へ移動
 ----------------------------------- */
@@ -312,14 +333,15 @@ function moveToReserved(index) {
 
     BooksManager.renderBookList(
         currentSort,
-        "読みたい本"
+        "読みたい本",
+        books[index].isbn
     );
 }
 
 /* -----------------------------------
    一覧表示（カード風＋書影フォールバック）
 ----------------------------------- */
-BooksManager.renderBookList = function(sortType = "yomi", group = null, topIsbn = null) {
+BooksManager.renderBookList = function(sortType = "yomiAsc", group = null, topIsbn = null) {
  
 window.currentSort = sortType;
  
@@ -354,9 +376,32 @@ if (window.currentGroup === "読みたい本") {
 
 }
  
-books.sort((a, b) =>
-(a.yomi || "").localeCompare(b.yomi || "")
-);
+switch (currentSort) {
+
+    case "yomiAsc":
+        books.sort((a, b) =>
+            (a.yomi || "").localeCompare(b.yomi || "")
+        );
+        break;
+
+    case "yomiDesc":
+        books.sort((a, b) =>
+            (b.yomi || "").localeCompare(a.yomi || "")
+        );
+        break;
+
+    case "dateNew":
+        books.sort((a, b) =>
+            (b.regDate || "").localeCompare(a.regDate || "")
+        );
+        break;
+
+    case "dateOld":
+        books.sort((a, b) =>
+            (a.regDate || "").localeCompare(b.regDate || "")
+        );
+        break;
+}
  
 if (topIsbn) {
 const idx = books.findIndex(b => b.isbn === topIsbn);
@@ -397,6 +442,46 @@ if (window.currentGroup === "読みたい本") {
         + " の読んだ本";
 
 }
+
+title.innerHTML += `
+<div style="margin-top:10px;">
+
+並び順：
+
+<select
+    onchange="
+    currentSort=this.value;
+    BooksManager.renderBookList(
+        currentSort,
+        currentGroup
+    );
+    "
+>
+
+<option value="yomiAsc"
+${currentSort==="yomiAsc"?"selected":""}>
+五十音順（昇順）
+</option>
+
+<option value="yomiDesc"
+${currentSort==="yomiDesc"?"selected":""}>
+五十音順（降順）
+</option>
+
+<option value="dateNew"
+${currentSort==="dateNew"?"selected":""}>
+登録日（新しい順）
+</option>
+
+<option value="dateOld"
+${currentSort==="dateOld"?"selected":""}>
+登録日（古い順）
+</option>
+
+</select>
+
+</div>
+`;
 
 const list = document.getElementById("book-list");
  
@@ -469,7 +554,7 @@ font-size:18px;
 </div>
 
 <div class="book-meta">
-最終更新日：${formatDateJP(book.regDate)}
+更新日：${formatDateJP(book.regDate)}
 </div>
 
 ${book.comment? `<div class="book-meta">感想：${book.comment}</div>`
@@ -533,11 +618,15 @@ ${window.currentGroup === "読んでいる本"
 読みたい本へ
 </button>
 
+<button onclick="moveToReserved(${originalIndex})">
+予約済へ
+</button>
+
 <button onclick="moveToRead(${originalIndex})">
 読んだ本へ
 </button>
 `
-: ""} 
+: ""}
 
 ${book.status === "read"
 ? `
@@ -784,8 +873,7 @@ function drawTopButtons() {
   読み込むバーコードは、本の裏面の２段のバーコードです。<br>
   上手く読み込めない場合は、再度読み込むか、手動で登録することも可能です。<br>
   ISBNには、「978」で始まるバーコード番号を入力してください。<br>
-  よみは「ひらがな」「アルファベット」「数字」「記号」のみ入力できます。<br>
-  また、見づらくなるのを避けるため、よみの8文字目以降は非表示にしてあります<br><br><br>
+  よみは「ひらがな」「アルファベット」「数字」「記号」のみ入力できます。<br><br><br>
   `);
 
   const top = document.getElementById("top-area");
@@ -851,53 +939,48 @@ searchBtn.onclick =
 searchRow.appendChild(searchBtn);
 
 top.appendChild(searchRow);
- 
 
-// ▼ バックアップ
-const backupRow = document.createElement("div");
-backupRow.style =
-"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
- 
-const lastBackup =
-    localStorage.getItem(
-        "lastBackupDate"
-    );
+const btn3 =
+    document.createElement("button");
 
-backupRow.innerHTML = `
-<span style="
-font-size:1.17em;
-font-weight:bold;
-min-width:90px;
-">
-バックアップ
-</span>
+btn3.textContent =
+    "文字列で作成";
 
-<span style="
-font-size:14px;
-color:#666;
-">
-最終：
-${lastBackup
- ? formatDateJP(lastBackup)
- : "未作成"}
-</span>
-`;
- 
-const btn3 = document.createElement("button");
-btn3.textContent = "文字列で作成";
-btn3.style = "padding:5px 5px; font-size:18px;";
-btn3.onclick = showBackupData;
+btn3.style =
+    "padding:5px 5px; font-size:14px;";
 
-const btnJson = document.createElement("button");
-btnJson.textContent = "ファイルを作成";
+btn3.onclick =
+    showBackupData;
+
+
+
+const btnJson =
+    document.createElement("button");
+
+btnJson.textContent =
+    "ファイルを作成";
+
 btnJson.style =
-"padding:5px 5px; font-size:18px;";
-btnJson.onclick = exportJsonBackup;
- 
-const btn4 = document.createElement("button");
-btn4.textContent = "文字列から復元";
-btn4.style = "padding:5px 5px; font-size:18px;";
-btn4.onclick = showRestoreTextUI;
+    "padding:5px 5px; font-size:14px;";
+
+btnJson.onclick =
+    exportJsonBackup;
+
+
+
+const btn4 =
+    document.createElement("button");
+
+btn4.textContent =
+    "文字列から復元";
+
+btn4.style =
+    "padding:5px 5px; font-size:14px;";
+
+btn4.onclick =
+    showRestoreTextUI;
+
+
 
 const btnJsonRestore =
     document.createElement("button");
@@ -906,12 +989,15 @@ btnJsonRestore.textContent =
     "ファイルから復元";
 
 btnJsonRestore.style =
-    "padding:5px 5px;; font-size:18px;";
+    "padding:5px 5px; font-size:14px;";
 
-btnJsonRestore.onclick = function() {
+btnJsonRestore.onclick =
+function() {
 
     const input =
-        document.createElement("input");
+        document.createElement(
+            "input"
+        );
 
     input.type = "file";
 
@@ -921,15 +1007,105 @@ btnJsonRestore.onclick = function() {
         importJsonBackup;
 
     input.click();
-
 };
 
-backupRow.appendChild(btn3);
-backupRow.appendChild(btnJson);
-backupRow.appendChild(btn4);
-backupRow.appendChild(btnJsonRestore);
- 
-top.appendChild(backupRow);
+const backupWrap =
+document.createElement("div");
+
+backupWrap.style.marginTop = "10px";
+
+const lastBackup =
+    localStorage.getItem(
+        "lastBackupDate"
+    );
+
+backupWrap.innerHTML = `
+
+<button
+id="backup-toggle"
+style="
+padding:3px 8px;
+font-size:16px;
+">
+▶ バックアップ
+</button>
+
+<div style="
+font-size:12px;
+color:#666;
+margin-top:3px;
+">
+最終：
+${lastBackup
+ ? formatDateJP(lastBackup)
+ : "未作成"}
+</div>
+
+<div
+id="backup-area"
+style="
+display:none;
+margin-top:10px;
+">
+</div>
+`;
+
+/* 先に右上へ配置する */
+const rightMenu =
+document.getElementById(
+    "right-menu"
+);
+
+rightMenu.appendChild(
+    backupWrap
+);
+
+/* ここから開閉処理 */
+document
+.getElementById("backup-toggle")
+.onclick = function() {
+
+    const area =
+    document.getElementById(
+        "backup-area"
+    );
+
+    const btn =
+    document.getElementById(
+        "backup-toggle"
+    );
+
+    if (
+        area.style.display === "none"
+    ) {
+
+        area.style.display =
+            "block";
+
+        btn.textContent =
+            "▼ バックアップ";
+
+    } else {
+
+        area.style.display =
+            "none";
+
+        btn.textContent =
+            "▶ バックアップ";
+
+    }
+};
+
+/* ボタン追加 */
+const backupArea =
+document.getElementById(
+    "backup-area"
+);
+
+backupArea.appendChild(btn3);
+backupArea.appendChild(btnJson);
+backupArea.appendChild(btn4);
+backupArea.appendChild(btnJsonRestore);
 
 } // ←追加
 
@@ -1110,7 +1286,7 @@ function showSearchResults(results) {
     <button
         onclick="showSearchForm()"
         style="
-        font-size:18px;
+        font-size:14px;
         padding:5px 5px;">
         戻る
     </button>
@@ -1467,7 +1643,11 @@ if (info.status === "wishlist") {
 
 }
  
-BooksManager.renderBookList("yomi", group);
+BooksManager.renderBookList(
+    currentSort,
+    group,
+    info.isbn
+);
  
 alert("更新しました");
  
@@ -1500,7 +1680,10 @@ function moveToRead(index) {
 
     BooksManager.renderBookList(
         currentSort,
-        currentGroup
+        BooksManager.getGroupFromYomi(
+            books[index].yomi
+        ),
+        books[index].isbn
     );
 }
 
@@ -1532,11 +1715,50 @@ function moveToReading(index) {
         "読んでいる本へ移動しました"
     );
 
-BooksManager.renderBookList(
-    currentSort,
-    currentGroup
-);
+    BooksManager.renderBookList(
+        currentSort,
+        "読んでいる本",
+        books[index].isbn
+    );
+}
 
+/* -----------------------------------
+   読みたい本へ移動
+----------------------------------- */
+function moveToWishlist(index) {
+
+    const books =
+        BooksManager.getBooks();
+
+    books[index].status =
+        "wishlist";
+
+    /* ------------------------------
+       読みたい本へ戻した場合は
+       予約状態は解除する
+    ------------------------------ */
+    books[index].reserved =
+        false;
+
+    books[index].regDate =
+        new Date()
+        .toISOString()
+        .split("T")[0];
+
+    localStorage.setItem(
+        "books",
+        JSON.stringify(books)
+    );
+
+    alert(
+        "読みたい本へ移動しました"
+    );
+
+    BooksManager.renderBookList(
+        currentSort,
+        "読みたい本",
+        books[index].isbn
+    );
 }
 
 /* -----------------------------------
@@ -1692,12 +1914,15 @@ ${statusName}
     }
 
     BooksManager.renderBookList(
-        "yomi",
-        group
+        currentSort,
+        group,
+        info.isbn
     );
 
+    drawTopButtons();
+
     return;
-}
+    }
 
     /* 新規保存 */
     BooksManager.saveBook(info);
@@ -1724,7 +1949,7 @@ ${statusName}
     }
 
     BooksManager.renderBookList(
-        "yomi",
+        currentSort,
         group,
         info.isbn
     );
@@ -2170,7 +2395,7 @@ ${statusName}
     }
 
     BooksManager.renderBookList(
-        "yomi",
+        currentSort,
         group,
         info.isbn
     );

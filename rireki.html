@@ -168,7 +168,7 @@ padding: 6px;
 <!-- 自前のスクリプト -->
 <script>
 let currentSort = "yomiAsc";
-let currentGroup = "ア行";
+window.currentGroup = "ア行";
  
 let descriptionVisible = false;
 
@@ -453,7 +453,7 @@ title.innerHTML += `
     currentSort=this.value;
     BooksManager.renderBookList(
         currentSort,
-        currentGroup
+        window.currentGroup 
     );
     "
 >
@@ -944,7 +944,7 @@ const btn3 =
     document.createElement("button");
 
 btn3.textContent =
-    "文字列で作成";
+    "文字列作成";
 
 btn3.style =
     "padding:5px 5px; font-size:14px;";
@@ -952,13 +952,11 @@ btn3.style =
 btn3.onclick =
     showBackupData;
 
-
-
 const btnJson =
     document.createElement("button");
 
 btnJson.textContent =
-    "ファイルを作成";
+    "ファイル作成";
 
 btnJson.style =
     "padding:5px 5px; font-size:14px;";

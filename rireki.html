@@ -168,7 +168,7 @@ padding: 6px;
 <!-- 自前のスクリプト -->
 <script>
 let currentSort = "yomiAsc";
-window.currentGroup = "ア行";
+currentGroup = "ア行";
  
 let descriptionVisible = false;
 
@@ -346,20 +346,20 @@ BooksManager.renderBookList = function(sortType = "yomiAsc", group = null, topIs
 window.currentSort = sortType;
  
 if (group !== null) {
-window.currentGroup = group;
+currentGroup = group;
 }
  
 const allBooks = this.getBooks();
 let books = [...allBooks];
  
-if (window.currentGroup === "読みたい本") {
+if (currentGroup === "読みたい本") {
 
     books = books.filter(book =>
         book.status === "wishlist"
     );
 
 } else if (
-    window.currentGroup === "読んでいる本"
+    currentGroup === "読んでいる本"
 ) {
 
     books = books.filter(book =>
@@ -371,7 +371,7 @@ if (window.currentGroup === "読みたい本") {
     books = books.filter(book =>
         book.status === "read" &&
         this.getGroupFromYomi(book.yomi)
-            === window.currentGroup
+            === currentGroup
     );
 
 }
@@ -423,13 +423,13 @@ const colors = [
 const title =
 document.getElementById("list-title");
 
-if (window.currentGroup === "読みたい本") {
+if (currentGroup === "読みたい本") {
 
     title.textContent =
         "読みたい本一覧";
 
 } else if (
-    window.currentGroup === "読んでいる本"
+    currentGroup === "読んでいる本"
 ) {
 
     title.textContent =
@@ -438,7 +438,7 @@ if (window.currentGroup === "読みたい本") {
 } else {
 
     title.textContent =
-        window.currentGroup
+        currentGroup
         + " の読んだ本";
 
 }
@@ -453,7 +453,7 @@ title.innerHTML += `
     currentSort=this.value;
     BooksManager.renderBookList(
         currentSort,
-        window.currentGroup 
+        currentGroup 
     );
     "
 >
@@ -589,7 +589,7 @@ onclick="BooksManager.confirmDelete(${originalIndex})">
 削除
 </button>
 
-${window.currentGroup === "読みたい本"
+${currentGroup === "読みたい本"
 ? `
 
 <button
@@ -612,7 +612,7 @@ onclick="moveToRead(${originalIndex})">
 `
 : ""}
 
-${window.currentGroup === "読んでいる本"
+${currentGroup === "読んでいる本"
 ? `
 <button onclick="moveToWishlist(${originalIndex})">
 読みたい本へ

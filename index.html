@@ -14,7 +14,7 @@
 <h1>📚 図書館アプリ</h1>
  
 <p>
-☆を押して、お気に入りの図書館を登録してね
+☆を押して、お気に入りの図書館を登録してください
 </p>
  
 <div id="library-list" class="library-list"></div>
@@ -22,7 +22,7 @@
 <br>
  
 <p>
-読んだ本の履歴はここから登録してね
+読んだ本の履歴はここから登録してください
 </p>
  
 <div class="footer">
@@ -30,12 +30,17 @@
 📚 読書ノート
 </a>
 </div>
- 
+
+<button onclick="location.href='rireki.html'"
+style="width:80%; padding:15px; margin:10px; font-size:18px;">
+読書ノート
+</button> 
+
 <br>
  
 <button onclick="location.href='mennseki.html'"
-style="width:65%; padding:15px; margin:10px; font-size:18px;">
-利用方法・免責事項
+style="width:80%; padding:15px; margin:10px; font-size:18px;">
+免責事項
 </button>
  
 <script>
@@ -56,11 +61,6 @@ id:"ogk-sunomata",
 name:"大垣市　墨俣",
 url:"./SUNO/index.html"
 },
-{
-id:"gif-honkan",
-name:"岐阜県　本館",
-url:"./gif-honkan/index.html"
-}
 ];
  
 function getFavorites() {

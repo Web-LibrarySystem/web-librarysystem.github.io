@@ -554,7 +554,15 @@ font-size:18px;
 </div>
 
 <div class="book-meta">
-更新日：${formatDateJP(book.regDate)}
+登録日：
+${formatDateJP(
+    book.createDate || book.regDate
+)}
+</div>
+
+<div class="book-meta">
+更新日：
+${formatDateJP(book.regDate)}
 </div>
 
 ${book.comment? `<div class="book-meta">感想：${book.comment}</div>`
@@ -1274,7 +1282,7 @@ function showSearchResults(results) {
         状態：
         <b>${statusName}</b><br>
 
-        最終更新日：
+        更新日：
         ${formatDateJP(book.regDate)}
         </div>
         `;
@@ -1520,6 +1528,7 @@ type="text"
 value="${book.isbn}"
 style="font-size:16px; width:70%;">
 </div>
+
 <div style="margin-bottom:12px;">
 タイトル：
 <input
@@ -1536,6 +1545,7 @@ type="text"
 value="${book.author}"
 style="font-size:16px; width:70%;">
 </div>
+
 <div style="margin-bottom:12px;">
 よみ：
 <input
@@ -1547,8 +1557,17 @@ oninput="this.value = this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g, '');">
 </div>
 
 <div style="margin-bottom:12px;">
-最終更新日：
+登録日：
+<input
+id="e-createdate"
+type="date"
+value="${book.createDate || book.regDate}"
+style="font-size:16px; width:70%;"
+readonly>
+</div>
 
+<div style="margin-bottom:12px;">
+更新日：
 <input
 id="e-regdate"
 type="date"
@@ -1558,7 +1577,6 @@ style="font-size:16px; width:70%;">
 
 <div style="margin-bottom:12px;">
 感想：<br>
-
 <textarea
 id="e-comment"
 maxlength="100"
@@ -1606,18 +1624,25 @@ const info = {
     author: document.getElementById("e-author").value,
     yomi: document.getElementById("e-yomi").value,
 
-    status: books[index].status || "read",
+    createDate:
+        books[index].createDate ||
+        books[index].regDate,
+
+    status:
+        books[index].status || "read",
+
     comment:
-document.getElementById("e-comment").value,
+        document.getElementById(
+            "e-comment"
+        ).value,
 
     regDate:
-    document.getElementById(
-        "e-regdate"
-    ).value,
+        document.getElementById(
+            "e-regdate"
+        ).value,
 
     reserved:
-    books[index].reserved || false
-
+        books[index].reserved || false
 };
  
 BooksManager.updateBook(index, info);
@@ -1795,6 +1820,11 @@ function manualSave() {
         comment:
         document.getElementById("m-comment")
             .value,
+
+        createDate:
+        new Date()
+            .toISOString()
+            .split("T")[0],
 
         regDate:
         new Date()
@@ -2285,6 +2315,11 @@ async function saveCameraBook(isbn) {
     info.comment = "";
 
     info.regDate =
+        new Date()
+            .toISOString()
+            .split("T")[0];
+
+    info.createDate =
         new Date()
             .toISOString()
             .split("T")[0];

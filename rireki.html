@@ -1262,31 +1262,70 @@ function showSearchResults(results) {
 
         }
 
-        html += `
-        <div style="
-            border:1px solid #ccc;
-            padding:5px;
-            margin-bottom:10px;
-            border-radius:8px;
-        ">
+    const googleUrl =
+    `https://books.google.com/books/content?vid=ISBN${book.isbn}&printsec=frontcover&img=1&zoom=1`;
 
-        <b style="font-size:18px;">
-        ${book.title}
-        </b><br>
+    const openbdUrl =
+    `https://cover.openbd.jp/${book.isbn}.jpg`;
 
-        著者：${book.author}<br>
+    html += `
+    <div style="
+        border:1px solid #ccc;
+        padding:8px;
+        margin-bottom:10px;
+        border-radius:8px;
+    ">
 
-        ISBN：
-        <b>${book.isbn}</b><br>
+    <div style="
+        display:flex;
+        gap:12px;
+        align-items:flex-start;
+    ">
 
-        状態：
-        <b>${statusName}</b><br>
+    <img
+    src="${googleUrl}"
+    onerror="this.onerror=null;
+    this.src='${openbdUrl}';
+    this.onerror=function(){
+        this.onerror=null;
+        this.src='noimage.png';
+    };"
+    style="
+    width:80px;
+    height:110px;
+    object-fit:cover;
+    border-radius:6px;
+    ">
 
-        更新日：
-        ${formatDateJP(book.regDate)}
-        </div>
-        `;
-    });
+    <div style="
+        text-align:left;
+        flex:1;
+    ">
+
+    <b style="font-size:18px;">
+    ${book.title}
+    </b><br>
+
+    著者：${book.author}<br>
+
+    ISBN：
+    <b>${book.isbn}</b><br>
+
+    状態：
+    <b>${statusName}</b><br>
+
+    登録日：
+    ${formatDateJP(
+        book.createDate || book.regDate
+    )}<br>
+
+    更新日：
+    ${formatDateJP(book.regDate)}
+
+    </div>
+    </div>
+    </div>
+    `;
 
     html += `
     <button

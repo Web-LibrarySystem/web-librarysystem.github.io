@@ -1238,29 +1238,29 @@ function showSearchResults(results) {
 
     results.forEach(book => {
 
-        let statusName;
+    let statusName;
 
-        if (book.reserved) {
+    if (book.reserved) {
 
-            statusName = "予約済";
+        statusName = "予約済";
 
-        } else if (
-            book.status === "wishlist"
-        ) {
+    } else if (
+        book.status === "wishlist"
+    ) {
 
-            statusName = "読みたい本";
+        statusName = "読みたい本";
 
-        } else if (
-            book.status === "reading"
-        ) {
+    } else if (
+        book.status === "reading"
+    ) {
 
-            statusName = "読んでいる本";
+        statusName = "読んでいる本";
 
-        } else {
+    } else {
 
-            statusName = "読んだ本";
+        statusName = "読んだ本";
 
-        }
+    }
 
     const googleUrl =
     `https://books.google.com/books/content?vid=ISBN${book.isbn}&printsec=frontcover&img=1&zoom=1`;
@@ -1327,17 +1327,20 @@ function showSearchResults(results) {
     </div>
     `;
 
-    html += `
-    <button
-        onclick="showSearchForm()"
-        style="
-        font-size:14px;
-        padding:5px 5px;">
-        戻る
-    </button>
-    `;
+});   
 
-    top.innerHTML = html;
+html += `
+<button
+    onclick="showSearchForm()"
+    style="
+    font-size:14px;
+    padding:5px 5px;">
+    戻る
+</button>
+`;
+
+top.innerHTML = html;
+
 }
 
 /* -----------------------------------

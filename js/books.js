@@ -6,32 +6,44 @@ const BooksManager = {
        1. データ取得
     ----------------------------------- */
 getBooks() {
+
     const books =
-        JSON.parse(localStorage.getItem("books") || "[]");
+        JSON.parse(
+            localStorage.getItem("books")
+            || "[]"
+        );
 
     books.forEach(book => {
 
-if (book.status === undefined) {
-    book.status = "read";
-}
+        if (book.status === undefined) {
+            book.status = "read";
+        }
 
-if (book.comment === undefined) {
-    book.comment = "";
-}
+        if (book.comment === undefined) {
+            book.comment = "";
+        }
 
-if (book.regDate === undefined) {
-    book.regDate = "";
-}
+        if (book.regDate === undefined) {
+            book.regDate = "";
+        }
 
-if (book.reserved === undefined) {
-    book.reserved = false;
-}
+        if (book.createDate === undefined) {
+            book.createDate = book.regDate;
+        }
+
+        if (book.reserved === undefined) {
+            book.reserved = false;
+        }
 
     });
 
+    localStorage.setItem(
+        "books",
+        JSON.stringify(books)
+    );
+
     return books;
 },
-
 
     /* -----------------------------------
        2. 保存

@@ -306,6 +306,25 @@ function closeReadTabs() {
 }
 
 /* -----------------------------------
+   日付作成
+----------------------------------- */
+function getTodayJP() {
+
+    const d = new Date();
+
+    const y = d.getFullYear();
+    const m = String(
+        d.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+        d.getDate()
+    ).padStart(2, "0");
+
+    return `${y}-${m}-${day}`;
+}
+
+/* -----------------------------------
    予約済へ移動
 ----------------------------------- */
 function moveToReserved(index) {
@@ -320,9 +339,7 @@ function moveToReserved(index) {
         true;
 
     books[index].regDate =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    getTodayJP();
 
     localStorage.setItem(
         "books",
@@ -1732,9 +1749,7 @@ function moveToRead(index) {
     books[index].reserved = false;
 
     books[index].regDate =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    getTodayJP();
 
     localStorage.setItem(
         "books",
@@ -1767,9 +1782,7 @@ function moveToReading(index) {
         false;
 
     books[index].regDate =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    getTodayJP();
 
     localStorage.setItem(
         "books",
@@ -1806,9 +1819,7 @@ function moveToWishlist(index) {
         false;
 
     books[index].regDate =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    getTodayJP();
 
     localStorage.setItem(
         "books",
@@ -1864,14 +1875,10 @@ function manualSave() {
             .value,
 
         createDate:
-        new Date()
-            .toISOString()
-            .split("T")[0],
+            getTodayJP(),
 
         regDate:
-        new Date()
-            .toISOString()
-            .split("T")[0],
+            getTodayJP(),
 
         reserved:
             selectedStatus === "reserved"
@@ -1951,9 +1958,7 @@ ${statusName}
         info.reserved;
 
     books[index].regDate =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    getTodayJP();
 
     localStorage.setItem(
         "books",
@@ -2038,9 +2043,7 @@ ${statusName}
 function saveLastBackupDate() {
 
     const today =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    getTodayJP();
 
     localStorage.setItem(
         "lastBackupDate",
@@ -2357,14 +2360,10 @@ async function saveCameraBook(isbn) {
     info.comment = "";
 
     info.regDate =
-        new Date()
-            .toISOString()
-            .split("T")[0];
+        getTodayJP();
 
     info.createDate =
-        new Date()
-            .toISOString()
-            .split("T")[0];
+        getTodayJP();
 
     info.reserved =
         result === "reserved";
@@ -2673,9 +2672,7 @@ function toggleReserved(index) {
     book.reserved = !book.reserved;
 
     book.regDate =
-        new Date()
-        .toISOString()
-        .split("T")[0];
+    getTodayJP();
 
     localStorage.setItem(
         "books",

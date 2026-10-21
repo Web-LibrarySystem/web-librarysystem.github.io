@@ -9,6 +9,36 @@
   <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 
+<script>
+function openLibraryCalendar(lib) {
+
+    const form =
+        document.createElement("form");
+
+    form.method = "post";
+
+    form.action =
+        "https://www.ocpl.ogaki.gifu.jp/opw/OPS/OPSCALEND.CSP";
+
+    form.target = "_blank";
+
+    const input =
+        document.createElement("input");
+
+    input.type = "hidden";
+    input.name = "lib";
+    input.value = lib;
+
+    form.appendChild(input);
+
+    document.body.appendChild(form);
+
+    form.submit();
+
+    document.body.removeChild(form);
+}
+</script>
+
 <body>
 
   <h1>大垣市図書館　簡易アプリ</h1>
@@ -32,9 +62,9 @@
       マップ
     </button>
 
-    <button onclick="location.href='yoyaku.html'"
+    <button onclick="location.href='https://www.ocpl.ogaki.gifu.jp/opw/OPW/OPWUSERCONF.CSP'"
         style="width:40%; padding:15px; margin:10px; font-size:18px; line-height:1.2;">
-      予約・更新
+      MyPageログイン
     </button>
 
     <button
@@ -43,9 +73,9 @@
     読書ノート
     </button>
 
-    <button onclick="location.href='https://www.ocpl.ogaki.gifu.jp/opw/OPW/OPWUSERCONF.CSP'"
+    <button onclick="openLibraryCalendar(1)"
             style="width:40%; padding:15px; margin:10px; font-size:18px; line-height:1.2;">
-      利用カード
+      カレンダー
     </button>
 
     <button onclick="location.href='https://www.ocpl.ogaki.gifu.jp/opw/OPW/OPWNEWBOOK.CSP?DB=LIB'"

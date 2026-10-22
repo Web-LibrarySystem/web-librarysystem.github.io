@@ -176,6 +176,9 @@ padding: 6px;
 <script>
 let currentSort = "yomiAsc";
 let currentGroup = "ア行";
+
+/* 統計期間 */
+let statsRange = "6m";
  
 let descriptionVisible = false;
 
@@ -2716,65 +2719,119 @@ function showStatistics() {
         集計には各本の更新日を使用しています。
     `);
 
-    const books =
+    const allReadBooks =
         BooksManager.getBooks()
         .filter(b => b.status === "read");
 
     const today = new Date();
 
-    const currentYear =
-        String(today.getFullYear());
+    let startYear;
+    let startMonth;
 
-    const currentMonth =
-        currentYear + "-" +
-        String(today.getMonth() + 1)
-        .padStart(2, "0");
+    if (statsRange === "6m") {
 
-    const totalRead =
-        books.length;
+        startYear = today.getFullYear();
+        startMonth = today.getMonth() - 5;
 
-    const yearRead =
+    } else if (statsRange === "1y") {
+
+        startYear = today.getFullYear();
+        startMonth = today.getMonth() - 11;
+
+    } else {
+
+        startYear = today.getFullYear();
+        startMonth = today.getMonth() - 35;
+    }
+
+    const startDate =
+        new Date(startYear, startMonth, 1);
+
+    const endDate =
+        new Date(
+            today.getFullYear(),
+            today.getMonth() + 1,
+            0
+        );
+
+
+    const books =
+        allReadBooks.filter(book => {
+
+            if (!book.regDate) {
+                return false;
+            }
+
+            const d =
+                new Date(book.regDate);
+
+            return (
+                d >= startDate &&
+                d <= endDate
+            );
+
+        });
+
+        const currentYear =
+            String(today.getFullYear());
+
+        const currentMonth =
+            currentYear + "-" +
+            String(today.getMonth() + 1)
+            .padStart(2, "0");
+
+        const totalRead =
+            books.length;
+
+        const yearRead =
+            books.filter(book =>
+                (book.regDate || "")
+                .startsWith(currentYear)
+            ).length;
+
+    const monthRead =
         books.filter(book =>
             (book.regDate || "")
-            .startsWith(currentYear)
+            .startsWith(currentMonth)
         ).length;
 
-const monthRead =
-    books.filter(book =>
-        (book.regDate || "")
-        .startsWith(currentMonth)
-    ).length;
-
-let readingPeriod = "データなし";
-
-if (books.length > 0) {
-
-    const dates =
-        books
-        .map(book => book.regDate)
-        .filter(Boolean)
-        .sort();
-
-    if (dates.length > 0) {
-
-        const first =
-            formatDateJP(
-                dates[0]
-            );
-
-        const last =
-            formatDateJP(
-                dates[
-                    dates.length - 1
-                ]
-            );
-
-        readingPeriod =
-            `${first} ～ ${last}`;
-    }
-}
+    const periodLabel =
+        `${startDate.getFullYear()}年`
+        +
+        `${String(startDate.getMonth()+1)}月`
+        +
+        " ～ "
+        +
+        `${endDate.getFullYear()}年`
+        +
+        `${String(endDate.getMonth()+1)}月`;
 
     const monthlyMap = {};
+
+    const targetMonths = [];
+
+    const cursor =
+        new Date(
+            startDate.getFullYear(),
+            startDate.getMonth(),
+            1
+        );
+
+    while (cursor <= endDate) {
+
+        targetMonths.push(
+            cursor.getFullYear()
+            + "-"
+            +
+            String(
+                cursor.getMonth() + 1
+            ).padStart(2,"0")
+        );
+
+        cursor.setMonth(
+            cursor.getMonth() + 1
+        );
+    }
 
     books.forEach(book => {
 
@@ -2790,9 +2847,7 @@ if (books.length > 0) {
     });
 
 const months =
-    Object.keys(monthlyMap)
-    .sort()
-    .reverse();
+    [...targetMonths];
 
 let averagePerMonth = 0;
 
@@ -2831,7 +2886,7 @@ let maxCount = 1;
     months.forEach(month => {
 
         const count =
-            monthlyMap[month];
+            monthlyMap[month] || 0;
 
         const width =
             Math.max(
@@ -2864,14 +2919,15 @@ let maxCount = 1;
 
     months.forEach(month => {
 
-        running +=
-            monthlyMap[month];
+    running +=
+        (monthlyMap[month] || 0);
 
-        cumulativeData.push({
-            month,
-            total: running
-        });
+    cumulativeData.push({
+        month,
+        total: running
     });
+
+});
 
     let linePoints = "";
 
@@ -2912,6 +2968,43 @@ let maxCount = 1;
 
     <div style="text-align:left;">
 
+    <div style="
+    margin-bottom:15px;
+    font-size:1.17em;
+    font-weight:bold;
+    ">
+
+    集計期間：
+
+    <select
+    style="
+    font-size:1em;
+    font-weight:bold;
+    "
+    onchange="
+    statsRange=this.value;
+    showStatistics();
+    ">
+
+    <option value="6m"
+    ${statsRange==="6m"?"selected":""}>
+    直近6か月
+    </option>
+
+    <option value="1y"
+    ${statsRange==="1y"?"selected":""}>
+    直近1年
+    </option>
+
+    <option value="3y"
+    ${statsRange==="3y"?"selected":""}>
+    直近3年
+    </option>
+
+    </select>
+
+    </div>
+
     <h3>読書統計</h3>
 
     <div style="
@@ -2922,38 +3015,38 @@ let maxCount = 1;
         text-align:center;
     ">
 
-    読書期間：
-    <b>${readingPeriod}</b>
+    集計期間：
+    <b>${periodLabel}</b>
 
     <br><br>
 
-    総読了冊数：
+    累計既読冊数　：
     <b>${totalRead}</b>冊
 
     <br><br>
 
-    今年の読了冊数：
+    今年の既読冊数：
     <b>${yearRead}</b>冊
 
     <br><br>
 
-    今月の読了冊数：
+    今月の既読冊数：
     <b>${monthRead}</b>冊
 
     <br><br>
 
-    月平均：
+    月平均既読冊数：
     <b>${averagePerMonth}</b>冊
 
     </div>
 
-    <h3>月別読了冊数</h3>
+    <h3>月別の既読冊数</h3>
 
     ${monthlyHtml}
 
     <hr style="margin:20px 0;">
 
-    <h3>累計読了冊数推移</h3>
+    <h3>累計既読冊数の推移</h3>
 
     <svg
         width="100%"

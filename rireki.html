@@ -5,6 +5,13 @@
   <title>読書ノート</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="図書館アプリ">
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-512.png">
+
   <style>
     .tab-button {
       padding: 5px 5px;
@@ -168,7 +175,7 @@ padding: 6px;
 <!-- 自前のスクリプト -->
 <script>
 let currentSort = "yomiAsc";
-currentGroup = "ア行";
+let currentGroup = "ア行";
  
 let descriptionVisible = false;
 
@@ -965,6 +972,38 @@ searchRow.appendChild(searchBtn);
 
 top.appendChild(searchRow);
 
+// ▼ 読書統計
+const statsRow = document.createElement("div");
+
+statsRow.style =
+"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:15px;";
+
+statsRow.innerHTML = `
+<span style="
+font-size:1.17em;
+font-weight:bold;
+min-width:90px;
+">
+読書統計
+</span>
+`;
+
+const statsBtn =
+document.createElement("button");
+
+statsBtn.textContent =
+"統計を見る";
+
+statsBtn.style =
+"padding:5px 5px; font-size:18px;";
+
+statsBtn.onclick =
+showStatistics;
+
+statsRow.appendChild(statsBtn);
+
+top.appendChild(statsRow);
+
 const btn3 =
     document.createElement("button");
 
@@ -1172,6 +1211,7 @@ function showSearchForm() {
     </div>
     `;
 }
+
 
 function searchBooks() {
 
@@ -2647,6 +2687,307 @@ function stopCamera() {
     drawTopButtons();
 }
 
+function backToMain() {
+
+    drawTopButtons();
+
+    document.getElementById(
+        "book-list"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "list-title"
+    ).textContent = "";
+}
+
+function showStatistics() {
+
+    document.getElementById(
+        "book-list"
+    ).innerHTML = "";
+
+    document.getElementById(
+        "list-title"
+    ).textContent = "";
+
+    setDescription(`
+        読書記録の統計情報です。<br>
+        読んだ本を対象に、月別読了冊数や累計読了冊数の推移を表示します。<br>
+        集計には各本の更新日を使用しています。
+    `);
+
+    const books =
+        BooksManager.getBooks()
+        .filter(b => b.status === "read");
+
+    const today = new Date();
+
+    const currentYear =
+        String(today.getFullYear());
+
+    const currentMonth =
+        currentYear + "-" +
+        String(today.getMonth() + 1)
+        .padStart(2, "0");
+
+    const totalRead =
+        books.length;
+
+    const yearRead =
+        books.filter(book =>
+            (book.regDate || "")
+            .startsWith(currentYear)
+        ).length;
+
+const monthRead =
+    books.filter(book =>
+        (book.regDate || "")
+        .startsWith(currentMonth)
+    ).length;
+
+let readingPeriod = "データなし";
+
+if (books.length > 0) {
+
+    const dates =
+        books
+        .map(book => book.regDate)
+        .filter(Boolean)
+        .sort();
+
+    if (dates.length > 0) {
+
+        const first =
+            formatDateJP(
+                dates[0]
+            );
+
+        const last =
+            formatDateJP(
+                dates[
+                    dates.length - 1
+                ]
+            );
+
+        readingPeriod =
+            `${first} ～ ${last}`;
+    }
+}
+
+    const monthlyMap = {};
+
+    books.forEach(book => {
+
+        if (!book.regDate) {
+            return;
+        }
+
+        const month =
+            book.regDate.substring(0, 7);
+
+        monthlyMap[month] =
+            (monthlyMap[month] || 0) + 1;
+    });
+
+const months =
+    Object.keys(monthlyMap)
+    .sort()
+    .reverse();
+
+let averagePerMonth = 0;
+
+if (months.length > 0) {
+
+    averagePerMonth =
+        (
+            totalRead /
+            months.length
+        ).toFixed(1);
+
+}
+
+let monthlyHtml = "";
+
+if (months.length === 0) {
+
+    monthlyHtml =
+        "<div>読了データがありません。</div>";
+
+}
+
+let maxCount = 1;
+
+    months.forEach(month => {
+
+        if (
+            monthlyMap[month] > maxCount
+        ) {
+
+            maxCount =
+                monthlyMap[month];
+        }
+    });
+
+    months.forEach(month => {
+
+        const count =
+            monthlyMap[month];
+
+        const width =
+            Math.max(
+                10,
+                (count / maxCount) * 180
+            );
+
+        monthlyHtml += `
+        <div style="margin-bottom:10px;">
+
+        ${month}
+        （${count}冊）
+
+        <div style="
+            background:#4A90E2;
+            height:20px;
+            width:${width}px;
+            border-radius:4px;
+            margin-top:3px;
+        ">
+        </div>
+
+        </div>
+        `;
+    });
+
+    let running = 0;
+
+    const cumulativeData = [];
+
+    months.forEach(month => {
+
+        running +=
+            monthlyMap[month];
+
+        cumulativeData.push({
+            month,
+            total: running
+        });
+    });
+
+    let linePoints = "";
+
+    const graphWidth = 300;
+    const graphHeight = 180;
+
+    cumulativeData.forEach((item, index) => {
+
+        const x =
+            months.length <= 1
+            ? 20
+            : 20 +
+              (
+                  index /
+                  (months.length - 1)
+              ) *
+              (graphWidth - 40);
+
+        const y =
+            graphHeight -
+            20 -
+            (
+                item.total /
+                Math.max(totalRead, 1)
+            ) *
+            (graphHeight - 40);
+
+        linePoints +=
+            `${x},${y} `;
+    });
+
+    const top =
+        document.getElementById(
+            "top-area"
+        );
+
+    top.innerHTML = `
+
+    <div style="text-align:left;">
+
+    <h3>読書統計</h3>
+
+    <div style="
+        background:#f5f5f5;
+        padding:10px;
+        border-radius:8px;
+        margin-bottom:20px;
+        text-align:center;
+    ">
+
+    読書期間：
+    <b>${readingPeriod}</b>
+
+    <br><br>
+
+    総読了冊数：
+    <b>${totalRead}</b>冊
+
+    <br><br>
+
+    今年の読了冊数：
+    <b>${yearRead}</b>冊
+
+    <br><br>
+
+    今月の読了冊数：
+    <b>${monthRead}</b>冊
+
+    <br><br>
+
+    月平均：
+    <b>${averagePerMonth}</b>冊
+
+    </div>
+
+    <h3>月別読了冊数</h3>
+
+    ${monthlyHtml}
+
+    <hr style="margin:20px 0;">
+
+    <h3>累計読了冊数推移</h3>
+
+    <svg
+        width="100%"
+        height="220"
+        viewBox="0 0 300 180"
+        style="
+            border:1px solid #ccc;
+            background:#fff;
+        ">
+
+        <polyline
+            fill="none"
+            stroke="#2196F3"
+            stroke-width="3"
+            points="${linePoints}">
+        </polyline>
+
+    </svg>
+
+    <br><br>
+
+    <button
+    onclick="backToMain()"
+    style="
+        font-size:18px;
+        padding:5px 5px;
+    ">
+    戻る
+</button>
+
+    </div>
+
+    `;
+}
 
 /* -----------------------------------
    予約状態切替

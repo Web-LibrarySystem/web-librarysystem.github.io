@@ -52,7 +52,7 @@ padding: 6px;
 <body>
 
 <div style="text-align:left; margin:10px;">
-  <button onclick="location.href='index.html'"
+  <button onclick="goBack()"
           style="padding:5px 5px; font-size:16px;">
     ← 戻る
   </button>
@@ -181,6 +181,12 @@ let currentGroup = "ア行";
 let statsRange = "6m";
  
 let descriptionVisible = false;
+
+function goBack() {
+
+    history.back();
+
+}
 
 function formatDateJP(dateStr) {
 

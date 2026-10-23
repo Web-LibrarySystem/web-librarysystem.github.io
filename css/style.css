@@ -2,7 +2,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
+    background-color: #f5f7fa;
     font-family: sans-serif;
     text-align: left;   /* ← 左揃え */
     line-height: 1.1;
@@ -159,13 +159,16 @@ margin-top:10px;
     display:flex;
     align-items:center;
 
-    margin:8px 0;
-    padding:12px 14px;
+    margin:10px 0;
+    padding:14px 16px;
 
-    border:1px solid #cccccc;
-    border-radius:10px;
+    border:none;
+    border-radius:16px;
 
-    background:#f0f0f0;
+    background:#ffffff;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.08);
 }
 
 /* 星マーク */
@@ -192,12 +195,7 @@ margin-top:10px;
     display:block;
 
     text-decoration:none;
-    color:#000000;
-
-    padding:1px;
-
-    background:transparent;
-    border:none;
+    color:#2E7D32;
 
     font-size:20px;
     font-weight:bold;
@@ -213,4 +211,19 @@ margin-top:10px;
 /* 押した時　10月12追加ここまで */
 .library-button:active{
     background:#dceeff;
+}
+
+/* indexのヘッダ部分　10月23追加 */
+.header{
+    background:#2E7D32;
+    color:white;
+
+    padding:20px;
+
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.15);
 }

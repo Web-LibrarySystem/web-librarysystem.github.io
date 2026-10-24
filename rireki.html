@@ -12,40 +12,84 @@
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-512.png">
 
+<div class="header">
+📖 読書ノート
+</div>
+
   <style>
-    .tab-button {
-      padding: 5px 5px;
-      margin: 4px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: 1px solid #666;
-      background-color: #f0f0f0;
-    }
-    .tab-button:hover {
-      background-color: #e0e0e0;
-    }
-    input[type="text"], textarea {
-      width: 90%;
-      padding: 4px;
-      margin-top: 4px;
-    }
-.book-card {
-padding: 10px;
-margin-bottom: 12px;
-border-radius: 10px;
+body{
+    background-color:#f5f7fa;
+    font-family:sans-serif;
+    margin:0;
+    padding:0;
 }
- 
-.book-buttons {
-margin-top: 8px;
+
+.header{
+    background:#999999;
+    color:#FFFFFF;
+
+    padding:20px;
+
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.15);
 }
- 
-.book-buttons button {
-width: 80px;
-display: block;
-margin-top: 5px;
-font-size: 16px;
-padding: 6px;
+
+.tab-button{
+    padding:10px 14px;
+    margin:4px;
+
+    font-size:16px;
+
+    border:none;
+    border-radius:12px;
+
+    background:#ffffff;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.08);
 }
+
+.book-card{
+    padding:12px;
+    margin-bottom:12px;
+
+    background:#ffffff;
+
+    border-radius:16px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.08);
+}
+
+.book-buttons{
+    margin-top:8px;
+}
+
+.book-buttons button{
+    width:80px;
+
+    display:block;
+
+    margin-top:5px;
+
+    font-size:16px;
+
+    padding:6px;
+
+    border:none;
+
+    background:#ffffff;
+
+    border-radius:8px;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.08);
+}
+
   </style>
 </head>
 
@@ -57,8 +101,6 @@ padding: 6px;
     ← 戻る
   </button>
 </div>
-
-<h2 style="margin-bottom:30px;">読書ノート</h2>
 
 <div id="description"></div>
 
@@ -234,7 +276,7 @@ text-align:right;
 id="description-toggle"
 onclick="toggleDescription()"
 style="
-padding:5px 5px;
+padding:0px 0px;
 font-size:18px;
 ">
 説明文を表示
@@ -1083,7 +1125,7 @@ function() {
 const backupWrap =
 document.createElement("div");
 
-backupWrap.style.marginTop = "10px";
+backupWrap.style.marginTop = "1px";
 
 const lastBackup =
     localStorage.getItem(
@@ -1095,7 +1137,7 @@ backupWrap.innerHTML = `
 <button
 id="backup-toggle"
 style="
-padding:3px 8px;
+padding:0px 5px;
 font-size:16px;
 ">
 ▶ バックアップ
@@ -1103,8 +1145,8 @@ font-size:16px;
 
 <div style="
 font-size:12px;
-color:#666;
-margin-top:3px;
+color:#fff;
+margin-top:0px;
 ">
 最終：
 ${lastBackup

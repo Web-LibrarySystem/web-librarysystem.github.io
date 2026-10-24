@@ -11,7 +11,6 @@
 
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-512.png">
-  <link rel="stylesheet" href="css/style.css">
 
 <div class="header">
 　　📖 読書ノート
@@ -109,9 +108,7 @@ onclick="goBack()">
 <!-- 上段：ボタン -->
 <div id="top-area" style="margin:0 20px 10px 15px; text-align:center;"></div>
 
-<div class="section-card">
-
-<h3>📚 読書記録</h3>
+<h3>　読書記録</h3>
 
 <!-- タブ分類 -->
 <div id="tabs" style="margin:0px; text-align:center;">
@@ -203,7 +200,7 @@ onclick="goBack()">
     </button>
 
   </div>
-</div>
+
 </div>
 <!-- 中段：読み取り終了ボタン -->
 <div id="middle-area" style="margin:20px; text-align:center;"></div>
@@ -260,7 +257,7 @@ body.style.display = "block";
 btn.textContent = "説明文を非表示";
 } else {
 body.style.display = "none";
-btn.textContent = "❓ 使い方";
+btn.textContent = "説明文を表示";
 }
 }
  
@@ -1200,7 +1197,7 @@ document
             "block";
 
         btn.textContent =
-                "💾 バックアップ";
+            "▼ バックアップ";
 
     } else {
 

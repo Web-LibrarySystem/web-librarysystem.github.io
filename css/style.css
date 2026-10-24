@@ -1,11 +1,12 @@
 /* 画面全体の設定 */
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #f5f7fa;
-    font-family: sans-serif;
-    text-align: left;   /* ← 左揃え */
-    line-height: 1.1;
+body{
+    background-color:#f5f7fa;
+    font-family:sans-serif;
+
+    margin:0;
+    padding:0;
+
+    color:#333;
 }
 
 br {
@@ -220,10 +221,194 @@ margin-top:10px;
 
     padding:20px;
 
-    text-align:center;
+    text-align:left;
+
     font-size:26px;
     font-weight:bold;
 
     box-shadow:
     0 2px 8px rgba(0,0,0,0.15);
 }
+
+.main-button{
+    padding:10px 14px;
+
+    font-size:16px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.08);
+
+    cursor:pointer;
+}
+
+/* コンテンツ共通 */
+
+.section-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:15px;
+
+    margin:15px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* タブ */
+
+.tab-button{
+
+    padding:10px 14px;
+
+    margin:4px;
+
+    font-size:16px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.08);
+
+    cursor:pointer;
+}
+
+.tab-button:active{
+
+    background:#ECEFF1;
+}
+
+/* 共通ボタン */
+
+.main-button{
+
+    padding:10px 14px;
+
+    font-size:16px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#ffffff;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.08);
+
+    cursor:pointer;
+}
+
+.main-button:active{
+
+    background:#ECEFF1;
+}
+
+/* 戻るボタン */
+
+.back-button{
+
+    background:white;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:10px 15px;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.08);
+
+    cursor:pointer;
+}
+
+/* 本カード */
+
+.book-card{
+
+    padding:12px;
+
+    margin-bottom:12px;
+
+    border-radius:16px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.10);
+}
+
+/* カード内ボタン */
+
+.book-buttons{
+
+    margin-top:8px;
+}
+
+.book-buttons button{
+
+    border:none;
+
+    background:white;
+
+    border-radius:10px;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.08);
+
+    padding:8px;
+
+    font-size:15px;
+
+    cursor:pointer;
+}
+
+.book-buttons button:active{
+
+    background:#ECEFF1;
+}
+
+/* フォーム部品 */
+
+input[type="text"],
+input[type="date"],
+textarea,
+select{
+
+    border:1px solid #ccc;
+
+    border-radius:10px;
+
+    padding:8px;
+
+    font-size:16px;
+
+    background:white;
+}
+
+/* 説明文 */
+
+#description-body{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:15px;
+
+    margin:15px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.08);
+}
+
+

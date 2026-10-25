@@ -35,10 +35,47 @@
 </h4>
 
 <div style="text-align:center;">
-  <div class="library-card" style="display:inline-block; width:90%;">
-    <a class="library-button" href="rireki.html">
-      読書ノート
-    </a>
+  <div
+    class="library-card"
+    style="
+      display:inline-block;
+      width:90%;
+      text-align:left;
+    "
+  >
+
+    <div
+      style="
+        font-size:22px;
+        font-weight:bold;
+        margin-bottom:12px;
+      "
+    >
+      📖 読書ノート
+    </div>
+
+    <div id="book-stats">
+      読みたい本：0冊<br>
+      予約済　　：0冊<br>
+      読書中　　：0冊<br>
+      読了　　　：0冊
+    </div>
+
+    <div style="margin-top:15px;">
+      <a
+        class="library-button"
+        href="rireki.html"
+        style="
+          text-align:center;
+          border-radius:12px;
+          padding:10px;
+          background:#f5f7fa;
+        "
+      >
+        開く
+      </a>
+    </div>
+
   </div>
 </div>
 
@@ -142,6 +179,50 @@ function renderLibraries() {
 }
 
 renderLibraries();
+
+function renderBookStats() {
+
+    const books =
+        JSON.parse(
+            localStorage.getItem("books") || "[]"
+        );
+
+    const wishlist =
+        books.filter(
+            b => b.status === "wishlist" && !b.reserved
+        ).length;
+
+    const reserved =
+        books.filter(
+            b => b.reserved
+        ).length;
+
+    const reading =
+        books.filter(
+            b => b.status === "reading"
+        ).length;
+
+    const read =
+        books.filter(
+            b => b.status === "read"
+        ).length;
+
+    const area =
+        document.getElementById("book-stats");
+
+    if (!area) {
+        return;
+    }
+
+    area.innerHTML =
+        "読みたい本：" + wishlist + "冊<br>" +
+        "予約済　　：" + reserved + "冊<br>" +
+        "読書中　　：" + reading + "冊<br>" +
+        "読了　　　：" + read + "冊";
+}
+
+renderLibraries();
+renderBookStats();
 
 </script>
 

@@ -10,13 +10,9 @@
   <meta name="apple-mobile-web-app-title" content="図書館アプリ">
 
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon-512.png">
+<link rel="apple-touch-icon" href="icon-512.png">
 
-<div class="header">
-　　📖 読書ノート
-</div>
-
-  <style>
+<style>
 body{
     background-color:#f5f7fa;
     font-family:sans-serif;
@@ -30,7 +26,7 @@ body{
 
     padding:20px;
 
-    text-align:left;
+    text-align:center;
     font-size:26px;
     font-weight:bold;
 
@@ -39,7 +35,10 @@ body{
 }
 
 .tab-button{
-    padding:10px 14px;
+    width:30%;
+    min-height:52px;
+
+    padding:10px 8px;
     margin:4px;
 
     font-size:16px;
@@ -51,6 +50,11 @@ body{
 
     box-shadow:
     0 2px 6px rgba(0,0,0,0.08);
+}
+
+#read-tabs .tab-button{
+    width:22%;
+    min-height:48px;
 }
 
 .book-card{
@@ -66,36 +70,100 @@ body{
 }
 
 .book-buttons{
-    margin-top:8px;
+    margin-top:10px;
 }
 
 .book-buttons button{
-    width:80px;
 
-    display:block;
+    width:100%;
 
-    margin-top:5px;
+    min-height:44px;
 
     font-size:16px;
 
-    padding:6px;
+    padding:8px;
 
     border:none;
 
     background:#ffffff;
 
-    border-radius:8px;
+    border-radius:10px;
 
     box-shadow:
     0 2px 6px rgba(0,0,0,0.08);
+
+    cursor:pointer;
+}
+
+.book-buttons-top{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-bottom:8px;
+}
+
+.book-buttons-top button{
+
+    flex:1;
+}
+
+.book-buttons-bottom{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+}
+
+.book-buttons-bottom button{
+
+    width:100%;
+}
+
+.top-menu-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:15px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.08);
+}
+
+#description-body{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:15px;
+
+    margin:15px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.08);
+
+    max-height:250px;
+
+    overflow-y:auto;
 }
 
   </style>
 </head>
-
 <body>
 
-<div style="text-align:left; margin:10px;">
+<div class="header">
+📖 読書ノート
+</div>
+
+<div style="text-align:left; margin:5px 10px 0 10px;">
 <button
 class="back-button"
 onclick="goBack()">
@@ -646,13 +714,12 @@ ${book.comment? `<div class="book-meta">感想：${book.comment}</div>`
 
 </div>
 </div>
-<div class="book-buttons"
-style="
-margin-top:10px;
-display:flex;
-gap:8px;
-">
- 
+
+<div class="book-buttons">
+
+<div class="book-buttons-top">
+
+
 <button
 style="
 flex:1;
@@ -672,6 +739,10 @@ padding:8px;
 onclick="BooksManager.confirmDelete(${originalIndex})">
 削除
 </button>
+
+</div>
+
+<div class="book-buttons-bottom">
 
 ${currentGroup === "読みたい本"
 ? `
@@ -732,6 +803,8 @@ onclick="moveToReading(${originalIndex})">
 
 `
 : ""}
+
+</div>
 
 </div>
 
@@ -951,7 +1024,6 @@ return null;
 ----------------------------------- */
 function drawTopButtons() {
 
-  // ★ 説明文を初期状態に戻す
   setDescription(`
   読み取りボタンを押して、カメラで本のバーコードを読み込んでください。<br>
   読み込むバーコードは、本の裏面の２段のバーコードです。<br>
@@ -963,310 +1035,337 @@ function drawTopButtons() {
   const top = document.getElementById("top-area");
   top.innerHTML = "";
 
-// ▼ 本の登録
-const regRow = document.createElement("div");
-regRow.style =
-"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:15px;";
- 
-regRow.innerHTML = `
-<span style="
-font-size:1.17em;
-font-weight:bold;
-min-width:90px;
-">
-本の登録
-</span>
-`;
-const btn1 = document.createElement("button");
-btn1.textContent = "読み取り";
-btn1.style = "padding:5px 5px; font-size:18px;";
-btn1.onclick = showCamera;
- 
-const btn2 = document.createElement("button");
-btn2.textContent = "手動登録";
-btn2.style = "padding:5px 5px; font-size:18px;";
-btn2.onclick = showManualEntryForm;
- 
-regRow.appendChild(btn1);
-regRow.appendChild(btn2);
- 
-top.appendChild(regRow);
+  /* -----------------------
+     本の登録
+  ----------------------- */
 
+  const regRow = document.createElement("div");
+  regRow.className = "top-menu-card";
 
-// ▼ 本を探す
-const searchRow = document.createElement("div");
+  regRow.style =
+"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
 
-searchRow.style =
-"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:15px;";
+  regRow.innerHTML = `
+  <span style="
+  font-size:1.17em;
+  font-weight:bold;
+  min-width:90px;
+  ">
+  本の登録
+  </span>
+  `;
 
-searchRow.innerHTML = `
-<span style="
-font-size:1.17em;
-font-weight:bold;
-min-width:90px;
-">
-本を探す
-</span>
-`;
+  const btn1 = document.createElement("button");
+  btn1.textContent = "読み取り";
+  btn1.style = "padding:2px 5px;font-size:18px;";
+  btn1.onclick = showCamera;
 
-const searchBtn =
-    document.createElement("button");
+  const btn2 = document.createElement("button");
+  btn2.textContent = "手動登録";
+  btn2.style = "padding:2px 5px;font-size:18px;";
+  btn2.onclick = showManualEntryForm;
 
-searchBtn.textContent = "検索";
+  regRow.appendChild(btn1);
+  regRow.appendChild(btn2);
 
-searchBtn.style =
-    "padding:5px 5px; font-size:18px;";
+  top.appendChild(regRow);
 
-searchBtn.onclick =
-    showSearchForm;
+  /* -----------------------
+     本を探す
+  ----------------------- */
 
-searchRow.appendChild(searchBtn);
+  const searchRow = document.createElement("div");
+  searchRow.className = "top-menu-card";
 
-top.appendChild(searchRow);
+  searchRow.style =
+"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
 
-// ▼ 読書統計
-const statsRow = document.createElement("div");
+  searchRow.innerHTML = `
+  <span style="
+  font-size:1.17em;
+  font-weight:bold;
+  min-width:90px;
+  ">
+  本を探す
+  </span>
+  `;
 
-statsRow.style =
-"display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:15px;";
+const searchInput =
+document.createElement("input");
 
-statsRow.innerHTML = `
-<span style="
-font-size:1.17em;
-font-weight:bold;
-min-width:90px;
-">
-読書統計
-</span>
-`;
+searchInput.type = "text";
 
-const statsBtn =
-document.createElement("button");
+searchInput.id =
+"search-keyword";
 
-statsBtn.textContent =
-"統計を見る";
+searchInput.placeholder =
+"タイトル・著者・ISBN";
 
-statsBtn.style =
-"padding:5px 5px; font-size:18px;";
+searchInput.style =
+"width:250px;" +
+"height:30px;" +
+"font-size:16px;" +
+"padding:0 8px;";
 
-statsBtn.onclick =
-showStatistics;
+  const searchBtn = document.createElement("button");
 
-statsRow.appendChild(statsBtn);
+  searchBtn.textContent = "検索";
 
-top.appendChild(statsRow);
+  searchBtn.style =
+  "padding:2px 5px;font-size:18px;";
 
-const btn3 =
-    document.createElement("button");
+  searchBtn.onclick = searchBooks;
 
-btn3.textContent =
-    "文字列作成";
+  searchRow.appendChild(searchInput);
+  searchRow.appendChild(searchBtn);
 
-btn3.style =
-    "padding:5px 5px; font-size:14px;";
+  top.appendChild(searchRow);
 
-btn3.onclick =
-    showBackupData;
+  /* -----------------------
+     読書統計
+  ----------------------- */
 
-const btnJson =
-    document.createElement("button");
+  const statsRow = document.createElement("div");
+  statsRow.className = "top-menu-card";
 
-btnJson.textContent =
-    "ファイル作成";
+  statsRow.style =
+"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
 
-btnJson.style =
-    "padding:5px 5px; font-size:14px;";
+  statsRow.innerHTML = `
+  <span style="
+  font-size:1.17em;
+  font-weight:bold;
+  min-width:90px;
+  ">
+  読書統計
+  </span>
+  `;
 
-btnJson.onclick =
-    exportJsonBackup;
+  const statsBtn =
+  document.createElement("button");
 
+  statsBtn.textContent =
+  "統計を見る";
 
+  statsBtn.style =
+  "padding:2px 5px;font-size:18px;";
 
-const btn4 =
-    document.createElement("button");
+  statsBtn.onclick =
+  showStatistics;
 
-btn4.textContent =
-    "文字列復元";
+  statsRow.appendChild(statsBtn);
 
-btn4.style =
-    "padding:5px 5px; font-size:14px;";
+  top.appendChild(statsRow);
 
-btn4.onclick =
-    showRestoreTextUI;
+  /* -----------------------
+     読書記録＋バックアップ
+  ----------------------- */
 
+  const recordRow =
+  document.createElement("div");
 
+  recordRow.className =
+  "top-menu-card";
 
-const btnJsonRestore =
-    document.createElement("button");
+  recordRow.style =
+"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
 
-btnJsonRestore.textContent =
-    "ファイル復元";
+  const label =
+  document.createElement("div");
 
-btnJsonRestore.style =
-    "padding:5px 5px; font-size:14px;";
+  label.innerHTML = `
+  <span style="
+  font-size:1.17em;
+  font-weight:bold;
+  min-width:90px;
+  ">
+  読書記録
+  </span>
+  `;
 
-btnJsonRestore.onclick =
-function() {
+  recordRow.appendChild(label);
 
-    const input =
-        document.createElement(
-            "input"
-        );
+  const btn3 =
+  document.createElement("button");
 
-    input.type = "file";
+  btn3.textContent =
+  "文字列作成";
 
-    input.accept = ".json";
+  btn3.style =
+  "padding:2px 5px;font-size:14px;";
 
-    input.onchange =
-        importJsonBackup;
+  btn3.onclick =
+  showBackupData;
 
-    input.click();
-};
 
-const backupWrap =
-document.createElement("div");
 
-backupWrap.style.marginTop = "3px";
+  const btnJson =
+  document.createElement("button");
 
-const lastBackup =
-    localStorage.getItem(
-        "lastBackupDate"
-    );
+  btnJson.textContent =
+  "ファイル作成";
 
-backupWrap.innerHTML = `
+  btnJson.style =
+  "padding:2px 5px;font-size:14px;";
 
-<button
-id="backup-toggle"
-style="
-padding:0px 5px;
-font-size:16px;
-">
-▶ バックアップ
-</button>
+  btnJson.onclick =
+  exportJsonBackup;
 
-<div style="
-font-size:12px;
-color:#000;
-margin-top:1px;
-">
-最終：
-${lastBackup
- ? formatDateJP(lastBackup)
- : "未作成"}
-</div>
+  const btn4 =
+  document.createElement("button");
 
-<div
-id="backup-area"
-style="
-display:none;
-margin-top:10px;
-">
-</div>
-`;
+  btn4.textContent =
+  "文字列復元";
 
-/* 先に右上へ配置する */
-const rightMenu =
-document.getElementById(
-    "right-menu"
-);
+  btn4.style =
+  "padding:2px 5px;font-size:14px;";
 
-rightMenu.appendChild(
-    backupWrap
-);
+  btn4.onclick =
+  showRestoreTextUI;
 
-/* ここから開閉処理 */
-document
-.getElementById("backup-toggle")
-.onclick = function() {
+  const btnJsonRestore =
+  document.createElement("button");
 
-    const area =
-    document.getElementById(
-        "backup-area"
-    );
+  btnJsonRestore.textContent =
+  "ファイル復元";
 
-    const btn =
-    document.getElementById(
-        "backup-toggle"
-    );
+  btnJsonRestore.style =
+  "padding:2px 5px;font-size:14px;";
 
-    if (
-        area.style.display === "none"
-    ) {
+  btnJsonRestore.onclick = function() {
 
-        area.style.display =
-            "block";
+      const input =
+      document.createElement("input");
 
-        btn.textContent =
-            "▼ バックアップ";
+      input.type = "file";
 
-    } else {
+      input.accept = ".json";
 
-        area.style.display =
-            "none";
+      input.onchange =
+      importJsonBackup;
 
-        btn.textContent =
-            "▶ バックアップ";
+      input.click();
+  };
 
-    }
-};
 
-/* ボタン追加 */
-const backupArea =
-document.getElementById(
-    "backup-area"
-);
 
-backupArea.appendChild(btn3);
-backupArea.appendChild(btnJson);
-backupArea.appendChild(btn4);
-backupArea.appendChild(btnJsonRestore);
+  const lastBackup =
+  localStorage.getItem(
+      "lastBackupDate"
+  );
 
-} // ←追加
+  const backupWrap =
+  document.createElement("div");
 
-function showSearchForm() {
+  backupWrap.style =
+"display:flex;" +
+"align-items:center;" +
+"gap:8px;"+"margin-left:1em;";;
 
-    const top =
-        document.getElementById(
-            "top-area"
-        );
+  backupWrap.innerHTML = `
 
-    top.innerHTML = `
-    <div style="text-align:left;">
+  <button
+  id="backup-toggle"
+  style="
+  padding:2px 8px;
+  font-size:16px;
+  ">
+  ▶ バックアップ
+  </button>
 
-    <h3>本を探す</h3>
+  <div style="
+  font-size:14px;
+  margin-top:2px;
+  ">
+  最終：
+  ${lastBackup
+    ? formatDateJP(lastBackup)
+    : "未作成"}
+  </div>
 
-    <div style="margin-bottom:15px;">
-    検索文字：
-    <input
-        id="search-keyword"
-        type="text"
-        style="width:70%; font-size:16px;">
-    </div>
+  <div
+  id="backup-area"
+  style="
+  display:none;
+  margin-top:6px;
+  ">
+  </div>
 
-    <button
-        onclick="searchBooks()"
-        style="
-        font-size:18px;
-        padding:5px 5px;">
-        検索する
-    </button>
+  `;
 
-    <button
-        onclick="drawTopButtons()"
-        style="
-        margin-left:10px;
-        font-size:18px;
-        padding:5px 5px;">
-        キャンセル
-    </button>
+  recordRow.appendChild(
+      backupWrap
+  );
 
-    </div>
-    `;
+  top.appendChild(
+      recordRow
+  );
+
+  const backupArea =
+  document.getElementById(
+      "backup-area"
+  );
+
+  const row1 =
+  document.createElement("div");
+
+  row1.style =
+  "margin-top:5px;";
+
+  row1.appendChild(btn3);
+  row1.appendChild(btnJson);
+
+  const row2 =
+  document.createElement("div");
+
+  row2.style =
+  "margin-top:5px;";
+
+  row2.appendChild(btn4);
+  row2.appendChild(btnJsonRestore);
+
+  backupArea.appendChild(row1);
+  backupArea.appendChild(row2);
+
+  document
+  .getElementById(
+      "backup-toggle"
+  )
+  .onclick = function() {
+
+      const area =
+      document.getElementById(
+          "backup-area"
+      );
+
+      const btn =
+      document.getElementById(
+          "backup-toggle"
+      );
+
+      if (
+          area.style.display === "none"
+      ) {
+
+          area.style.display =
+          "block";
+
+          btn.textContent =
+          "▼ バックアップ";
+
+      } else {
+
+          area.style.display =
+          "none";
+
+          btn.textContent =
+          "▶ バックアップ";
+
+      }
+  };
 }
 
-
 function searchBooks() {
-
     const keyword =
     document.getElementById(
         "search-keyword"
@@ -1486,21 +1585,21 @@ margin-left:5px;
 <input
 id="m-title"
 type="text"
-style="font-size:16px; width:70%;">
+style="font-size:16px; width:90%;">
 </div>
 <div style="margin-bottom:12px;">
 著者：
 <input
 id="m-author"
 type="text"
-style="font-size:16px; width:70%;">
+style="font-size:16px; width:90%;">
 </div>
 <div style="margin-bottom:12px;">
 よみ：
 <input
 id="m-yomi"
 type="text"
-style="font-size:16px; width:70%;"
+style="font-size:16px; width:90%;"
 oninput="this.value=this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g,'');">
 </div>
 <div style="margin-bottom:12px;">
@@ -1677,7 +1776,7 @@ ISBN：
 id="e-isbn"
 type="text"
 value="${book.isbn}"
-style="font-size:16px; width:70%;">
+style="font-size:16px; width:90%;">
 </div>
 
 <div style="margin-bottom:12px;">
@@ -1686,7 +1785,7 @@ style="font-size:16px; width:70%;">
 id="e-title"
 type="text"
 value="${book.title}"
-style="font-size:16px; width:70%;">
+style="font-size:16px; width:90%;">
 </div>
 <div style="margin-bottom:12px;">
 著者：
@@ -1694,7 +1793,7 @@ style="font-size:16px; width:70%;">
 id="e-author"
 type="text"
 value="${book.author}"
-style="font-size:16px; width:70%;">
+style="font-size:16px; width:90%;">
 </div>
 
 <div style="margin-bottom:12px;">
@@ -1703,7 +1802,7 @@ style="font-size:16px; width:70%;">
 id="e-yomi"
 type="text"
 value="${book.yomi}"
-style="font-size:16px; width:70%;"
+style="font-size:16px; width:90%;"
 oninput="this.value = this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g, '');">
 </div>
 
@@ -1713,7 +1812,7 @@ oninput="this.value = this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g, '');">
 id="e-createdate"
 type="date"
 value="${book.createDate || book.regDate}"
-style="font-size:16px; width:70%;"
+style="font-size:16px; width:90%;"
 readonly>
 </div>
 
@@ -1723,7 +1822,7 @@ readonly>
 id="e-regdate"
 type="date"
 value="${book.regDate}"
-style="font-size:16px; width:70%;">
+style="font-size:16px; width:90%;">
 </div>
 
 <div style="margin-bottom:12px;">

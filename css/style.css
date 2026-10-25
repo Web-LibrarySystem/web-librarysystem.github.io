@@ -221,7 +221,7 @@ margin-top:10px;
 
     padding:20px;
 
-    text-align:left;
+    text-align:center;
 
     font-size:26px;
     font-weight:bold;
@@ -263,11 +263,32 @@ margin-top:10px;
     0 2px 8px rgba(0,0,0,0.08);
 }
 
+.top-menu-card{
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:10px;
+
+    margin-bottom:10px;
+
+    width:fit-content;
+
+    min-width:420px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.08);
+}
+
 /* タブ */
 
 .tab-button{
 
-    padding:10px 14px;
+    width:30%;
+    min-height:52px;
+
+    padding:10px 8px;
 
     margin:4px;
 
@@ -283,6 +304,13 @@ margin-top:10px;
     0 2px 6px rgba(0,0,0,0.08);
 
     cursor:pointer;
+}
+
+#read-tabs .tab-button{
+
+    width:22%;
+    min-height:48px;
+
 }
 
 .tab-button:active{
@@ -325,9 +353,6 @@ margin-top:10px;
 
     padding:5px 5px;
 
-    box-shadow:
-    0 2px 6px rgba(0,0,0,0.08);
-
     cursor:pointer;
 }
 
@@ -347,12 +372,11 @@ margin-top:10px;
 
 /* カード内ボタン */
 
-.book-buttons{
-
-    margin-top:8px;
-}
-
 .book-buttons button{
+
+    width:100%;
+
+    min-height:44px;
 
     border:none;
 
@@ -407,6 +431,42 @@ select{
 
     box-shadow:
     0 2px 8px rgba(0,0,0,0.08);
+
+    max-height:250px;
+
+    overflow-y:auto;
 }
 
 
+.book-buttons{
+
+    margin-top:10px;
+}
+
+.book-buttons-top{
+
+    display:flex;
+
+    gap:8px;
+
+    margin-bottom:8px;
+}
+
+.book-buttons-top button{
+
+    flex:1;
+}
+
+.book-buttons-bottom{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:8px;
+}
+
+.book-buttons-bottom button{
+
+    width:100%;
+}

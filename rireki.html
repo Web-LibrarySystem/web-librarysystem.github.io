@@ -681,23 +681,19 @@ div.className = "book-card";
 div.style.backgroundColor = color;
  
 div.innerHTML = `
-<div style="display:flex; gap:12px;">
- 
-<div>
- 
+<div style="display:flex; gap:5px;">
+
+<div style="margin-left:-1px;">
+
 <img src="${googleUrl}"
-onerror="this.onerror=null;
-this.src='${openbdUrl}';
-this.onerror=function(){
-this.onerror=null;
-this.src='noimage.png';
-};"
+...
 style="
 width:80px;
 height:110px;
 object-fit:cover;
 border-radius:6px;
 ">
+
 </div>
 
 <div style="flex:1; min-width:0;">

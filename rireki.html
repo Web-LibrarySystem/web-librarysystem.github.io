@@ -217,9 +217,9 @@ onclick="goBack()">
     closeReadTabs();
     BooksManager.renderBookList(
     currentSort,
-    '読んでいる本'
+    '読書中'
     )">
-    読んでいる本
+    読書中
   </button>
 
   <button
@@ -524,7 +524,7 @@ if (currentGroup === "読みたい本") {
     );
 
 } else if (
-    currentGroup === "読んでいる本"
+    currentGroup === "読書中"
 ) {
 
     books = books.filter(book =>
@@ -594,11 +594,11 @@ if (currentGroup === "読みたい本") {
         "読みたい本一覧";
 
 } else if (
-    currentGroup === "読んでいる本"
+    currentGroup === "読書中"
 ) {
 
     title.textContent =
-        "読んでいる本一覧";
+        "読書中一覧";
 
 } else {
 
@@ -773,7 +773,7 @@ ${book.reserved
 
 <button
 onclick="moveToReading(${originalIndex})">
-読んでいる本へ
+読書中へ
 </button>
 
 <button
@@ -784,7 +784,7 @@ onclick="moveToRead(${originalIndex})">
 `
 : ""}
 
-${currentGroup === "読んでいる本"
+${currentGroup === "読書中"
 ? `
 <button onclick="moveToWishlist(${originalIndex})">
 読みたい本へ
@@ -815,7 +815,7 @@ onclick="moveToReserved(${originalIndex})">
 
 <button
 onclick="moveToReading(${originalIndex})">
-読んでいる本へ
+読書中へへ
 </button>
 
 `
@@ -1485,7 +1485,7 @@ function showSearchResults(results) {
         book.status === "reading"
     ) {
 
-        statusName = "読んでいる本";
+        statusName = "読書中";
 
     } else {
 
@@ -1653,7 +1653,7 @@ checked>
 type="radio"
 name="book-status"
 value="reading">
-読んでいる本
+読書中
 </label>
 
 <label style="margin-left:15px;">
@@ -1928,7 +1928,7 @@ if (info.status === "wishlist") {
 
 } else if (info.status === "reading") {
 
-    group = "読んでいる本";
+    group = "読書中";
 
 } else {
 
@@ -1982,7 +1982,7 @@ function moveToRead(index) {
 }
 
 /* -----------------------------------
-   読んでいる本へ移動
+   読書中へ移動
 ----------------------------------- */
 function moveToReading(index) {
 
@@ -2004,12 +2004,12 @@ function moveToReading(index) {
     );
 
     alert(
-        "読んでいる本へ移動しました"
+        "読書中へ移動しました"
     );
 
     BooksManager.renderBookList(
         currentSort,
-        "読んでいる本",
+        "読書中",
         books[index].isbn
     );
 }
@@ -2133,7 +2133,7 @@ function manualSave() {
         existing.status === "reading"
     ) {
 
-        statusName = "読んでいる本";
+        statusName = "読書中";
 
     } else {
 
@@ -2191,7 +2191,7 @@ ${statusName}
         info.status === "reading"
     ) {
 
-        group = "読んでいる本";
+        group = "読書中";
 
     } else {
 
@@ -2226,7 +2226,7 @@ ${statusName}
         info.status === "reading"
     ) {
 
-        group = "読んでいる本";
+        group = "読書中";
 
     } else {
 
@@ -2512,7 +2512,7 @@ function showCameraRegisterForm(info) {
     type="radio"
     name="camera-status"
     value="reading">
-    読んでいる本
+    読書中
     </label>
 
     <label style="margin-left:15px;">
@@ -2605,7 +2605,7 @@ async function saveCameraBook(isbn) {
             existing.status === "reading"
         ) {
 
-            statusName = "読んでいる本";
+            statusName = "読書中";
 
         } else {
 
@@ -2671,7 +2671,7 @@ ${statusName}
         info.status === "reading"
     ) {
 
-        group = "読んでいる本";
+        group = "読書中";
 
     } else {
 

@@ -722,6 +722,11 @@ ${formatDateJP(
 </div>
 
 <div class="book-meta">
+読了日：
+${formatDateJP(book.finishDate)}
+</div>
+
+<div class="book-meta">
 更新日：
 ${formatDateJP(book.regDate)}
 </div>
@@ -815,7 +820,7 @@ onclick="moveToReserved(${originalIndex})">
 
 <button
 onclick="moveToReading(${originalIndex})">
-読書中へへ
+読書中へ
 </button>
 
 `
@@ -1550,6 +1555,9 @@ function showSearchResults(results) {
         book.createDate || book.regDate
     )}<br>
 
+    読了日：
+    ${formatDateJP(book.finishDate)}<br>
+
     更新日：
     ${formatDateJP(book.regDate)}
 
@@ -1849,6 +1857,15 @@ style="font-size:16px; width:90%;">
 </div>
 
 <div style="margin-bottom:12px;">
+読了日：
+<input
+id="e-finishdate"
+type="date"
+value="${book.finishDate || ""}"
+style="font-size:16px; width:90%;">
+</div>
+
+<div style="margin-bottom:12px;">
 感想：<br>
 <textarea
 id="e-comment"
@@ -1910,13 +1927,18 @@ const info = {
         ).value,
 
     regDate:
+    document.getElementById(
+        "e-regdate"
+    ).value,
+
+    finishDate:
         document.getElementById(
-            "e-regdate"
+            "e-finishdate"
         ).value,
 
     reserved:
         books[index].reserved || false
-};
+    };
  
 BooksManager.updateBook(index, info);
  
@@ -1965,6 +1987,9 @@ function moveToRead(index) {
     books[index].regDate =
     getTodayJP();
 
+    books[index].finishDate =
+    getTodayJP();
+
     localStorage.setItem(
         "books",
         JSON.stringify(books)
@@ -1990,13 +2015,16 @@ function moveToReading(index) {
         BooksManager.getBooks();
 
     books[index].status =
-        "reading";
+    "reading";
 
     books[index].reserved =
         false;
 
     books[index].regDate =
     getTodayJP();
+
+    books[index].finishDate =
+        "";
 
     localStorage.setItem(
         "books",
@@ -2034,6 +2062,9 @@ function moveToWishlist(index) {
 
     books[index].regDate =
     getTodayJP();
+
+    books[index].finishDate =
+        "";
 
     localStorage.setItem(
         "books",
@@ -2094,8 +2125,14 @@ function manualSave() {
         regDate:
             getTodayJP(),
 
+        finishDate:
+            selectedStatus === "read"
+                ? getTodayJP()
+                : "",
+
         reserved:
             selectedStatus === "reserved"
+
     };
 
     /* 必須チェック */
@@ -2173,6 +2210,18 @@ ${statusName}
 
     books[index].regDate =
     getTodayJP();
+
+    if (info.status === "read") {
+
+        books[index].finishDate =
+            getTodayJP();
+
+    } else {
+
+        books[index].finishDate =
+            "";
+
+    }
 
     localStorage.setItem(
         "books",
@@ -2579,6 +2628,11 @@ async function saveCameraBook(isbn) {
     info.createDate =
         getTodayJP();
 
+    info.finishDate =
+        info.status === "read"
+            ? getTodayJP()
+            : "";
+
     info.reserved =
         result === "reserved";
 
@@ -2646,6 +2700,18 @@ ${statusName}
         books[index].regDate =
             info.regDate;
 
+        if (info.status === "read") {
+
+            books[index].finishDate =
+                getTodayJP();
+
+        } else {
+
+            books[index].finishDate =
+                "";
+
+        }
+       
         localStorage.setItem(
             "books",
             JSON.stringify(books)
@@ -2887,7 +2953,7 @@ function showStatistics() {
     setDescription(`
         読書記録の統計情報です。<br>
         読んだ本を対象に、月別読了冊数や累計読了冊数の推移を表示します。<br>
-        集計には各本の更新日を使用しています。
+        集計には各本の読了日を使用しています。
     `);
 
     const allReadBooks =
@@ -2929,12 +2995,12 @@ function showStatistics() {
     const books =
         allReadBooks.filter(book => {
 
-            if (!book.regDate) {
-                return false;
-            }
+        if (!book.finishDate) {
+            return false;
+        }
 
-            const d =
-                new Date(book.regDate);
+        const d =
+            new Date(book.finishDate);
 
             return (
                 d >= startDate &&
@@ -2956,14 +3022,14 @@ function showStatistics() {
 
         const yearRead =
             books.filter(book =>
-                (book.regDate || "")
+                (book.finishDate || "")
                 .startsWith(currentYear)
             ).length;
 
     const monthRead =
         books.filter(book =>
-            (book.regDate || "")
-            .startsWith(currentMonth)
+                (book.finishDate || "")
+                .startsWith(currentMonth)
         ).length;
 
     const periodLabel =
@@ -3006,12 +3072,12 @@ function showStatistics() {
 
     books.forEach(book => {
 
-        if (!book.regDate) {
-            return;
-        }
+    if (!book.finishDate) {
+        return;
+    }
 
-        const month =
-            book.regDate.substring(0, 7);
+    const month =
+        book.finishDate.substring(0, 7);
 
         monthlyMap[month] =
             (monthlyMap[month] || 0) + 1;

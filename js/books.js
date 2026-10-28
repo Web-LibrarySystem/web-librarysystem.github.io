@@ -35,6 +35,10 @@ getBooks() {
             book.reserved = false;
         }
 
+        if (book.finishDate === undefined) {
+            book.finishDate = "";
+        }
+
     });
 
     localStorage.setItem(

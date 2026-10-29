@@ -561,6 +561,80 @@ function showMenu(){
     ).style.display =
     "block";
 }
+window.addEventListener("load", function(){
+
+    const params =
+        new URLSearchParams(
+            location.search
+        );
+
+    const area =
+        params.get("area");
+
+    const areaToGenre = {
+        magazine: "雑誌",
+        travel: "旅行",
+        health: "健康",
+        gardening: "園芸",
+        culture: "文化",
+        genngo: "言語",
+        cooking: "料理",
+        fashion: "ファッション",
+        family: "家事・育児",
+        children: "児童書",
+        ya: "YA",
+        business: "パソコン",
+        novel: "小説",
+        psychology: "哲学・心理学・占い",
+        history: "歴史・伝記",
+        welfare: "福祉",
+        science: "社会・科学",
+        technology: "技術・産業",
+        art: "芸術",
+        sports: "スポーツ",
+        literature: "文学",
+        yousyo: "洋書",
+        kyoudo: "郷土"
+    };
+
+    const genreToFile = {
+        "雑誌":"zassi.png",
+        "旅行":"ryokou.png",
+        "健康":"kennkou.png",
+        "園芸":"enngei.png",
+        "文化":"bunnka.png",
+        "言語":"genngo.png",
+        "料理":"ryouri.png",
+        "ファッション":"fassyonn.png",
+        "家事・育児":"kosodate.png",
+        "児童書":"zidou.png",
+        "YA":"YA.png",
+        "パソコン":"bizinesu.png",
+        "小説":"bunnko.png",
+        "哲学・心理学・占い":"sinnri.png",
+        "歴史・伝記":"rekisi.png",
+        "福祉":"hukusi.png",
+        "社会・科学":"kagaku.png",
+        "技術・産業":"gizyutu.png",
+        "芸術":"geizyutu.png",
+        "スポーツ":"supotu.png",
+        "文学":"bunngaku.png",
+        "洋書":"yousyo.png",
+        "郷土":"kyoudo.png"
+    };
+
+    if(area && areaToGenre[area]){
+
+        const genre =
+            areaToGenre[area];
+
+        showArea(
+            genreToFile[genre],
+            genre
+        );
+    }
+
+});
 
 </script>
 

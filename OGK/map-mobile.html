@@ -375,16 +375,6 @@ onclick="showArea('kyoudo.png','郷土')">
         ← 戻る
         </button>
 
-        <div class="qr-area">
-
-            <div class="qr-title">
-                スマホで見る
-            </div>
-
-            <div id="qrcode"></div>
-
-        </div>
-
     </div>
 
     <h2 id="title"></h2>
@@ -415,7 +405,7 @@ function resetTimer(){
 
         showMenu();
 
-    },60000);
+    },6000000);
 
 }
 
@@ -527,26 +517,6 @@ function showArea(
     (
         genreMessage[label] || ""
     ).replace(/\n/g,"<br>");
-
-    const qrArea =
-    document.getElementById(
-        "qrcode"
-    );
-
-    qrArea.innerHTML = "";
-
-    new QRCode(
-        qrArea,
-        {
-            text:
-            "https://web-librarysystem.github.io/OGK/map-mobile.html?area="
-            +
-            areaIdMap[label],
-
-            width:100,
-            height:100
-        }
-    );
 }
 
 function showMenu(){

@@ -83,20 +83,6 @@ h1{
     width:100%;
 }
 
-.qr-area{
-
-    text-align:center;
-}
-
-.qr-title{
-
-    font-size:16px;
-
-    font-weight:bold;
-
-    margin-bottom:5px;
-}
-
 #title{
 
     text-align:center;
@@ -135,11 +121,6 @@ h1{
     border-radius:12px;
 
     margin-bottom:15px;
-}
-
-#qrcode{
-
-    margin-top:0;
 }
 
 #message{
@@ -400,17 +381,6 @@ onclick="showArea('kyoudo.png','郷土')">
         onclick="showMenu()">
         ← 戻る
         </button>
-
-        <div class="qr-area">
-
-            <div class="qr-title">
-                スマホで見る
-            </div>
-
-            <div id="qrcode"></div>
-
-        </div>
-
     </div>
 
     <h2 id="title"></h2>
@@ -423,8 +393,6 @@ onclick="showArea('kyoudo.png','郷土')">
     <div id="message"></div>
 
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
 
@@ -489,39 +457,6 @@ const genreMessage = {
     "郷土": "場所：３階　郷土資料室\n詳細：郷土資料、住宅地図、調べ物",
 };
 
-
-// QR用ID対応表
-const areaIdMap = {
-"雑誌": "magazine",
-"旅行": "travel",
-"健康": "health",
-"園芸": "gardening",
-"文化": "culture",
-"言語": "genngo",
-"料理": "cooking",
-"ファッション": "fashion",
-"家事・育児": "family",
-"児童書": "children",
-"YA": "ya",
-"パソコン": "business",
-"小説": "novel",
-"哲学・心理学・占い": "psychology",
-"歴史・伝記": "history",
-"福祉": "welfare",
-"社会・科学": "science",
-"技術・産業": "technology",
-"芸術": "art",
-"スポーツ": "sports",
-"文学": "literature",
-"洋書": "yousyo",
-"郷土": "kyoudo"
-};
-
-
-
-
-
-
 function showArea(
     fileName,
     label
@@ -553,26 +488,6 @@ function showArea(
     (
         genreMessage[label] || ""
     ).replace(/\n/g,"<br>");
-
-    const qrArea =
-    document.getElementById(
-        "qrcode"
-    );
-
-    qrArea.innerHTML = "";
-
-    new QRCode(
-        qrArea,
-        {
-            text:
-            "https://web-librarysystem.github.io/OGK/map-mobile.html?area="
-            +
-            areaIdMap[label],
-
-            width:100,
-            height:100
-        }
-    );
 }
 
 function showMenu(){
@@ -587,80 +502,6 @@ function showMenu(){
     ).style.display =
     "block";
 }
-window.addEventListener("load", function(){
-
-    const params =
-        new URLSearchParams(
-            location.search
-        );
-
-    const area =
-        params.get("area");
-
-    const areaToGenre = {
-        magazine: "雑誌",
-        travel: "旅行",
-        health: "健康",
-        gardening: "園芸",
-        culture: "文化",
-        genngo: "言語",
-        cooking: "料理",
-        fashion: "ファッション",
-        family: "家事・育児",
-        children: "児童書",
-        ya: "YA",
-        business: "パソコン",
-        novel: "小説",
-        psychology: "哲学・心理学・占い",
-        history: "歴史・伝記",
-        welfare: "福祉",
-        science: "社会・科学",
-        technology: "技術・産業",
-        art: "芸術",
-        sports: "スポーツ",
-        literature: "文学",
-        yousyo: "洋書",
-        kyoudo: "郷土"
-    };
-
-    const genreToFile = {
-        "雑誌":"zassi.png",
-        "旅行":"ryokou.png",
-        "健康":"kennkou.png",
-        "園芸":"enngei.png",
-        "文化":"bunnka.png",
-        "言語":"genngo.png",
-        "料理":"ryouri.png",
-        "ファッション":"fassyonn.png",
-        "家事・育児":"kosodate.png",
-        "児童書":"zidou.png",
-        "YA":"YA.png",
-        "パソコン":"bizinesu.png",
-        "小説":"bunnko.png",
-        "哲学・心理学・占い":"sinnri.png",
-        "歴史・伝記":"rekisi.png",
-        "福祉":"hukusi.png",
-        "社会・科学":"kagaku.png",
-        "技術・産業":"gizyutu.png",
-        "芸術":"geizyutu.png",
-        "スポーツ":"supotu.png",
-        "文学":"bunngaku.png",
-        "洋書":"yousyo.png",
-        "郷土":"kyoudo.png"
-    };
-
-    if(area && areaToGenre[area]){
-
-        const genre =
-            areaToGenre[area];
-
-        showArea(
-            genreToFile[genre],
-            genre
-        );
-    }
-
-});
 
 </script>
 

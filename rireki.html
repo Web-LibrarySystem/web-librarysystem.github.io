@@ -53,8 +53,8 @@ body{
 }
 
 #read-tabs .tab-button{
-    width:22%;
-    min-height:48px;
+    width:18%;
+    min-height:40px;
 }
 
 .book-card{
@@ -726,11 +726,6 @@ ${formatDateJP(
 ${formatDateJP(book.finishDate)}
 </div>
 
-<div class="book-meta">
-更新日：
-${formatDateJP(book.regDate)}
-</div>
-
 ${book.comment? `<div class="book-meta">感想：${book.comment}</div>`
 : ""}
 
@@ -773,7 +768,7 @@ ${currentGroup === "読みたい本"
 onclick="toggleReserved(${originalIndex})">
 ${book.reserved
 ? "予約済解除"
-: "予約したら押す"}
+: "予約済へ"}
 </button>
 
 <button
@@ -1557,9 +1552,6 @@ function showSearchResults(results) {
 
     読了日：
     ${formatDateJP(book.finishDate)}<br>
-
-    更新日：
-    ${formatDateJP(book.regDate)}
 
     </div>
     </div>

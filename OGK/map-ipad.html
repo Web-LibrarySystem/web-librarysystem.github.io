@@ -353,13 +353,18 @@ onclick="showArea('bunngaku.png','文学')">
 <div class="button-area">
 
 <button class="genre-btn"
-onclick="showArea('yousyo.png','洋書')">
-🌎<br>洋書
+onclick="showArea('kyoudo.png','郷土')">
+🏠<br>郷土
 </button>
 
 <button class="genre-btn"
-onclick="showArea('kyoudo.png','郷土')">
-🏠<br>郷土
+onclick="showArea('sinnkann.png','新刊')">
+📕<br>新刊
+</button>
+
+<button class="genre-btn"
+onclick="showArea('yousyo.png','洋書')">
+🌎<br>洋書
 </button>
 
 </div>
@@ -465,6 +470,7 @@ const genreMessage = {
     "文学": "場所：２階　一般書（棚番号８以降）\n詳細：文学",
     "洋書": "場所：２階　洋書コーナー\n詳細：洋書、図書館関連の本",
     "郷土": "場所：３階　郷土資料室\n詳細：郷土資料、住宅地図、調べ物",
+    "新刊": "場所：１階　新刊コーナー\n詳細：新しく購入した本",
 };
 
 
@@ -493,6 +499,7 @@ const areaIdMap = {
 "文学": "literature",
 "洋書": "yousyo",
 "郷土": "kyoudo"
+"新刊": "sinnkann"
 };
 
 

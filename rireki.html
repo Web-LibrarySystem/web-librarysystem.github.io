@@ -1209,12 +1209,10 @@ searchInput.style =
   "文字列作成";
 
   btn3.style =
-  "padding:2px 5px;font-size:14px;";
+  "width:140px;padding:8px;font-size:16px;";
 
   btn3.onclick =
   showBackupData;
-
-
 
   const btnJson =
   document.createElement("button");
@@ -1223,7 +1221,7 @@ searchInput.style =
   "ファイル作成";
 
   btnJson.style =
-  "padding:2px 5px;font-size:14px;";
+  "width:140px;padding:8px;font-size:16px;";
 
   btnJson.onclick =
   exportJsonBackup;
@@ -1235,7 +1233,7 @@ searchInput.style =
   "文字列復元";
 
   btn4.style =
-  "padding:2px 5px;font-size:14px;";
+  "width:140px;padding:8px;font-size:16px;";
 
   btn4.onclick =
   showRestoreTextUI;
@@ -1247,7 +1245,7 @@ searchInput.style =
   "ファイル復元";
 
   btnJsonRestore.style =
-  "padding:2px 5px;font-size:14px;";
+  "width:140px;padding:8px;font-size:16px;";
 
   btnJsonRestore.onclick = function() {
 
@@ -1271,13 +1269,18 @@ searchInput.style =
       "lastBackupDate"
   );
 
-  const backupWrap =
-  document.createElement("div");
 
-  backupWrap.style =
+const backupWrap =
+document.createElement("div");
+
+
+backupWrap.style =
 "display:flex;" +
-"align-items:center;" +
-"gap:8px;"+"margin-left:1em;";;
+"flex-direction:column;" +
+"align-items:flex-start;" +
+"gap:4px;" +
+"margin-left:1em;";
+
 
   backupWrap.innerHTML = `
 
@@ -1287,18 +1290,20 @@ searchInput.style =
   padding:2px 8px;
   font-size:16px;
   ">
+
   ▶ バックアップ
   </button>
-
   <div style="
   font-size:14px;
   margin-top:2px;
   ">
+
   最終：
   ${lastBackup
     ? formatDateJP(lastBackup)
     : "未作成"}
   </div>
+
 
   <div
   id="backup-area"

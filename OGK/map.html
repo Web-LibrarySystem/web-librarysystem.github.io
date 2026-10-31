@@ -4,147 +4,90 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>図書館案内アプリ</title>
+<title>館内マップ</title>
 
 <style>
 
 body{
     margin:0;
-    padding:15px;
+    padding:10px;
     font-family:sans-serif;
     background:#f5f7fa;
 }
 
 h1{
-    margin-top:0;
     text-align:center;
+    font-size:24px;
 }
 
 .section{
-
-    margin-bottom:20px;
-
+    margin-bottom:15px;
     padding:10px;
-
     border-radius:12px;
-
-    background:white;
-
-    box-shadow:
-    0 2px 8px rgba(0,0,0,0.08);
+    background:#fff;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 
 .section-title{
-
-    font-size:22px;
-
+    font-size:18px;
     font-weight:bold;
-
     margin-bottom:10px;
 }
 
 .button-area{
-
     display:flex;
-
     flex-wrap:wrap;
-
-    gap:10px;
+    gap:8px;
 }
 
 .genre-btn{
-
-    width:15%;
-
-    min-height:90px;
-
+    width:31%;
+    min-height:80px;
     border:none;
-
     border-radius:12px;
-
-    background:#ffffff;
-
-    box-shadow:
-    0 2px 6px rgba(0,0,0,0.08);
-
-    font-size:18px;
-
+    background:white;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+    font-size:14px;
     cursor:pointer;
 }
 
-.top-bar{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:flex-start;
-
-    width:100%;
+#detail-screen{
+    display:none;
+    text-align:center;
 }
 
 #title{
-
-    text-align:center;
-
-    font-size:48px;
-
-    margin-top:-70px;
-
-    margin-bottom:15px;
+    font-size:32px;
+    margin:10px 0;
 }
 
 #location{
-    text-align:center;
+    font-size:22px;
     font-weight:bold;
     color:#003366;
     margin-bottom:15px;
-
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-}
-
-#detail-screen{
-
-    display:none;
-
-    text-align:center;
-
-    position:relative;
 }
 
 #detail-image{
-
+    width:100%;
+    height:auto;
     max-width:100%;
-
-    max-height:1100px;
-}
-
-.back-button{
-
-    font-size:20px;
-
-    padding:10px 20px;
-
-    border:none;
-
-    border-radius:12px;
-
-    margin-bottom:15px;
 }
 
 #message{
-
+    margin-top:15px;
     text-align:left;
-
-    max-width:800px;
-
-    margin:20px auto 0 auto;
-
-    font-size:20px;
-
+    font-size:16px;
     line-height:1.6;
+}
+
+.back-button{
+    font-size:18px;
+    padding:10px 20px;
+    border:none;
+    border-radius:12px;
+    background:#3578e5;
+    color:white;
 }
 
 #home-button{
@@ -166,8 +109,6 @@ h1{
 
     margin-bottom:10px;
 }
-
-
 
 </style>
 </head>
@@ -335,7 +276,7 @@ onclick="showArea('bunnko.png','小説')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('sinnri.png','哲学・哲学')">
+onclick="showArea('sinnri.png','宗教・心理学・占い')">
 🧠<br>宗教哲学
 </button>
 
@@ -403,76 +344,35 @@ onclick="showArea('yousyo.png','洋書')">
 🌎<br>洋書
 </button>
 
-
-
 </div>
 
 </div>
 
 </div>
-
 
 <div id="detail-screen">
 
-    <div class="top-bar">
+<button
+class="back-button"
+onclick="showMenu()">
+← 戻る
+</button>
 
-        <button
-        class="back-button"
-        onclick="showMenu()">
-        ← 戻る
-        </button>
-    </div>
+<h2 id="title"></h2>
 
-    <h2 id="title"></h2>
- 
-    <div id="location"></div>
- 
-    <img
-    id="detail-image"
-    src=""
-    alt="地図">
- 
-    <div id="message"></div>
+<div id="location"></div>
+
+<img
+id="detail-image"
+src=""
+alt="地図">
+
+<div id="message"></div>
 
 </div>
 
 <script>
 
-let inactivityTimer;
-
-function resetTimer(){
-
-    clearTimeout(
-        inactivityTimer
-    );
-
-    inactivityTimer =
-    setTimeout(function(){
-
-        showMenu();
-
-    },60000);
-
-}
-
-[
-"click",
-"touchstart",
-"mousemove",
-"keydown"
-].forEach(function(ev){
-
-    document.addEventListener(
-        ev,
-        resetTimer
-    );
-
-});
-
-resetTimer();
-
-
-//メッセージ一覧
 const genreInfo = {
 
 "雑誌":{
@@ -482,7 +382,7 @@ detail:"詳細：雑誌（週刊誌、月刊誌など）"
 
 "生き方":{
 location:"１階 棚番号１",
-detail:"詳細：生き方・人生訓"
+detail:"生き方・人生訓"
 },
 
 "旅行":{
@@ -502,194 +402,145 @@ detail:"詳細：園芸、ペット"
 
 "コミック":{
 location:"１階 棚番号４と５の間",
-detail:"詳細：コミック
-},
-
-"文化":{
-location:"１階 棚番号４と５の間",
-detail:"詳細：華道、茶道、囲碁、将棋など"
-},
-
-"言語":{
-location:"１階 棚番号５",
-detail:"詳細：マナー、冠婚葬祭のスピーチ、手紙など"
-},
-
-"料理":{
-location:"１階 家族応援コーナー",
-detail:"詳細：料理"
-},
-
-"ファッション":{
-location:"１階 家族応援コーナー",
-detail:"詳細：裁縫、服飾、お金"
-},
-
-"家事・育児":{
-location:"１階 家族応援コーナー（児童室側）",
-detail:"詳細：家事・育児"
-},
-
-"児童書":{
-location:"１階 児童室",
-detail:"詳細：児童書、絵本、紙芝居など"
-},
-
-"YA":{
-location:"２階 ＹＡコーナー",
-detail:"詳細：進路、ライトノベル"
-},
-
-"パソコン":{
-location:"２階 ビジネスコーナー",
-detail:"詳細：政治経済・金融・パソコン関連書"
-},
-
-"金融商業":{
-location:"２階 ビジネスコーナー",
-detail:"詳細：金融商業"
-},
-
-"政治経済":{
-location:"２階 ビジネスコーナー",
-detail:"詳細：政治経済"
-},
-
-"小説":{
-location:"２階 文庫コーナー",
-detail:"詳細：小説（ライトノベル以外）"
-},
-
-"宗教・哲学":{
-location:"２階 棚番号１・１５",
-detail:"詳細：哲学、心理学、占い"
-},
-
-"歴史・伝記":{
-location:"２階 棚番号１～３",
-detail:"詳細：歴史、伝記"
-},
-
-"福祉":{
-location:"２階 棚番号３と４の間",
-detail:"詳細：年金、相続、社会問題"
-},
-
-"社会・科学":{
-location:"２階 棚番号４と５の間",
-detail:"詳細：社会、科学"
-},
-
-"技術・産業":{
-location:"２階 棚番号５と６の間",
-detail:"詳細：技術、産業"
-},
-
-"芸術":{
-location:"２階 棚番号５と６の間",
-detail:"詳細：芸術"
-},
-
-"スポーツ":{
-location:"２階 棚番号６と７の間",
-detail:"詳細：スポーツ"
-},
-
-"文学":{
-location:"２階 棚番号８以降",
-detail:"詳細：文学"
-},
-
-"洋書":{
-location:"２階 洋書コーナー",
-detail:"詳細：洋書、図書館関連の本"
-},
-
-"郷土":{
-location:"３階 郷土資料室",
-detail:"詳細：郷土資料、住宅地図、調べ物"
-},
-
-"新刊":{
-location:"１階 新刊コーナー",
-detail:"詳細：新しく購入した本"
+detail:"詳細：コミック"
 }
 
 };
 
-function showArea(
-    fileName,
-    label
-){
+function showArea(fileName,label){
 
     document.getElementById(
         "menu-screen"
-    ).style.display =
-    "none";
+    ).style.display="none";
 
     document.getElementById(
         "detail-screen"
-    ).style.display =
-    "block";
+    ).style.display="block";
 
     document.getElementById(
         "title"
-    ).textContent =
-    label;
+    ).textContent=label;
 
     document.getElementById(
         "detail-image"
-    ).src =
-    fileName;
+    ).src=fileName;
 
-    const info =
-        genreInfo[label] || {};
+    const info=
+        genreInfo[label]||{};
 
-const locationElem =
     document.getElementById(
         "location"
-    );
+    ).textContent=
+        info.location || "";
 
-locationElem.textContent =
-    info.location || "";
-
-const len =
-    locationElem.textContent.length;
-
-if(len <= 10){
-    locationElem.style.fontSize =
-        "38px";
-}
-else if(len <= 16){
-    locationElem.style.fontSize =
-        "34px";
-}
-else if(len <= 22){
-    locationElem.style.fontSize =
-        "30px";
-}
-else{
-    locationElem.style.fontSize =
-        "26px";
-}
     document.getElementById(
         "message"
-    ).textContent =
+    ).textContent=
         info.detail || "";
-    }
+}
 
 function showMenu(){
 
     document.getElementById(
         "detail-screen"
-    ).style.display =
-    "none";
+    ).style.display="none";
 
     document.getElementById(
         "menu-screen"
-    ).style.display =
-    "block";
+    ).style.display="block";
 }
+
+window.addEventListener(
+"load",
+function(){
+
+const params=
+new URLSearchParams(
+location.search
+);
+
+const area=
+params.get("area");
+
+const areaToGenre={
+
+magazine:"雑誌",
+ikikata:"生き方",
+travel:"旅行",
+health:"健康",
+gardening:"園芸",
+komi:"コミック",
+culture:"文化",
+genngo:"言語",
+cooking:"料理",
+fashion:"ファッション",
+family:"家事・育児",
+children:"児童書",
+ya:"YA",
+PC:"パソコン",
+kinnyuu:"金融商業",
+seizi:"政治経済",
+novel:"小説",
+psychology:"宗教・心理学・占い",
+history:"歴史・伝記",
+welfare:"福祉",
+science:"社会・科学",
+technology:"技術・産業",
+art:"芸術",
+sports:"スポーツ",
+literature:"文学",
+yousyo:"洋書",
+kyoudo:"郷土",
+sinnkann:"新刊"
+
+};
+
+const genreToFile={
+
+"雑誌":"zassi.png",
+"生き方":"ikikata.png",
+"旅行":"ryokou.png",
+"健康":"kennkou.png",
+"園芸":"enngei.png",
+"コミック":"komi.png",
+"文化":"bunnka.png",
+"言語":"genngo.png",
+"料理":"ryouri.png",
+"ファッション":"fassyonn.png",
+"家事・育児":"kosodate.png",
+"児童書":"zidou.png",
+"YA":"YA.png",
+"パソコン":"PC.png",
+"金融商業":"kinnyuu.png",
+"政治経済":"seizi.png",
+"小説":"bunnko.png",
+"宗教・心理学・占い":"sinnri.png",
+"歴史・伝記":"rekisi.png",
+"福祉":"hukusi.png",
+"社会・科学":"kagaku.png",
+"技術・産業":"gizyutu.png",
+"芸術":"geizyutu.png",
+"スポーツ":"supotu.png",
+"文学":"bunngaku.png",
+"洋書":"yousyo.png",
+"郷土":"kyoudo.png",
+"新刊":"sinnkann.png"
+
+};
+
+if(area && areaToGenre[area]){
+
+const genre=
+areaToGenre[area];
+
+showArea(
+genreToFile[genre],
+genre
+);
+
+}
+
+});
 
 </script>
 

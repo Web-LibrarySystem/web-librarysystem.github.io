@@ -190,6 +190,11 @@ onclick="showArea('zassi.png','雑誌')">
 </button>
 
 <button class="genre-btn"
+onclick="showArea('ikikata.png','生き方')">
+❤<br>生き方
+</button>
+
+<button class="genre-btn"
 onclick="showArea('ryokou.png','旅行')">
 ✈️<br>旅行
 </button>
@@ -202,6 +207,11 @@ onclick="showArea('kennkou.png','健康')">
 <button class="genre-btn"
 onclick="showArea('enngei.png','園芸')">
 🌷<br>園芸
+</button>
+
+<button class="genre-btn"
+onclick="showArea('komi.png','コミック')">
+📕<br>コミック
 </button>
 
 <button class="genre-btn"
@@ -235,7 +245,7 @@ onclick="showArea('ryouri.png','料理')">
 
 <button class="genre-btn"
 onclick="showArea('fassyonn.png','ファッション')">
-👗<br>美容
+👗<br>ファッション
 </button>
 
 <button class="genre-btn"
@@ -282,8 +292,18 @@ onclick="showArea('YA.png','YA')">
 <div class="button-area">
 
 <button class="genre-btn"
-onclick="showArea('bizinesu.png','パソコン')">
+onclick="showArea('PC.png','パソコン')">
 💻<br>パソコン
+</button>
+
+<button class="genre-btn"
+onclick="showArea('kinnyuu.png','金融商業')">
+￥<br>金融商業
+</button>
+
+<button class="genre-btn"
+onclick="showArea('seizi.png','政治経済')">
+👨<br>政治経済
 </button>
 
 </div>
@@ -306,8 +326,8 @@ onclick="showArea('bunnko.png','小説')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('sinnri.png','哲学・心理学・占い')">
-🧠<br>心理
+onclick="showArea('sinnri.png','宗教・心理学・占い')">
+🧠<br>宗教哲学
 </button>
 
 <button class="genre-btn"
@@ -461,28 +481,38 @@ location:"１階 雑誌コーナー",
 detail:"詳細：雑誌（週刊誌、月刊誌など）"
 },
 
+"生き方":{
+location:"１階 棚番号１",
+detail:"生き方・人生訓"
+},
+
 "旅行":{
-location:"１階 生活情報コーナー（棚番号２）",
+location:"１階 棚番号１と２の間",
 detail:"詳細：国内外の旅行関連本"
 },
 
 "健康":{
-location:"１階 生活情報コーナー（棚番号３）",
+location:"１階 棚番号２と３の間",
 detail:"詳細：病気、健康法など"
 },
 
 "園芸":{
-location:"１階 生活情報コーナー（棚番号４）",
-detail:"詳細：園芸、ペット、コミック"
+location:"１階 棚番号３と４の間",
+detail:"詳細：園芸、ペット"
+},
+
+"コミック":{
+location:"１階 棚番号４と５の間",
+detail:"詳細：コミック"
 },
 
 "文化":{
-location:"１階 生活情報コーナー（棚番号５）",
+location:"１階 棚番号４と５の間",
 detail:"詳細：華道、茶道、囲碁、将棋など"
 },
 
 "言語":{
-location:"１階 生活情報コーナー（棚番号５）",
+location:"１階 棚番号５",
 detail:"詳細：マナー、冠婚葬祭のスピーチ、手紙など"
 },
 
@@ -516,48 +546,58 @@ location:"２階 ビジネスコーナー",
 detail:"詳細：政治経済・金融・パソコン関連書"
 },
 
+"金融商業":{
+location:"２階 ビジネスコーナー",
+detail:"詳細：金融商業"
+},
+
+"政治経済":{
+location:"２階 ビジネスコーナー",
+detail:"詳細：政治経済"
+},
+
 "小説":{
 location:"２階 文庫コーナー",
 detail:"詳細：小説（ライトノベル以外）"
 },
 
-"哲学・心理学・占い":{
-location:"２階 一般書（棚番号１・１５）",
+"宗教・心理学・占い":{
+location:"２階 棚番号１・１５",
 detail:"詳細：哲学、心理学、占い"
 },
 
 "歴史・伝記":{
-location:"２階 一般書（棚番号２・３）",
+location:"２階 棚番号１～３",
 detail:"詳細：歴史、伝記"
 },
 
 "福祉":{
-location:"２階 一般書（棚番号３）",
+location:"２階 棚番号３と４の間",
 detail:"詳細：年金、相続、社会問題"
 },
 
 "社会・科学":{
-location:"２階 一般書（棚番号４）",
+location:"２階 棚番号４と５の間",
 detail:"詳細：社会、科学"
 },
 
 "技術・産業":{
-location:"２階 一般書（棚番号５）",
+location:"２階 棚番号５と６の間",
 detail:"詳細：技術、産業"
 },
 
 "芸術":{
-location:"２階 一般書（棚番号５・６）",
+location:"２階 棚番号５と６の間",
 detail:"詳細：芸術"
 },
 
 "スポーツ":{
-location:"２階 一般書（棚番号７）",
+location:"２階 棚番号６と７の間",
 detail:"詳細：スポーツ"
 },
 
 "文学":{
-location:"２階 一般書（棚番号８以降）",
+location:"２階 棚番号８以降",
 detail:"詳細：文学"
 },
 
@@ -581,9 +621,11 @@ detail:"詳細：新しく購入した本"
 // QR用ID対応表
 const areaIdMap = {
 "雑誌": "magazine",
+"生き方": "ikikata",
 "旅行": "travel",
 "健康": "health",
 "園芸": "gardening",
+"コミック": "komi",
 "文化": "culture",
 "言語": "genngo",
 "料理": "cooking",
@@ -591,9 +633,11 @@ const areaIdMap = {
 "家事・育児": "family",
 "児童書": "children",
 "YA": "ya",
-"パソコン": "business",
+"パソコン": "PC",
+"金融商業": "kinnyuu",
+"政治経済": "seizi",
 "小説": "novel",
-"哲学・心理学・占い": "psychology",
+"宗教・心理学・占い": "psychology",
 "歴史・伝記": "history",
 "福祉": "welfare",
 "社会・科学": "science",

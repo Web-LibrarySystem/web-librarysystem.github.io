@@ -190,6 +190,11 @@ onclick="showArea('zassi.png','雑誌')">
 </button>
 
 <button class="genre-btn"
+onclick="showArea('ikikata.png','生き方')">
+❤<br>生き方
+</button>
+
+<button class="genre-btn"
 onclick="showArea('ryokou.png','旅行')">
 ✈️<br>旅行
 </button>
@@ -202,6 +207,11 @@ onclick="showArea('kennkou.png','健康')">
 <button class="genre-btn"
 onclick="showArea('enngei.png','園芸')">
 🌷<br>園芸
+</button>
+
+<button class="genre-btn"
+onclick="showArea('komi.png','コミック')">
+📕<br>コミック
 </button>
 
 <button class="genre-btn"
@@ -235,7 +245,7 @@ onclick="showArea('ryouri.png','料理')">
 
 <button class="genre-btn"
 onclick="showArea('fassyonn.png','ファッション')">
-👗<br>美容
+👗<br>ファッション
 </button>
 
 <button class="genre-btn"
@@ -282,8 +292,18 @@ onclick="showArea('YA.png','YA')">
 <div class="button-area">
 
 <button class="genre-btn"
-onclick="showArea('bizinesu.png','パソコン')">
+onclick="showArea('PC.png','パソコン')">
 💻<br>パソコン
+</button>
+
+<button class="genre-btn"
+onclick="showArea('kinnyuu.png','金融商業')">
+￥<br>金融商業
+</button>
+
+<button class="genre-btn"
+onclick="showArea('seizi.png','政治経済')">
+👨<br>政治経済
 </button>
 
 </div>
@@ -306,8 +326,8 @@ onclick="showArea('bunnko.png','小説')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('sinnri.png','哲学・心理学・占い')">
-🧠<br>心理
+onclick="showArea('sinnri.png','宗教・心理学・占い')">
+🧠<br>宗教哲学
 </button>
 
 <button class="genre-btn"
@@ -373,229 +393,6 @@ onclick="showArea('sinnkann.png','新刊')">
 onclick="showArea('yousyo.png','洋書')">
 🌎<br>洋書
 </button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<div id="detail-screen">
-
-    <div class="top-bar">
-
-        <button
-        class="back-button"
-        onclick="showMenu()">
-        ← 戻る
-        </button>
-
-    </div>
-
-    <h2 id="title"></h2>
-
-    <div id="location"></div>
-
-    <img
-    id="detail-image"
-    src=""
-    alt="地図">
-
-    <div id="message"></div>
-
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
-<script>
-
-let inactivityTimer;
-
-function resetTimer(){
-
-    clearTimeout(
-        inactivityTimer
-    );
-
-    inactivityTimer =
-    setTimeout(function(){
-
-        showMenu();
-
-    },6000000);
-
-}
-
-[
-"click",
-"touchstart",
-"mousemove",
-"keydown"
-].forEach(function(ev){
-
-    document.addEventListener(
-        ev,
-        resetTimer
-    );
-
-});
-
-resetTimer();
-
-
-//メッセージ一覧
-const genreInfo = {
-
-"雑誌":{
-location:"１階 雑誌コーナー",
-detail:"詳細：雑誌（週刊誌、月刊誌など）"
-},
-
-"旅行":{
-location:"１階 生活情報コーナー（棚番号２）",
-detail:"詳細：国内外の旅行関連本"
-},
-
-"健康":{
-location:"１階 生活情報コーナー（棚番号３）",
-detail:"詳細：病気、健康法など"
-},
-
-"園芸":{
-location:"１階 生活情報コーナー（棚番号４）",
-detail:"詳細：園芸、ペット、コミック"
-},
-
-"文化":{
-location:"１階 生活情報コーナー（棚番号５）",
-detail:"詳細：華道、茶道、囲碁、将棋など"
-},
-
-"言語":{
-location:"１階 生活情報コーナー（棚番号５）",
-detail:"詳細：マナー、冠婚葬祭のスピーチ、手紙など"
-},
-
-"料理":{
-location:"１階 家族応援コーナー",
-detail:"詳細：料理"
-},
-
-"ファッション":{
-location:"１階 家族応援コーナー",
-detail:"詳細：裁縫、服飾、お金"
-},
-
-"家事・育児":{
-location:"１階 家族応援コーナー（児童室側）",
-detail:"詳細：家事・育児"
-},
-
-"児童書":{
-location:"１階 児童室",
-detail:"詳細：児童書、絵本、紙芝居など"
-},
-
-"YA":{
-location:"２階 ＹＡコーナー",
-detail:"詳細：進路、ライトノベル"
-},
-
-"パソコン":{
-location:"２階 ビジネスコーナー",
-detail:"詳細：政治経済・金融・パソコン関連書"
-},
-
-"小説":{
-location:"２階 文庫コーナー",
-detail:"詳細：小説（ライトノベル以外）"
-},
-
-"哲学・心理学・占い":{
-location:"２階 一般書（棚番号１・１５）",
-detail:"詳細：哲学、心理学、占い"
-},
-
-"歴史・伝記":{
-location:"２階 一般書（棚番号２・３）",
-detail:"詳細：歴史、伝記"
-},
-
-"福祉":{
-location:"２階 一般書（棚番号３）",
-detail:"詳細：年金、相続、社会問題"
-},
-
-"社会・科学":{
-location:"２階 一般書（棚番号４）",
-detail:"詳細：社会、科学"
-},
-
-"技術・産業":{
-location:"２階 一般書（棚番号５）",
-detail:"詳細：技術、産業"
-},
-
-"芸術":{
-location:"２階 一般書（棚番号５・６）",
-detail:"詳細：芸術"
-},
-
-"スポーツ":{
-location:"２階 一般書（棚番号７）",
-detail:"詳細：スポーツ"
-},
-
-"文学":{
-location:"２階 一般書（棚番号８以降）",
-detail:"詳細：文学"
-},
-
-"洋書":{
-location:"２階 洋書コーナー",
-detail:"詳細：洋書、図書館関連の本"
-},
-
-"郷土":{
-location:"３階 郷土資料室",
-detail:"詳細：郷土資料、住宅地図、調べ物"
-},
-
-"新刊":{
-location:"１階 新刊コーナー",
-detail:"詳細：新しく購入した本"
-}
-
-};
-
-// QR用ID対応表
-const areaIdMap = {
-"雑誌": "magazine",
-"旅行": "travel",
-"健康": "health",
-"園芸": "gardening",
-"文化": "culture",
-"言語": "genngo",
-"料理": "cooking",
-"ファッション": "fashion",
-"家事・育児": "family",
-"児童書": "children",
-"YA": "ya",
-"パソコン": "business",
-"小説": "novel",
-"哲学・心理学・占い": "psychology",
-"歴史・伝記": "history",
-"福祉": "welfare",
-"社会・科学": "science",
-"技術・産業": "technology",
-"芸術": "art",
-"スポーツ": "sports",
-"文学": "literature",
-"洋書": "yousyo",
-"郷土": "kyoudo",
-"新刊": "sinnkann"
-};
 
 
 function showArea(
@@ -684,9 +481,11 @@ window.addEventListener("load", function(){
 
     const areaToGenre = {
         magazine: "雑誌",
+        ikikata:"生き方",
         travel: "旅行",
         health: "健康",
         gardening: "園芸",
+        komi: "コミック",
         culture: "文化",
         genngo: "言語",
         cooking: "料理",
@@ -694,7 +493,9 @@ window.addEventListener("load", function(){
         family: "家事・育児",
         children: "児童書",
         ya: "YA",
-        business: "パソコン",
+        PC: "パソコン",
+        kinnyuu: "金融商業",
+        seizi: "政治経済",
         novel: "小説",
         psychology: "哲学・心理学・占い",
         history: "歴史・伝記",
@@ -711,9 +512,11 @@ window.addEventListener("load", function(){
 
     const genreToFile = {
         "雑誌":"zassi.png",
+        "生き方":"ikikata.png",
         "旅行":"ryokou.png",
         "健康":"kennkou.png",
         "園芸":"enngei.png",
+        "コミック":"komi.png",
         "文化":"bunnka.png",
         "言語":"genngo.png",
         "料理":"ryouri.png",
@@ -721,7 +524,9 @@ window.addEventListener("load", function(){
         "家事・育児":"kosodate.png",
         "児童書":"zidou.png",
         "YA":"YA.png",
-        "パソコン":"bizinesu.png",
+        "パソコン":"PC.png",
+        "金融商業":"kinnyuu.png",
+        "政治経済":"seizi.png",
         "小説":"bunnko.png",
         "哲学・心理学・占い":"sinnri.png",
         "歴史・伝記":"rekisi.png",

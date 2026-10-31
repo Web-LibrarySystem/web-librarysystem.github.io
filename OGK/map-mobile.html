@@ -108,6 +108,17 @@ h1{
     margin-bottom:15px;
 }
 
+#location{
+    text-align:center;
+    font-weight:bold;
+    color:#003366;
+    margin-bottom:15px;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
 #detail-screen{
 
     display:none;
@@ -384,6 +395,8 @@ onclick="showArea('yousyo.png','洋書')">
 
     <h2 id="title"></h2>
 
+    <div id="location"></div>
+
     <img
     id="detail-image"
     src=""
@@ -432,33 +445,129 @@ resetTimer();
 
 
 //メッセージ一覧
-const genreMessage = {
-    "雑誌": "場所：１階　雑誌コーナー\n詳細：雑誌（週刊誌、月刊誌など）",
-    "旅行": "場所：１階　生活情報コーナー（棚番号２）\n詳細：国内外の旅行関連本",
-    "健康": "場所：１階　生活情報コーナー（棚番号３）\n詳細：病気、健康法など",
-    "園芸": "場所：１階　生活情報コーナー（棚番号４）\n詳細：園芸、ペット、コミック",
-    "文化": "場所：１階　生活情報コーナー（棚番号５）\n詳細：華道、茶道、囲碁、将棋など",
-    "言語": "場所：１階　生活情報コーナー（棚番号５）\n詳細：マナー、冠婚葬祭のスピーチ、手紙など",
-    "料理": "場所：１階　家族応援コーナー\n詳細：料理",
-    "ファッション": "場所：１階　家族応援コーナー\n詳細：裁縫、服飾、お金",
-    "家事・育児": "場所：１階　家族応援コーナー（児童室側）\n詳細：家事・育児",
-    "児童書": "場所：１階　児童室\n詳細：児童書、絵本、紙芝居など",
-    "YA": "場所：２階　ＹＡコーナー\n詳細：進路、ライトノベル",
-    "パソコン": "場所：２階　ビジネスコーナー\n詳細：政治経済・金融・パソコン関連書",
-    "小説": "場所：２階　文庫コーナー\n詳細：小説（ライトノベル以外）",
-    "哲学・心理学・占い": "場所：２階　一般書（棚番号１・１５）\n詳細：哲学、心理学、占い",
-    "歴史・伝記": "場所：２階　一般書（棚番号２・３）\n詳細：歴史、伝記",
-    "福祉": "場所：２階　一般書（棚番号３）\n詳細：年金、相続、社会問題",
-    "社会・科学": "場所：２階　一般書（棚番号４）\n詳細：社会、科学",
-    "技術・産業": "場所：２階　一般書（棚番号５）\n詳細：技術、産業",
-    "芸術": "場所：２階　一般書（棚番号５・６）\n詳細：芸術",
-    "スポーツ": "場所：２階　一般書（棚番号７）\n詳細：スポーツ",
-    "文学": "場所：２階　一般書（棚番号８以降）\n詳細：文学",
-    "洋書": "場所：２階　洋書コーナー\n詳細：洋書、図書館関連の本",
-    "郷土": "場所：３階　郷土資料室\n詳細：郷土資料、住宅地図、調べ物",
-    "新刊": "場所：１階　新刊コーナー\n詳細：新しく購入した本",
-};
+const genreInfo = {
 
+"雑誌":{
+location:"１階 雑誌コーナー",
+detail:"詳細：雑誌（週刊誌、月刊誌など）"
+},
+
+"旅行":{
+location:"１階 生活情報コーナー（棚番号２）",
+detail:"詳細：国内外の旅行関連本"
+},
+
+"健康":{
+location:"１階 生活情報コーナー（棚番号３）",
+detail:"詳細：病気、健康法など"
+},
+
+"園芸":{
+location:"１階 生活情報コーナー（棚番号４）",
+detail:"詳細：園芸、ペット、コミック"
+},
+
+"文化":{
+location:"１階 生活情報コーナー（棚番号５）",
+detail:"詳細：華道、茶道、囲碁、将棋など"
+},
+
+"言語":{
+location:"１階 生活情報コーナー（棚番号５）",
+detail:"詳細：マナー、冠婚葬祭のスピーチ、手紙など"
+},
+
+"料理":{
+location:"１階 家族応援コーナー",
+detail:"詳細：料理"
+},
+
+"ファッション":{
+location:"１階 家族応援コーナー",
+detail:"詳細：裁縫、服飾、お金"
+},
+
+"家事・育児":{
+location:"１階 家族応援コーナー（児童室側）",
+detail:"詳細：家事・育児"
+},
+
+"児童書":{
+location:"１階 児童室",
+detail:"詳細：児童書、絵本、紙芝居など"
+},
+
+"YA":{
+location:"２階 ＹＡコーナー",
+detail:"詳細：進路、ライトノベル"
+},
+
+"パソコン":{
+location:"２階 ビジネスコーナー",
+detail:"詳細：政治経済・金融・パソコン関連書"
+},
+
+"小説":{
+location:"２階 文庫コーナー",
+detail:"詳細：小説（ライトノベル以外）"
+},
+
+"哲学・心理学・占い":{
+location:"２階 一般書（棚番号１・１５）",
+detail:"詳細：哲学、心理学、占い"
+},
+
+"歴史・伝記":{
+location:"２階 一般書（棚番号２・３）",
+detail:"詳細：歴史、伝記"
+},
+
+"福祉":{
+location:"２階 一般書（棚番号３）",
+detail:"詳細：年金、相続、社会問題"
+},
+
+"社会・科学":{
+location:"２階 一般書（棚番号４）",
+detail:"詳細：社会、科学"
+},
+
+"技術・産業":{
+location:"２階 一般書（棚番号５）",
+detail:"詳細：技術、産業"
+},
+
+"芸術":{
+location:"２階 一般書（棚番号５・６）",
+detail:"詳細：芸術"
+},
+
+"スポーツ":{
+location:"２階 一般書（棚番号７）",
+detail:"詳細：スポーツ"
+},
+
+"文学":{
+location:"２階 一般書（棚番号８以降）",
+detail:"詳細：文学"
+},
+
+"洋書":{
+location:"２階 洋書コーナー",
+detail:"詳細：洋書、図書館関連の本"
+},
+
+"郷土":{
+location:"３階 郷土資料室",
+detail:"詳細：郷土資料、住宅地図、調べ物"
+},
+
+"新刊":{
+location:"１階 新刊コーナー",
+detail:"詳細：新しく購入した本"
+}
+
+};
 
 // QR用ID対応表
 const areaIdMap = {
@@ -514,13 +623,42 @@ function showArea(
     ).src =
     fileName;
 
+    const info =
+        genreInfo[label] || {};
+
+    const locationElem =
+    document.getElementById(
+        "location"
+    );
+
+    locationElem.textContent =
+        info.location || "";
+
+    const len =
+        locationElem.textContent.length;
+
+    if(len <= 10){
+        locationElem.style.fontSize =
+            "38px";
+    }
+    else if(len <= 16){
+        locationElem.style.fontSize =
+            "34px";
+    }
+    else if(len <= 22){
+        locationElem.style.fontSize =
+            "30px";
+    }
+    else{
+        locationElem.style.fontSize =
+            "26px";
+    }
+
     document.getElementById(
         "message"
-    ).innerHTML =
-    (
-        genreMessage[label] || ""
-    ).replace(/\n/g,"<br>");
-}
+    ).textContent =
+        info.detail || "";
+    }
 
 function showMenu(){
 

@@ -147,3 +147,11 @@ text-align:center;
 clear:both;
 margin-top:10px;
 }
+
+#location{
+    text-align:center;
+    font-size:32px;
+    font-weight:bold;
+    color:#d32f2f;
+    margin-bottom:15px;
+}

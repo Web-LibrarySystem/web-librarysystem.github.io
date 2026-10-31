@@ -726,7 +726,14 @@ ${formatDateJP(
 ${formatDateJP(book.finishDate)}
 </div>
 
-${book.comment? `<div class="book-meta">感想：${book.comment}</div>`
+${book.comment ?
+`<div class="book-meta">
+感想：${
+book.comment.length > 30
+? book.comment.substring(0,30) + "..."
+: book.comment
+}
+</div>`
 : ""}
 
 </div>
@@ -1558,6 +1565,47 @@ function showSearchResults(results) {
     読了日：
     ${formatDateJP(book.finishDate)}<br>
 
+    ${book.comment ?
+    `感想：
+    ${
+    book.comment.length > 30
+    ? book.comment.substring(0,30) + "..."
+    : book.comment
+    }
+    <br>`
+    : ""}
+
+    <div style="
+    margin-top:10px;
+    display:flex;
+    gap:10px;
+    ">
+
+    <button
+    onclick="
+    editBook(
+    BooksManager.getBooks()
+    .findIndex(
+    b=>b.isbn==='${book.isbn}'
+    )
+    )
+    ">
+    編集
+    </button>
+
+    <button
+    onclick="
+    BooksManager.confirmDelete(
+    BooksManager.getBooks()
+    .findIndex(
+    b=>b.isbn==='${book.isbn}'
+    )
+    )
+    ">
+    削除
+    </button>
+
+    </div>
     </div>
     </div>
     </div>
@@ -1839,9 +1887,8 @@ oninput="this.value = this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g, '');">
 <input
 id="e-createdate"
 type="date"
-value="${book.createDate || book.regDate}"
-style="font-size:16px; width:90%;"
-readonly>
+value="${book.createDate || ""}"
+style="font-size:16px; width:90%;">
 </div>
 
 <div style="margin-bottom:12px;">
@@ -1898,76 +1945,146 @@ top: 0,
 behavior: "smooth"
 });
 }
+
 /* -----------------------------------
    更新処理
 ----------------------------------- */
 function saveEdit(index) {
- 
-const books = BooksManager.getBooks();
+
+    const books = BooksManager.getBooks();
 
 const info = {
-    isbn: document.getElementById("e-isbn").value,
-    title: document.getElementById("e-title").value,
-    author: document.getElementById("e-author").value,
-    yomi: document.getElementById("e-yomi").value,
+    isbn:
+        document.getElementById("e-isbn")
+            .value
+            .trim()
+            .replace(/-/g, ""),
+
+    title:
+        document.getElementById("e-title")
+            .value
+            .trim(),
+
+    author:
+        document.getElementById("e-author")
+            .value
+            .trim(),
+
+    yomi:
+        document.getElementById("e-yomi")
+            .value
+            .trim(),
 
     createDate:
-        books[index].createDate ||
-        books[index].regDate,
-
-    status:
-        books[index].status || "read",
-
-    comment:
         document.getElementById(
-            "e-comment"
+            "e-createdate"
         ).value,
 
-    regDate:
-    document.getElementById(
-        "e-regdate"
-    ).value,
+        status:
+            books[index].status || "read",
 
-    finishDate:
-        document.getElementById(
-            "e-finishdate"
-        ).value,
+        comment:
+            document.getElementById(
+                "e-comment"
+            ).value,
 
-    reserved:
-        books[index].reserved || false
+        regDate:
+            document.getElementById(
+                "e-regdate"
+            ).value,
+
+        finishDate:
+            document.getElementById(
+                "e-finishdate"
+            ).value,
+
+        reserved:
+            books[index].reserved || false
     };
- 
-BooksManager.updateBook(index, info);
- 
-let group;
 
-if (info.status === "wishlist") {
+    /* ------------------------------
+       必須チェック
+    ------------------------------ */
+    if (!info.title) {
 
-    group = "読みたい本";
-
-} else if (info.status === "reading") {
-
-    group = "読書中";
-
-} else {
-
-    group =
-        BooksManager.getGroupFromYomi(
-            info.yomi
+        alert(
+            "タイトルを入力してください"
         );
 
-}
- 
-BooksManager.renderBookList(
-    currentSort,
-    group,
-    info.isbn
-);
- 
-alert("更新しました");
- 
-drawTopButtons();
- 
+        return;
+
+    }
+
+    if (!info.yomi) {
+
+        alert(
+            "よみを入力してください"
+        );
+
+        return;
+
+    }
+
+    /* ------------------------------
+       ISBN重複チェック
+    ------------------------------ */
+    if (info.isbn) {
+
+        const duplicate =
+            books.find(
+                (b, i) =>
+                    i !== index &&
+                    b.isbn === info.isbn
+            );
+
+        if (duplicate) {
+
+            alert(
+                "同じISBNの本が既に登録されています"
+            );
+
+            return;
+
+        }
+
+    }
+
+    BooksManager.updateBook(
+        index,
+        info
+    );
+
+    let group;
+
+    if (info.status === "wishlist") {
+
+        group = "読みたい本";
+
+    } else if (
+        info.status === "reading"
+    ) {
+
+        group = "読書中";
+
+    } else {
+
+        group =
+            BooksManager.getGroupFromYomi(
+                info.yomi
+            );
+
+    }
+
+    BooksManager.renderBookList(
+        currentSort,
+        group,
+        info.isbn
+    );
+
+    alert("更新しました");
+
+    drawTopButtons();
+
 }
 
 /* -----------------------------------
@@ -2144,10 +2261,16 @@ function manualSave() {
     }
 
     /* 重複チェック */
-    const existing =
+    let existing = null;
+
+    if (info.isbn) {
+
+        existing =
         BooksManager.findBookByIsbn(
             info.isbn
         );
+
+    }
 
     if (existing) {
 
@@ -2426,7 +2549,37 @@ function restoreBackupFromText() {
 
   const ok = BooksManager.importBackupString(str);
 
-  if (ok) {
+const books =
+    BooksManager.getBooks();
+
+if (!Array.isArray(books)) {
+
+    alert(
+        "復元データが不正です"
+    );
+
+    return;
+
+}
+
+if (
+    books.length > 0 &&
+    (
+        typeof books[0].title === "undefined" ||
+        typeof books[0].author === "undefined" ||
+        typeof books[0].status === "undefined"
+    )
+) {
+
+    alert(
+        "読書ノート用のバックアップではありません"
+    );
+
+    return;
+
+}
+
+if (ok) {
     alert("復元しました");
     BooksManager.renderBookList(currentSort, currentGroup);
     drawTopButtons();
@@ -2490,6 +2643,31 @@ function importJsonBackup(event) {
             const books =
                 JSON.parse(e.target.result);
 
+            if (!Array.isArray(books)) {
+
+                alert(
+                    "バックアップファイルが不正です"
+                );
+
+                return;
+            }
+
+            if (
+                books.length > 0 &&
+                (
+                    typeof books[0].title === "undefined" ||
+                    typeof books[0].author === "undefined" ||
+                    typeof books[0].status === "undefined"
+                )
+            ) {
+
+                alert(
+                    "読書ノート用のバックアップではありません"
+                );
+
+                return;
+            }
+
             if (!confirm(
                 "現在のデータを上書きして復元しますか？"
             )) {
@@ -2507,6 +2685,8 @@ function importJsonBackup(event) {
                 currentSort,
                 currentGroup
             );
+
+            drawTopButtons();
 
         } catch {
 
@@ -2988,7 +3168,6 @@ function showStatistics() {
             0
         );
 
-
     const books =
         allReadBooks.filter(book => {
 
@@ -2996,8 +3175,10 @@ function showStatistics() {
             return false;
         }
 
-        const d =
-            new Date(book.finishDate);
+    const d =
+        new Date(
+            book.finishDate.replace(/-/g, "/")
+        );
 
             return (
                 d >= startDate &&
@@ -3006,28 +3187,8 @@ function showStatistics() {
 
         });
 
-        const currentYear =
-            String(today.getFullYear());
-
-        const currentMonth =
-            currentYear + "-" +
-            String(today.getMonth() + 1)
-            .padStart(2, "0");
-
         const totalRead =
             books.length;
-
-        const yearRead =
-            books.filter(book =>
-                (book.finishDate || "")
-                .startsWith(currentYear)
-            ).length;
-
-    const monthRead =
-        books.filter(book =>
-                (book.finishDate || "")
-                .startsWith(currentMonth)
-        ).length;
 
     const periodLabel =
         `${startDate.getFullYear()}年`
@@ -3104,48 +3265,41 @@ if (months.length === 0) {
 
 }
 
-let maxCount = 1;
-
     months.forEach(month => {
 
-        if (
-            monthlyMap[month] > maxCount
-        ) {
+    const count =
+        monthlyMap[month] || 0;
 
-            maxCount =
-                monthlyMap[month];
-        }
-    });
+    let bookMark;
 
-    months.forEach(month => {
+    if (count === 0) {
 
-        const count =
-            monthlyMap[month] || 0;
+        bookMark = "-";
 
-        const width =
-            Math.max(
-                10,
-                (count / maxCount) * 180
-            );
+    } else if (count <= 10) {
 
-        monthlyHtml += `
-        <div style="margin-bottom:10px;">
+        bookMark =
+            "📘".repeat(count);
 
+    } else {
+
+        bookMark =
+            "📘×" + count;
+
+    }
+
+    monthlyHtml += `
+    <div style="
+        margin-bottom:10px;
+        font-size:18px;
+        line-height:1.8;
+    ">
         ${month}
+        ${bookMark}
         （${count}冊）
-
-        <div style="
-            background:#4A90E2;
-            height:20px;
-            width:${width}px;
-            border-radius:4px;
-            margin-top:3px;
-        ">
-        </div>
-
-        </div>
-        `;
-    });
+    </div>
+    `;
+});
 
     let running = 0;
 
@@ -3256,16 +3410,6 @@ let maxCount = 1;
 
     累計既読冊数　：
     <b>${totalRead}</b>冊
-
-    <br><br>
-
-    今年の既読冊数：
-    <b>${yearRead}</b>冊
-
-    <br><br>
-
-    今月の既読冊数：
-    <b>${monthRead}</b>冊
 
     <br><br>
 

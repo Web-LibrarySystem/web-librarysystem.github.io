@@ -1,6 +1,6 @@
 {
-  "name": "読書ノート",
-  "short_name": "読書ノート",
+  "name": "図書館アプリ",
+  "short_name": "図書館アプリ",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -311,7 +311,11 @@ let currentGroup = "ア行";
 
 /* 統計期間 */
 let statsRange = "6m";
- 
+
+/* 検索状態保持 */
+let isSearchMode = false;
+let currentSearchKeyword = "";
+
 let descriptionVisible = false;
 
 function goBack() {
@@ -1413,6 +1417,9 @@ function searchBooks() {
         return;
     }
 
+    currentSearchKeyword = keyword;
+    isSearchMode = true;
+
     const books =
         BooksManager.getBooks();
 
@@ -1444,6 +1451,44 @@ function searchBooks() {
 
     showSearchResults(results);
 }
+
+function refreshSearchResults() {
+
+    if (!isSearchMode) {
+        return;
+    }
+
+    const books =
+        BooksManager.getBooks();
+
+    const results =
+        books.filter(book => {
+
+        return (
+            (book.title || "")
+                .normalize("NFKC")
+                .toLowerCase()
+                .includes(currentSearchKeyword)
+
+            ||
+
+            (book.author || "")
+                .normalize("NFKC")
+                .toLowerCase()
+                .includes(currentSearchKeyword)
+
+            ||
+
+            (book.isbn || "")
+                .normalize("NFKC")
+                .includes(currentSearchKeyword)
+        );
+
+    });
+
+    showSearchResults(results);
+}
+
 
 function showSearchForm() {
 
@@ -2075,17 +2120,28 @@ const info = {
 
     }
 
+    alert("更新しました");
+
+if (isSearchMode) {
+
+    refreshSearchResults();
+
+} else {
+
     BooksManager.renderBookList(
         currentSort,
         group,
         info.isbn
     );
 
-    alert("更新しました");
-
     drawTopButtons();
 
 }
+
+window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+});
 
 /* -----------------------------------
    読んだ本へ移動

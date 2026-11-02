@@ -53,7 +53,6 @@ h1{
 
 #detail-screen{
     display:none;
-    text-align:center;
 }
 
 #title{
@@ -81,13 +80,31 @@ h1{
     line-height:1.6;
 }
 
-.back-button{
+.back-button,
+#home-button{
+    display:block;
+    margin:0 0 10px 0;
     font-size:18px;
     padding:10px 20px;
     border:none;
     border-radius:12px;
-    background:#3578e5;
-    color:white;
+    background:white;
+    color:black;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    cursor:pointer;
+}
+
+#title{
+    text-align:center;
+}
+
+#location{
+    text-align:center;
+}
+
+#detail-image{
+    display:block;
+    margin:0 auto;
 }
 
 </style>
@@ -182,11 +199,11 @@ onclick="showArea('kosodate.png','家事・育児')">
 </div>
 
 
-<!-- 児童・YA -->
+<!-- 児童 -->
 <div class="section">
 
 <div class="section-title">
-児童・YA
+児童
 </div>
 
 <div class="button-area">
@@ -194,11 +211,6 @@ onclick="showArea('kosodate.png','家事・育児')">
 <button class="genre-btn"
 onclick="showArea('zidou.png','児童書')">
 📚<br>児童書
-</button>
-
-<button class="genre-btn"
-onclick="showArea('YA.png','YA')">
-🎓<br>YA
 </button>
 
 </div>
@@ -289,6 +301,11 @@ onclick="showArea('bunngaku.png','文学')">
 📖<br>文学
 </button>
 
+<button class="genre-btn"
+onclick="showArea('YA.png','中高生向け')">
+🎓<br>進路<br>ﾗｲﾄﾉﾍﾞﾙ
+</button>
+
 </div>
 
 </div>
@@ -347,147 +364,147 @@ alt="地図">
 
 <script>
 
-//メッセージ一覧
+//メッセージ一覧（detail:""　が詳細部分だが、今は空にしてある）
 const genreInfo = {
 
 "雑誌":{
 location:"１階 雑誌コーナー",
-detail:"詳細：雑誌（週刊誌、月刊誌など）"
+detail:""
 },
 
 "生き方":{
 location:"１階 棚番号１",
-detail:"生き方・人生訓"
+detail:""
 },
 
 "旅行":{
 location:"１階 棚番号１と２の間",
-detail:"詳細：国内外の旅行関連本"
+detail:""
 },
 
 "健康":{
 location:"１階 棚番号２と３の間",
-detail:"詳細：病気、健康法など"
+detail:""
 },
 
 "園芸":{
 location:"１階 棚番号３と４の間",
-detail:"詳細：園芸、ペット"
+detail:""
 },
 
 "コミック":{
 location:"１階 棚番号４と５の間",
-detail:"詳細：コミック"
+detail:""
 },
 
 "文化":{
 location:"１階 棚番号４と５の間",
-detail:"詳細：華道、茶道、囲碁、将棋など"
+detail:""
 },
 
 "言語":{
 location:"１階 棚番号５",
-detail:"詳細：マナー、冠婚葬祭のスピーチ、手紙など"
+detail:""
 },
 
 "料理":{
 location:"１階 家族応援コーナー",
-detail:"詳細：料理"
+detail:""
 },
 
 "ファッション":{
 location:"１階 家族応援コーナー",
-detail:"詳細：裁縫、服飾、お金"
+detail:""
 },
 
 "家事・育児":{
 location:"１階 家族応援コーナー（児童室側）",
-detail:"詳細：家事・育児"
+detail:""
 },
 
 "児童書":{
 location:"１階 児童室",
-detail:"詳細：児童書、絵本、紙芝居など"
+detail:""
 },
 
-"YA":{
+"中高生向け":{
 location:"２階 ＹＡコーナー",
-detail:"詳細：進路、ライトノベル"
+detail:""
 },
 
 "パソコン":{
 location:"２階 ビジネスコーナー",
-detail:"詳細：政治経済・金融・パソコン関連書"
+detail:""
 },
 
 "金融商業":{
 location:"２階 ビジネスコーナー",
-detail:"詳細：金融商業"
+detail:""
 },
 
 "政治経済":{
 location:"２階 ビジネスコーナー",
-detail:"詳細：政治経済"
+detail:""
 },
 
 "小説":{
 location:"２階 文庫コーナー",
-detail:"詳細：小説（ライトノベル以外）"
+detail:""
 },
 
 "宗教・心理学・占い":{
 location:"２階 棚番号１・１５",
-detail:"詳細：哲学、心理学、占い"
+detail:""
 },
 
 "歴史・伝記":{
 location:"２階 棚番号１～３",
-detail:"詳細：歴史、伝記"
+detail:""
 },
 
 "福祉":{
 location:"２階 棚番号３と４の間",
-detail:"詳細：年金、相続、社会問題"
+detail:""
 },
 
 "社会・科学":{
 location:"２階 棚番号４と５の間",
-detail:"詳細：社会、科学"
+detail:""
 },
 
 "技術・産業":{
 location:"２階 棚番号５と６の間",
-detail:"詳細：技術、産業"
+detail:""
 },
 
 "芸術":{
 location:"２階 棚番号５と６の間",
-detail:"詳細：芸術"
+detail:""
 },
 
 "スポーツ":{
 location:"２階 棚番号６と７の間",
-detail:"詳細：スポーツ"
+detail:""
 },
 
 "文学":{
 location:"２階 棚番号８以降",
-detail:"詳細：文学"
+detail:""
 },
 
 "洋書":{
 location:"２階 洋書コーナー",
-detail:"詳細：洋書、図書館関連の本"
+detail:""
 },
 
 "郷土":{
 location:"３階 郷土資料室",
-detail:"詳細：郷土資料、住宅地図、調べ物"
+detail:""
 },
 
 "新刊":{
 location:"１階 新刊コーナー",
-detail:"詳細：新しく購入した本"
+detail:""
 }
 
 };
@@ -561,7 +578,7 @@ cooking:"料理",
 fashion:"ファッション",
 family:"家事・育児",
 children:"児童書",
-ya:"YA",
+ya:"中高生向け",
 PC:"パソコン",
 kinnyuu:"金融商業",
 seizi:"政治経済",
@@ -594,7 +611,7 @@ const genreToFile={
 "ファッション":"fassyonn.png",
 "家事・育児":"kosodate.png",
 "児童書":"zidou.png",
-"YA":"YA.png",
+"中高生向け":"YA.png",
 "パソコン":"PC.png",
 "金融商業":"kinnyuu.png",
 "政治経済":"seizi.png",

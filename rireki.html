@@ -313,8 +313,8 @@ let currentGroup = "ア行";
 let statsRange = "6m";
 
 /* 検索状態保持 */
-window.isSearchMode = false;
-window.currentSearchKeyword = "";
+let isSearchMode = false;
+let currentSearchKeyword = "";
 
 let descriptionVisible = false;
 
@@ -1053,42 +1053,11 @@ return null;
 function drawTopButtons() {
 
   setDescription(`
-・本の登録 <br>
-　・読み取り<br>
-　　　本の裏面の２段のバーコードを読み込む。<br>
-　・手動登録<br>
-　　　データがない場合等、手入力で登録<br>
-　　　ISBNには「978」で始まるバーコードを入力。<br>
-　　　ISBNは未入力でも登録可能。<br>
-<br>
-・本を探す<br>
-　　タイトル等で登録されている本を検索可能。<br>
-　　検索結果から、状態の確認、編集・削除可能。<br>
-<br>
-・読書統計<br>
-　　直近６か月、１年、３年の読書状況を集計。<br>
-<br>
-・バックアップ<br>
-　・ファイル作成・復元（おすすめ）<br>
-　　　バックアップファイルをご自身の端末の中に作成。<br>
-　　　上記を他端末に送り復元することで、別の端末への移行も可能。<br>
-　・文字列作成・復元<br>
-　　　バックアップ用文字列での作成・復元。<br>
-　　　作成された文字列をメール等でご自身に送り、別端末で復元することで、別端末へデータでの移行も可能。<br>
-<p style="color: red;">　　　データ消失を防ぐため、バックアップはこまめに作成してくだい。</p><br>
-<br>
-・読書記録<br>
-　・読みたい本<br>
-　　　「読みたい本」「予約中」に登録した本を表示。<br>
-　　　なお、ここで「予約中」にしても、各図書館での予約にはなりません。<br>
-　・読書中<br>
-　　　「読んでいる本」に登録した本を表示。<br>
-　・読んだ本<br>
-　　　「読んだ本」に登録した本を、タイトルごとに表示。<br>
-　　　ここに登録されたものが、読書統計に反映されます。<br>
-<br>
-※読みたい本→（予約中）→読書中→読んだ本　と管理することができます。<br>
-
+  読み取りボタンを押して、カメラで本のバーコードを読み込んでください。<br>
+  読み込むバーコードは、本の裏面の２段のバーコードです。<br>
+  上手く読み込めない場合は、再度読み込むか、手動で登録することも可能です。<br>
+  ISBNには、「978」で始まるバーコード番号を入力してください。<br>
+  よみは「ひらがな」「アルファベット」「数字」「記号」のみ入力できます。<br><br><br>
   `);
 
   const top = document.getElementById("top-area");
@@ -1449,10 +1418,7 @@ function searchBooks() {
     }
 
     currentSearchKeyword = keyword;
-    window.currentSearchKeyword = keyword;
-
     isSearchMode = true;
-    window.isSearchMode = true;
 
     const books =
         BooksManager.getBooks();
@@ -1502,20 +1468,20 @@ function refreshSearchResults() {
             (book.title || "")
                 .normalize("NFKC")
                 .toLowerCase()
-                .includes(window.currentSearchKeyword)
+                .includes(currentSearchKeyword)
 
             ||
 
             (book.author || "")
                 .normalize("NFKC")
                 .toLowerCase()
-                .includes(window.currentSearchKeyword)
+                .includes(currentSearchKeyword)
 
             ||
 
             (book.isbn || "")
                 .normalize("NFKC")
-                .includes(window.currentSearchKeyword)
+                .includes(currentSearchKeyword)
         );
 
     });
@@ -2532,8 +2498,6 @@ function saveLastBackupDate() {
 ----------------------------------- */
 function showBackupData() {
 
-saveLastBackupDate();
-
   // ★ 説明文をバックアップ用に変更
   setDescription(`
     以下に表示される文字列をコピーして保存しておくことで、
@@ -2577,14 +2541,33 @@ padding:5px 5px;
 }
 
 function copyBackup() {
-  const text = document.getElementById("backup-view").value;
 
-  navigator.clipboard.writeText(text)
+    const text =
+        document.getElementById(
+            "backup-view"
+        ).value;
+
+    navigator.clipboard
+    .writeText(text)
+
     .then(() => {
-      alert("バックアップデータをコピーしました。\nメール本文などに貼り付けて使えます。");
+
+        saveLastBackupDate();
+
+        drawTopButtons();
+
+        alert(
+            "バックアップデータをコピーしました。\nメール本文などに貼り付けて使えます。"
+        );
+
     })
+
     .catch(() => {
-      alert("コピーに失敗しました。テキストを選択して手動でコピーしてください。");
+
+        alert(
+            "コピーに失敗しました。テキストを選択して手動でコピーしてください。"
+        );
+
     });
 }
 
@@ -2686,11 +2669,8 @@ if (ok) {
 ----------------------------------- */
 function exportJsonBackup() {
 
-    saveLastBackupDate();
-
     const data =
         BooksManager.getBooks();
-
     const json =
         JSON.stringify(data, null, 2);
 
@@ -2712,7 +2692,13 @@ function exportJsonBackup() {
 
     URL.revokeObjectURL(url);
 
-    alert("バックアップファイルを保存しました");
+    saveLastBackupDate();
+
+    drawTopButtons();
+
+    alert(
+        "バックアップファイルを保存しました"
+    );
 }
 
 /* -----------------------------------

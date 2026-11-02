@@ -78,17 +78,7 @@
   </div>
 </div>
 
-<br>
-他端末で使用する場合は、以下を読み込んでください。<br>
-読み込み後、ホーム画面に追加することで、いつでも使用できるようになります。<br>
-＜ホーム画面への追加方法(iPhone)＞<br>
-　①画面下部の「…」を押す<br>
-　②「共有」を押す<br>
-　③画面下部に出てきた部分を、上へスライド<br>
-　④「ホーム画面に追加」を押す<br>
-　⑤画面右上の「追加」を押す<br>
-Androidは、各端末の設定に従ってください。<br>
-なお、端末同士のデータは共有されません。<br>
+<br><br>
 
   <img src="QR.png"
        alt="ＱＲコード"
@@ -154,52 +144,381 @@ function toggleFavorite(id) {
     renderLibraries();
 }
 
+
+function getVisibleLibraries() {
+
+    let visible = JSON.parse(
+        localStorage.getItem(
+            "visibleLibraries"
+        ) || "[]"
+    );
+
+    /* 全館非表示になった場合は初期化 */
+
+    if (
+        visible.length === 0
+    ) {
+
+        visible =
+            libraries.map(
+                lib => lib.id
+            );
+
+        saveVisibleLibraries(
+            visible
+        );
+
+    }
+
+    return visible;
+
+}
+
+function saveVisibleLibraries(data) {
+
+    localStorage.setItem(
+        "visibleLibraries",
+        JSON.stringify(data)
+    );
+
+}
+
+function toggleVisible(id) {
+
+    let visible =
+        getVisibleLibraries();
+
+    if (visible.includes(id)) {
+
+        /* 最後の1館は非表示にできない */
+        if (visible.length === 1) {
+
+            alert(
+                "最低1館は表示してください"
+            );
+
+            return;
+        }
+
+        visible =
+            visible.filter(
+                x => x !== id
+            );
+
+    } else {
+
+        visible.push(id);
+
+    }
+
+    saveVisibleLibraries(
+        visible
+    );
+
+    renderLibraries();
+}
+
+if (
+    !localStorage.getItem(
+        "visibleLibraries"
+    )
+) {
+
+    saveVisibleLibraries(
+        libraries.map(
+            lib => lib.id
+        )
+    );
+
+}
+
 function renderLibraries() {
 
-    const favorites = getFavorites();
+    console.log(
+        getVisibleLibraries()
+    );
 
-    // ☆ありを上へ移動
-    // 同じグループ内は libraries の記述順を維持
-    const sorted = [...libraries].sort((a, b) => {
+    const favorites =
+        getFavorites();
 
-        const af = favorites.includes(a.id);
-        const bf = favorites.includes(b.id);
+    const visible =
+        getVisibleLibraries();
 
-        if (af && !bf) return -1;
-        if (!af && bf) return 1;
+    const sorted =
+        [...libraries].sort((a,b)=>{
 
-        return 0;
+        const af =
+            favorites.includes(a.id);
+
+        const bf =
+            favorites.includes(b.id);
+
+        const av =
+            visible.includes(a.id);
+
+        const bv =
+            visible.includes(b.id);
+
+        const scoreA =
+            (av ? 2 : 0)
+            +
+            (af ? 1 : 0);
+
+        const scoreB =
+            (bv ? 2 : 0)
+            +
+            (bf ? 1 : 0);
+
+        return scoreB - scoreA;
+
     });
 
-    const area = document.getElementById("library-list");
+    const visibleLibs =
+        sorted.filter(
+            lib =>
+            visible.includes(lib.id)
+        );
+
+    const hiddenLibs =
+        sorted.filter(
+            lib =>
+            !visible.includes(lib.id)
+        );
+
+    const area =
+        document.getElementById(
+            "library-list"
+        );
 
     area.innerHTML = "";
 
-    sorted.forEach(lib => {
+    /* --------------------
+       表示中図書館
+    -------------------- */
 
-        const isFav = favorites.includes(lib.id);
+    visibleLibs.forEach(lib => {
 
-        const card = document.createElement("div");
+    const isFav =
+        favorites.includes(
+            lib.id
+        );
 
-        card.className = "library-card";
+    const card =
+        document.createElement(
+            "div"
+        );
 
-        card.innerHTML =
-            '<span class="favorite ' +
-            (isFav ? 'on' : 'off') +
-            '" onclick="toggleFavorite(\'' + lib.id + '\')">' +
-            (isFav ? '★' : '☆') +
-            '</span>' +
+    card.className =
+        "library-card";
 
-            '<a class="library-button" href="' + lib.url + '">' +
-            lib.name +
-            '</a>';
+    card.innerHTML =
 
-        area.appendChild(card);
+`
+<div style="
+display:flex;
+align-items:center;
+gap:10px;
+width:100%;
+">
+
+<span
+class="favorite ${isFav ? 'on' : 'off'}"
+onclick="toggleFavorite('${lib.id}')"
+>
+${isFav ? '★' : '☆'}
+</span>
+
+<a
+class="library-button"
+href="${lib.url}"
+style="
+flex:1;
+margin:0;
+"
+>
+${lib.name}
+</a>
+
+<label
+class="switch"
+style="
+margin-left:10px;
+flex-shrink:0;
+"
+>
+
+<input
+type="checkbox"
+checked
+onchange="toggleVisible('${lib.id}')"
+>
+
+<span class="slider"></span>
+
+</label>
+
+</div>
+`;
+
+    area.appendChild(card);
+
+});
+
+    /* --------------------
+       追加ボタン
+    -------------------- */
+
+    if (hiddenLibs.length > 0) {
+
+    const addCard =
+        document.createElement(
+            "div"
+        );
+
+    addCard.className =
+        "library-card";
+
+    addCard.innerHTML =
+
+`
+<button
+id="toggle-hidden-libraries"
+class="library-button"
+style="
+width:100%;
+"
+>
+＋ 表示する図書館を追加する
+</button>
+`;
+
+    area.appendChild(
+        addCard
+    );
+
+    /* --------------------
+       非表示館領域
+    -------------------- */
+
+    const hiddenArea =
+        document.createElement(
+            "div"
+        );
+
+    hiddenArea.id =
+        "hidden-libraries";
+
+    hiddenArea.style.display =
+        "none";
+
+    area.appendChild(
+        hiddenArea
+    );
+
+    hiddenLibs.forEach(lib => {
+
+        const isFav =
+            favorites.includes(
+                lib.id
+            );
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.className =
+            "library-card";
+
+        row.innerHTML =
+
+`
+<div style="
+display:flex;
+align-items:center;
+width:100%;
+">
+
+<span
+class="favorite ${isFav ? 'on' : 'off'}"
+onclick="toggleFavorite('${lib.id}')"
+>
+${isFav ? '★' : '☆'}
+</span>
+
+<div
+style="
+flex:1;
+margin-left:10px;
+font-size:18px;
+font-weight:bold;
+"
+>
+${lib.name}
+</div>
+
+<label
+class="switch"
+style="
+margin-left:auto;
+flex-shrink:0;
+"
+>
+
+<input
+type="checkbox"
+onchange="toggleVisible('${lib.id}')"
+>
+
+<span class="slider"></span>
+
+</label>
+
+</div>
+`;
+
+        hiddenArea.appendChild(
+            row
+        );
+
     });
+
+    const btn =
+        document.getElementById(
+            "toggle-hidden-libraries"
+        );
+
+    btn.onclick =
+        function() {
+
+        const hidden =
+            document.getElementById(
+                "hidden-libraries"
+            );
+
+        if (
+            hidden.style.display
+            === "none"
+        ) {
+
+            hidden.style.display =
+                "block";
+
+            btn.textContent =
+                "－ 表示する図書館を追加する";
+
+        } else {
+
+            hidden.style.display =
+                "none";
+
+            btn.textContent =
+                "＋ 表示する図書館を追加する";
+        }
+
+    };
+    }
 }
-
-renderLibraries();
-
 function renderBookStats() {
 
     const books =

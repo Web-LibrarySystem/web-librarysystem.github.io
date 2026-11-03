@@ -313,8 +313,8 @@ let currentGroup = "ア行";
 let statsRange = "6m";
 
 /* 検索状態保持 */
-let isSearchMode = false;
-let currentSearchKeyword = "";
+window.isSearchMode = false;
+window.currentSearchKeyword = "";
 
 let descriptionVisible = false;
 
@@ -1437,8 +1437,8 @@ function searchBooks() {
         return;
     }
 
-    currentSearchKeyword = keyword;
-    isSearchMode = true;
+    window.currentSearchKeyword = keyword;
+    window.isSearchMode = true;
 
     const books =
         BooksManager.getBooks();
@@ -1474,7 +1474,7 @@ function searchBooks() {
 
 function refreshSearchResults() {
 
-    if (!isSearchMode) {
+    if (!window.isSearchMode) {
         return;
     }
 
@@ -1488,20 +1488,20 @@ function refreshSearchResults() {
             (book.title || "")
                 .normalize("NFKC")
                 .toLowerCase()
-                .includes(currentSearchKeyword)
+                .includes(window.currentSearchKeyword)
 
             ||
 
             (book.author || "")
                 .normalize("NFKC")
                 .toLowerCase()
-                .includes(currentSearchKeyword)
+                .includes(window.currentSearchKeyword)
 
             ||
 
             (book.isbn || "")
                 .normalize("NFKC")
-                .includes(currentSearchKeyword)
+                .includes(window.currentSearchKeyword)
         );
 
     });
@@ -2143,9 +2143,10 @@ const info = {
 
     alert("更新しました");
 
-if (isSearchMode) {
+if (window.isSearchMode === true) {
 
     refreshSearchResults();
+    return;
 
 } else {
 

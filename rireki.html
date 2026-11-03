@@ -320,8 +320,28 @@ let descriptionVisible = false;
 
 function goBack() {
 
-    history.back();
+    const reloadScreens = [
+        "camera",
+        "manual",
+        "search",
+        "stats",
+        "backup",
+        "restore"
+    ];
 
+    if (reloadScreens.includes(currentScreen)) {
+
+        if (typeof Quagga !== "undefined") {
+            try {
+                Quagga.stop();
+            } catch(e) {}
+        }
+
+        location.reload();
+        return;
+    }
+
+    history.back();
 }
 
 function formatDateJP(dateStr) {
@@ -1051,7 +1071,7 @@ return null;
    初期ボタン描画
 ----------------------------------- */
 function drawTopButtons() {
-
+  currentScreen = "main";
   setDescription(`
   読み取りボタンを押して、カメラで本のバーコードを読み込んでください。<br>
   読み込むバーコードは、本の裏面の２段のバーコードです。<br>
@@ -1259,7 +1279,7 @@ searchInput.style =
   "width:140px;padding:8px;font-size:16px;";
 
   btnJsonRestore.onclick = function() {
-
+      currentScreen = "restore";
       const input =
       document.createElement("input");
 
@@ -1497,7 +1517,7 @@ function showSearchForm() {
 }
 
 function showSearchResults(results) {
-
+    currentScreen = "search";
     const top =
         document.getElementById(
             "top-area"
@@ -1676,6 +1696,7 @@ top.innerHTML = html;
    手動登録フォーム
 ----------------------------------- */
 function showManualEntryForm() {
+currentScreen = "manual";
 const top =
 document.getElementById("top-area");
 top.innerHTML = `
@@ -2497,7 +2518,7 @@ function saveLastBackupDate() {
    バックアップ（文字列）
 ----------------------------------- */
 function showBackupData() {
-
+   currentScreen = "backup";
   // ★ 説明文をバックアップ用に変更
   setDescription(`
     以下に表示される文字列をコピーして保存しておくことで、
@@ -2575,7 +2596,7 @@ function copyBackup() {
    バックアップ復元（文字列）
 ----------------------------------- */
 function showRestoreTextUI() {
-
+   currentScreen = "restore";
   // ★ 説明文を復元用に変更
   setDescription(`
     スマホを変えた際や、データが消えた際に、
@@ -2668,7 +2689,7 @@ if (ok) {
    ファイルでバックアップ作成
 ----------------------------------- */
 function exportJsonBackup() {
-
+    currentScreen = "backup";
     const data =
         BooksManager.getBooks();
     const json =
@@ -3018,7 +3039,7 @@ ${statusName}
    カメラ読み取り（ISBN）
 ----------------------------------- */
 function showCamera() {
-
+    currentScreen = "camera";
     duplicateAlertShown = false;
     cameraStopped = false;
     isProcessing = false;
@@ -3196,7 +3217,7 @@ function backToMain() {
 }
 
 function showStatistics() {
-
+    currentScreen = "stats";
     document.getElementById(
         "book-list"
     ).innerHTML = "";

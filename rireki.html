@@ -709,8 +709,14 @@ div.innerHTML = `
 
 <div style="margin-left:-1px;">
 
-<img src="${googleUrl}"
-...
+<img
+src="${googleUrl}"
+onerror="this.onerror=null;
+this.src='${openbdUrl}';
+this.onerror=function(){
+    this.onerror=null;
+    this.src='noimage.png';
+};"
 style="
 width:80px;
 height:110px;

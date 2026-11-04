@@ -2,622 +2,208 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<title>大垣市図書館</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="図書館アプリ">
 
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-512.png">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="manifest" href="../manifest.json">
+<link rel="apple-touch-icon" href="../icon-512.png">
 
-<title>図書館アプリ</title>
+<style>
 
+body{
+    background-color:#bbdbf3;
+}
+
+.header{
+    background:#0288D1;
+}
+
+.menu-grid{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:12px;
+    padding:15px;
+}
+
+.menu-button{
+    width:44%;
+    min-height:90px;
+    color:#0288D1;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    background:white;
+    border:none;
+    border-radius:16px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+
+    font-size:18px;
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.menu-button:active{
+    background:#89c3ed;
+}
+
+.menu-icon{
+    font-size:30px;
+    margin-bottom:6px;
+}
+
+.top-image{
+    width:95%;
+    max-width:600px;
+
+    display:block;
+    margin:15px auto;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,0.15);
+}
+
+.back-button button{
+    background:white;
+    border:none;
+
+    padding:10px 15px;
+
+    border-radius:12px;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.08);
+
+    cursor:pointer;
+}
+
+.section-title{
+
+    padding-top:10px;
+
+    text-align:center;
+
+    color:#666;
+
+    font-size:15px;
+
+    font-weight:bold;
+}
+
+</style>
 </head>
+
+<script>
+function openLibraryCalendar(lib){
+
+    const form = document.createElement("form");
+
+    form.method = "post";
+    form.action = "https://www.ocpl.ogaki.gifu.jp/opw/OPS/OPSCALEND.CSP";
+    form.target = "_blank";
+
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "lib";
+    input.value = lib;
+
+    form.appendChild(input);
+
+    document.body.appendChild(form);
+
+    form.submit();
+
+    document.body.removeChild(form);
+}
+</script>
 
 <body>
 
 <div class="header">
-  📚 図書館アプリ
+大垣市立図書館
 </div>
 
-<h4>
-☆を押して、お気に入りの図書館を登録してください<br>
-右のスイッチで、表示・非表示の切り替えもできます
-</h4>
-
-<div id="library-list" class="library-list"></div>
-
-<br>
-
-<h4>
-　読みたい本・読んだ本を登録してください
-</h4>
-
-<div style="text-align:center;">
-  <div
-    class="library-card"
-    style="
-      display:inline-block;
-      width:90%;
-      text-align:left;
-    "
-  >
-
-    <div
-      style="
-        font-size:22px;
-        font-weight:bold;
-        margin-bottom:12px;
-      "
-    >
-      📖 読書ノート
-    </div>
-
-    <div id="book-stats">
-      読みたい本：0冊<br>
-      予約済　　：0冊<br>
-      読書中　　：0冊<br>
-      読んだ本　：0冊
-    </div>
-
-    <div style="margin-top:15px;">
-      <a
-        class="library-button"
-        href="rireki.html"
-        style="
-          text-align:center;
-          border-radius:12px;
-          padding:10px;
-          background:#f5f7fa;
-        "
-      >
-        開く
-      </a>
-    </div>
-  </div>
+<div class="back-button button">
+    <button onclick="location.href='../index.html'">
+        ← 図書館選択へ
+    </button>
 </div>
 
-<br>
-
-<details
-  class="library-card"
-  style="
-    display:block;
-    width:90%;
-    margin:0 auto 20px auto;
-    box-sizing:border-box;
-  "
->
-  <summary
-    style="
-      cursor:pointer;
-      font-size:18px;
-      font-weight:bold;
-      padding:5px 0;
-    "
-  >
-    📱 初めて利用される方へ（ホーム画面への追加方法）
-  </summary>
-
-  <div
-    style="
-      margin-top:15px;
-      line-height:1.8;
-      text-align:left;
-    "
-  >
-    本アプリをご利用いただきありがとうございます。<br>
-    ホーム画面に追加すると、アプリのようにワンタップで開くことができ、便利にご利用いただけます。<br><br>
-
-    <strong>【iPhoneの場合】</strong><br>
-
-    ① この画面を開いたまま、画面下部の「…」を押します。<br>
-    ② 「共有」ボタンを押します。<br>
-    ③ 「表示を増やす」を押します。<br>
-    ④ 「ホーム画面に追加」を押します。<br>
-    ⑤ 右上の「追加」を押します。<br><br>
-
-    ※「表示を増やす」が見つからない場合は、メニューを下から上へスクロールしてください。<br><br>
-
-    <strong>【androidの場合】</strong><br>
-    各端末ごとに設定方法が異なるため各端末の設定に従ってください。
-
-  </div>
-</details>
-
-<br>
-
-こちらのQRコードを読み込むことで、他の端末で利用することもできます。<br>
-データは共有されませんので、友人やご家族とご利用ください。<br>
-
-  <img src="QR.png"
-       alt="ＱＲコード"
-       style="
-         width:30%;
-         height:auto;
-         display:block;
-         border-radius:16px;
-         box-shadow:0 2px 8px rgba(0,0,0,0.08);
-       ">
-<br>
-
-<div style="text-align:center;">
-  <a href="mennseki.html" class="note-button">
-    免責事項
-  </a>
-</div>
-
-<br>
-
-<script>
-
-const libraries = [
-{
-    id: "ogk-honkan",
-    name: "大垣市　本館",
-    url: "./OGK/index.html"
-},
-{
-    id: "ogk-kamishizu",
-    name: "大垣市　上石津",
-    url: "./KAMI/index.html"
-},
-{
-    id: "ogk-sunomata",
-    name: "大垣市　墨俣",
-    url: "./SUNO/index.html"
-}
-];
-
-function getFavorites() {
-    return JSON.parse(
-        localStorage.getItem("favoriteLibraries") || "[]"
-    );
-}
-
-function saveFavorites(data) {
-    localStorage.setItem(
-        "favoriteLibraries",
-        JSON.stringify(data)
-    );
-}
+<img src="top.png"
+     alt="図書館トップ画像"
+     class="top-image">
 
-function toggleFavorite(id) {
+<div class="menu-grid">
 
-    let favorites = getFavorites();
+    <button class="menu-button"
+            onclick="location.href='https://www.ocpl.ogaki.gifu.jp/opw/OPS/OPSUSERINFO.CSP'">
 
-    if (favorites.includes(id)) {
-        favorites = favorites.filter(x => x !== id);
-    } else {
-        favorites.push(id);
-    }
+        <div class="menu-icon">🔑</div>
+        <div>ログイン</div>
 
-    saveFavorites(favorites);
-    renderLibraries();
-}
+    </button>
 
+    <button class="menu-button"
+            onclick="location.href='../rireki.html'">
 
-function getVisibleLibraries() {
+        <div class="menu-icon">📖</div>
+        <div>読書ノート</div>
 
-    let visible = JSON.parse(
-        localStorage.getItem(
-            "visibleLibraries"
-        ) || "[]"
-    );
+    </button>
 
-    /* 全館非表示になった場合は初期化 */
+    <button class="menu-button"
+            onclick="location.href='https://www.ocpl.ogaki.gifu.jp/'">
 
-    if (
-        visible.length === 0
-    ) {
+        <div class="menu-icon">🌐</div>
+        <div>ホームページ</div>
 
-        visible =
-            libraries.map(
-                lib => lib.id
-            );
+    </button>
 
-        saveVisibleLibraries(
-            visible
-        );
+    <button class="menu-button"
+            onclick="openLibraryCalendar(1)">
 
-    }
+        <div class="menu-icon">📅</div>
+        <div>カレンダー</div>
 
-    return visible;
+    </button>
 
-}
+    <button class="menu-button"
+            onclick="location.href='map.html'">
 
-function saveVisibleLibraries(data) {
+        <div class="menu-icon">🗺️</div>
+        <div>館内地図</div>
 
-    localStorage.setItem(
-        "visibleLibraries",
-        JSON.stringify(data)
-    );
+    </button>
 
-}
+    <button class="menu-button"
+            onclick="location.href='https://www.ocpl.ogaki.gifu.jp/opw/OPW/OPWNEWBOOK.CSP?DB=LIB'">
 
-function toggleVisible(id) {
+        <div class="menu-icon">📚</div>
+        <div>新着案内</div>
 
-    let visible =
-        getVisibleLibraries();
+    </button>
 
-    if (visible.includes(id)) {
+    <button class="menu-button"
+            onclick="location.href='guide.html'">
 
-        /* 最後の1館は非表示にできない */
-        if (visible.length === 1) {
+        <div class="menu-icon">ℹ️</div>
+        <div>利用案内</div>
 
-            alert(
-                "最低1館は表示してください"
-            );
-
-            return;
-        }
-
-        visible =
-            visible.filter(
-                x => x !== id
-            );
-
-    } else {
-
-        visible.push(id);
-
-    }
-
-    saveVisibleLibraries(
-        visible
-    );
-
-    renderLibraries();
-}
-
-if (
-    !localStorage.getItem(
-        "visibleLibraries"
-    )
-) {
-
-    saveVisibleLibraries(
-        libraries.map(
-            lib => lib.id
-        )
-    );
-
-}
-
-function renderLibraries() {
-
-    console.log(
-        getVisibleLibraries()
-    );
-
-    const favorites =
-        getFavorites();
-
-    const visible =
-        getVisibleLibraries();
-
-    const sorted =
-        [...libraries].sort((a,b)=>{
-
-        const af =
-            favorites.includes(a.id);
-
-        const bf =
-            favorites.includes(b.id);
-
-        const av =
-            visible.includes(a.id);
-
-        const bv =
-            visible.includes(b.id);
-
-        const scoreA =
-            (av ? 2 : 0)
-            +
-            (af ? 1 : 0);
-
-        const scoreB =
-            (bv ? 2 : 0)
-            +
-            (bf ? 1 : 0);
-
-        return scoreB - scoreA;
-
-    });
-
-    const visibleLibs =
-        sorted.filter(
-            lib =>
-            visible.includes(lib.id)
-        );
-
-    const hiddenLibs =
-        sorted.filter(
-            lib =>
-            !visible.includes(lib.id)
-        );
-
-    const area =
-        document.getElementById(
-            "library-list"
-        );
-
-    area.innerHTML = "";
-
-    /* --------------------
-       表示中図書館
-    -------------------- */
-
-    visibleLibs.forEach(lib => {
-
-    const isFav =
-        favorites.includes(
-            lib.id
-        );
-
-    const card =
-        document.createElement(
-            "div"
-        );
-
-    card.className =
-        "library-card";
-
-    card.innerHTML =
-
-`
-<div style="
-display:flex;
-align-items:center;
-gap:10px;
-width:100%;
-">
-
-<span
-class="favorite ${isFav ? 'on' : 'off'}"
-onclick="toggleFavorite('${lib.id}')"
->
-${isFav ? '★' : '☆'}
-</span>
-
-<a
-class="library-button"
-href="${lib.url}"
-style="
-flex:1;
-margin:0;
-"
->
-${lib.name}
-</a>
-
-<label
-class="switch"
-style="
-margin-left:10px;
-flex-shrink:0;
-"
->
-
-<input
-type="checkbox"
-checked
-onchange="toggleVisible('${lib.id}')"
->
-
-<span class="slider"></span>
-
-</label>
+    </button>
 
 </div>
-`;
-
-    area.appendChild(card);
-
-});
-
-    /* --------------------
-       追加ボタン
-    -------------------- */
-
-    if (hiddenLibs.length > 0) {
-
-    const addCard =
-        document.createElement(
-            "div"
-        );
-
-    addCard.className =
-        "library-card";
-
-    addCard.innerHTML =
-
-`
-<button
-id="toggle-hidden-libraries"
-class="library-button"
-style="
-width:100%;
-"
->
-＋ 表示する図書館を追加する
-</button>
-`;
-
-    area.appendChild(
-        addCard
-    );
-
-    /* --------------------
-       非表示館領域
-    -------------------- */
-
-    const hiddenArea =
-        document.createElement(
-            "div"
-        );
-
-    hiddenArea.id =
-        "hidden-libraries";
-
-    hiddenArea.style.display =
-        "none";
-
-    area.appendChild(
-        hiddenArea
-    );
-
-    hiddenLibs.forEach(lib => {
-
-        const isFav =
-            favorites.includes(
-                lib.id
-            );
-
-        const row =
-            document.createElement(
-                "div"
-            );
-
-        row.className =
-            "library-card";
-
-        row.innerHTML =
-
-`
-<div style="
-display:flex;
-align-items:center;
-width:100%;
-">
-
-<span
-class="favorite ${isFav ? 'on' : 'off'}"
-onclick="toggleFavorite('${lib.id}')"
->
-${isFav ? '★' : '☆'}
-</span>
-
-<div
-style="
-flex:1;
-margin-left:10px;
-font-size:18px;
-font-weight:bold;
-"
->
-${lib.name}
-</div>
-
-<label
-class="switch"
-style="
-margin-left:auto;
-flex-shrink:0;
-"
->
-
-<input
-type="checkbox"
-onchange="toggleVisible('${lib.id}')"
->
-
-<span class="slider"></span>
-
-</label>
-
-</div>
-`;
-
-        hiddenArea.appendChild(
-            row
-        );
-
-    });
-
-    const btn =
-        document.getElementById(
-            "toggle-hidden-libraries"
-        );
-
-    btn.onclick =
-        function() {
-
-        const hidden =
-            document.getElementById(
-                "hidden-libraries"
-            );
-
-        if (
-            hidden.style.display
-            === "none"
-        ) {
-
-            hidden.style.display =
-                "block";
-
-            btn.textContent =
-                "－ 表示する図書館を追加する";
-
-        } else {
-
-            hidden.style.display =
-                "none";
-
-            btn.textContent =
-                "＋ 表示する図書館を追加する";
-        }
-
-    };
-    }
-}
-function renderBookStats() {
-
-    const books =
-        JSON.parse(
-            localStorage.getItem("books") || "[]"
-        );
-
-    const wishlist =
-        books.filter(
-            b => b.status === "wishlist" && !b.reserved
-        ).length;
-
-    const reserved =
-        books.filter(
-            b => b.reserved
-        ).length;
-
-    const reading =
-        books.filter(
-            b => b.status === "reading"
-        ).length;
-
-    const read =
-        books.filter(
-            b => b.status === "read"
-        ).length;
-
-    const area =
-        document.getElementById("book-stats");
-
-    if (!area) {
-        return;
-    }
-
-    area.innerHTML =
-        "読みたい本：" + wishlist + "冊<br>" +
-        "予約済　　：" + reserved + "冊<br>" +
-        "読書中　　：" + reading + "冊<br>" +
-        "読んだ本　：" + read + "冊";
-}
-
-renderLibraries();
-renderBookStats();
-
-</script>
 
 </body>
 </html>

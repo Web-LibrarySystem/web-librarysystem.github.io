@@ -217,7 +217,7 @@ onclick="showArea('kosodate.png','家事・育児')">
 
 <button class="genre-btn"
 onclick="showArea('bs.png','乳幼児向け')">
-🍼<br>ブックスタート絵本
+🍼<br>乳幼児向け
 </button>
 
 <button class="genre-btn"
@@ -226,8 +226,13 @@ onclick="showArea('ehon.png','絵本')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('zidou.png','児童書')">
-📚<br>児童書
+onclick="showArea('zidou.png','よみもの')">
+📚<br>よみもの
+</button>
+
+<button class="genre-btn"
+onclick="showArea('hatena.png','学習')">
+🏫<br>学習
 </button>
 
 </div>
@@ -251,7 +256,7 @@ onclick="showArea('PC.png','パソコン')">
 
 <button class="genre-btn"
 onclick="showArea('kinnyuu.png','金融商業')">
-￥<br>金融・商業
+💰<br>金融・商業
 </button>
 
 <button class="genre-btn"
@@ -444,7 +449,12 @@ location:"１階 児童室",
 detail:""
 },
 
-"児童書":{
+"よみもの":{
+location:"１階 児童室",
+detail:""
+},
+
+"学習":{
 location:"１階 児童室",
 detail:""
 },
@@ -601,7 +611,8 @@ fashion:"ファッション",
 family:"家事・育児",
 bs:"乳幼児向け",
 ehon:"絵本",
-children:"児童書",
+children:"よみもの",
+hatena:"学習",
 ya:"中高生向け",
 PC:"パソコン",
 kinnyuu:"金融商業",
@@ -636,7 +647,8 @@ const genreToFile={
 "家事・育児":"kosodate.png",
 "乳幼児向け":"bs.png",
 "絵本":"ehon.png",
-"児童書":"zidou.png",
+"よみもの":"zidou.png",
+"学習":"hatena.png",
 "中高生向け":"YA.png",
 "パソコン":"PC.png",
 "金融商業":"kinnyuu.png",

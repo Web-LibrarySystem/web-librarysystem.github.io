@@ -278,7 +278,7 @@ onclick="showArea('zassi.png','雑誌')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('ikikata.png','生き方')">
+onclick="showArea('ikikata.png','人生訓')">
     <img
     src="btn/btn-ikikata.png"
     class="btn-image"
@@ -311,7 +311,7 @@ onclick="showArea('kennkou.png','健康')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('enngei.png','園芸')">
+onclick="showArea('enngei.png','園芸・ペット')">
     <img
     src="btn/btn-enngei.png"
     class="btn-image"
@@ -333,7 +333,7 @@ onclick="showArea('komi.png','コミック')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('bunnka.png','文化')">
+onclick="showArea('bunnka.png','諸芸・娯楽')">
     <img
     src="btn/btn-bunnka.png"
     class="btn-image"
@@ -345,7 +345,7 @@ onclick="showArea('bunnka.png','文化')">
 
 
 <button class="genre-btn"
-onclick="showArea('genngo.png','言語')">
+onclick="showArea('genngo.png','スピーチ・マナー')">
     <img
     src="btn/btn-genngo.png"
     class="btn-image"
@@ -367,7 +367,7 @@ onclick="showArea('ryouri.png','料理')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('fassyonn.png','ファッション')">
+onclick="showArea('fassyonn.png','服飾・手芸')">
     <img
     src="btn/btn-fassyonn.png"
     class="btn-image"
@@ -489,7 +489,7 @@ onclick="showArea('sinnri.png','宗教・心理学・占い')">
     class="btn-image"
     alt="">
     <div class="btn-label">
-    宗教・哲学
+    宗教・哲学・占い
     </div>
 </button>
 
@@ -511,7 +511,7 @@ onclick="showArea('hukusi.png','福祉')">
     class="btn-image"
     alt="">
     <div class="btn-label">
-    福祉・年金
+    福祉
     </div>
 </button>
 
@@ -522,7 +522,7 @@ onclick="showArea('kagaku.png','社会・科学')">
     class="btn-image"
     alt="">
     <div class="btn-label">
-    科学
+    社会<br>科学
     </div>
 </button>
 
@@ -571,7 +571,7 @@ onclick="showArea('bunngaku.png','文学')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('YA.png','中高生向け')">
+onclick="showArea('YA.png','進路・勉強・ライトノベル')">
     <img
     src="btn/btn-YA.png"
     class="btn-image"
@@ -593,7 +593,7 @@ onclick="showArea('PC.png','パソコン')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('kinnyuu.png','金融商業')">
+onclick="showArea('kinnyuu.png','金融・商業')">
     <img
     src="btn/btn-kinnyuu.png"
     class="btn-image"
@@ -604,7 +604,7 @@ onclick="showArea('kinnyuu.png','金融商業')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('seizi.png','政治経済')">
+onclick="showArea('seizi.png','政治・経済')">
     <img
     src="btn/btn-seizi.png"
     class="btn-image"
@@ -615,7 +615,7 @@ onclick="showArea('seizi.png','政治経済')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('yousyo.png','洋書')">
+onclick="showArea('yousyo.png','洋書・図書館関係')">
     <img
     src="btn/btn-yousyo.png"
     class="btn-image"
@@ -736,7 +736,7 @@ location:"１階 雑誌コーナー",
 detail:""
 },
 
-"生き方":{
+"人生訓":{
 location:"１階 棚番号１",
 detail:""
 },
@@ -751,7 +751,7 @@ location:"１階 棚番号２と３の間",
 detail:""
 },
 
-"園芸":{
+"園芸・ペット":{
 location:"１階 棚番号３と４の間",
 detail:""
 },
@@ -761,12 +761,12 @@ location:"１階 棚番号４と５の間",
 detail:""
 },
 
-"文化":{
+"諸芸・娯楽":{
 location:"１階 棚番号４と５の間",
 detail:""
 },
 
-"言語":{
+"スピーチ・マナー":{
 location:"１階 棚番号５",
 detail:""
 },
@@ -776,7 +776,7 @@ location:"１階 家族応援コーナー",
 detail:""
 },
 
-"ファッション":{
+"服飾・手芸":{
 location:"１階 家族応援コーナー",
 detail:""
 },
@@ -811,7 +811,7 @@ location:"１階 児童室",
 detail:""
 },
 
-"中高生向け":{
+"進路・勉強・ライトノベル":{
 location:"２階 ＹＡコーナー",
 detail:""
 },
@@ -821,12 +821,12 @@ location:"２階 ビジネスコーナー",
 detail:""
 },
 
-"金融商業":{
+"金融・商業":{
 location:"２階 ビジネスコーナー",
 detail:""
 },
 
-"政治経済":{
+"政治・経済":{
 location:"２階 ビジネスコーナー",
 detail:""
 },
@@ -876,7 +876,7 @@ location:"２階 棚番号８以降",
 detail:""
 },
 
-"洋書":{
+"洋書・図書館関係":{
 location:"２階 洋書コーナー",
 detail:""
 },
@@ -896,25 +896,25 @@ detail:""
 // QR用ID対応表
 const areaIdMap = {
 "雑誌": "magazine",
-"生き方": "ikikata",
+"人生訓": "ikikata",
 "旅行": "travel",
 "健康": "health",
-"園芸": "gardening",
+"園芸・ペット": "gardening",
 "コミック": "komi",
-"文化": "culture",
-"言語": "genngo",
+"諸芸・娯楽": "culture",
+"スピーチ・マナー": "genngo",
 "料理": "cooking",
-"ファッション": "fashion",
+"服飾・手芸": "fashion",
 "家事・育児": "family",
 "乳幼児向け":"bs",
 "絵本":"ehon",
 "よみもの":"zidou",
 "学習":"gakusyu",
 "はてなコーナー":"hatena",
-"中高生向け": "YA",
+"進路・勉強・ライトノベル": "YA",
 "パソコン": "PC",
-"金融商業": "kinnyuu",
-"政治経済": "seizi",
+"金融・商業": "kinnyuu",
+"政治・経済": "seizi",
 "小説": "novel",
 "宗教・心理学・占い": "psychology",
 "歴史・伝記": "history",
@@ -924,7 +924,7 @@ const areaIdMap = {
 "芸術": "art",
 "スポーツ": "sports",
 "文学": "literature",
-"洋書": "yousyo",
+"洋書・図書館関係": "yousyo",
 "郷土": "kyoudo",
 "新刊": "sinnkann"
 };

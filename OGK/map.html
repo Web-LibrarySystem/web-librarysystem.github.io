@@ -4,107 +4,204 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="館内マップ">
+
 <title>館内マップ</title>
 
 <style>
 
 body{
     margin:0;
-    padding:10px;
+    padding:15px;
     font-family:sans-serif;
-    background:#f5f7fa;
+    background:#FFFDF7;
 }
 
+
 h1{
+    margin-top:0;
     text-align:center;
-    font-size:24px;
 }
 
 .section{
-    margin-bottom:15px;
-    padding:10px;
+    margin-bottom:20px;
+    padding:12px;
     border-radius:12px;
-    background:#fff;
-    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    box-shadow:
+    0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* 背景色 */
+.floor1{
+    background:#EAF6E8;
+}
+
+/* ボタンの枠線 */
+.floor1 .genre-btn{
+    border:3px solid #64A65B;
+}
+
+.floor-child{
+    background:#FFF8CC;
+}
+
+.floor-child .genre-btn{
+    border:3px solid #F2C94C;
+}
+
+.floor2{
+    background:#E8F1FB;
+}
+
+.floor2 .genre-btn{
+    border:3px solid #5B9DFF;
+}
+
+.floor3{
+    background:#FFF1DD;
+}
+
+.floor3 .genre-btn{
+    border:3px solid #D9964A;
 }
 
 .section-title{
-    font-size:18px;
+    font-size:34px;
     font-weight:bold;
-    margin-bottom:10px;
+    margin-bottom:15px;
+    color:white;
+    background:#4F8A43;
+    border-radius:8px;
+    padding:8px 15px;
 }
 
 .button-area{
     display:flex;
     flex-wrap:wrap;
-    gap:8px;
+    gap:12px;
 }
 
 .genre-btn{
-    width:31%;
-    min-height:80px;
-    border:none;
-    border-radius:12px;
+    flex:0 0 22%;
+
+    min-height:170px;
+
+    border:3px solid transparent;
+    border-radius:14px;
+
     background:white;
-    box-shadow:0 2px 6px rgba(0,0,0,.08);
-    font-size:14px;
+
     cursor:pointer;
+
+    padding:0;
+
+    overflow:hidden;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.btn-image{
+    width:100%;
+    height:110px;
+
+    object-fit:contain;
+
+    display:block;
+}
+
+.btn-label{
+    flex:1;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    width:100%;
+
+    box-sizing:border-box;
+
+    font-size:18px;
+    font-weight:bold;
+
+    text-align:center;
+
+    line-height:1.3;
+
+    padding:8px;
+}
+
+.top-bar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    width:100%;
+}
+
+#title{
+    text-align:center;
+    font-size:56px;
+    margin-top:-70px;
+    margin-bottom:10px;
 }
 
 #detail-screen{
+
     display:none;
+
+    text-align:center;
+
+    position:relative;
 }
 
-#title{
-    font-size:32px;
-    margin:10px 0;
+#detail-image{
+
+    max-width:100%;
+
+    max-height:1100px;
 }
 
-#location{
-    font-size:22px;
-    font-weight:bold;
-    color:#003366;
+.back-button{
+
+    font-size:20px;
+
+    padding:10px 20px;
+
+    border:none;
+
+    border-radius:12px;
+
     margin-bottom:15px;
 }
 
-#detail-image{
-    width:100%;
-    height:auto;
-    max-width:100%;
-}
-
 #message{
-    margin-top:15px;
+
     text-align:left;
-    font-size:16px;
+
+    max-width:800px;
+
+    margin:20px auto 0 auto;
+
+    font-size:20px;
+
     line-height:1.6;
-}
-
-.back-button,
-#home-button{
-    display:block;
-    margin:0 0 10px 0;
-    font-size:18px;
-    padding:10px 20px;
-    border:none;
-    border-radius:12px;
-    background:white;
-    color:black;
-    box-shadow:0 2px 6px rgba(0,0,0,0.1);
-    cursor:pointer;
-}
-
-#title{
-    text-align:center;
 }
 
 #location{
     text-align:center;
-}
+    font-size:40px;
+    font-weight:bold;
+    color:#003366;
 
-#detail-image{
-    display:block;
-    margin:0 auto;
+    margin-bottom:20px;
+
+    white-space:nowrap;
 }
 
 </style>
@@ -114,96 +211,172 @@ h1{
 
 <div id="menu-screen">
 
+<div class="top-bar">
+
     <button
-        id="home-button"
-        onclick="location.href='index.html'">
-        ← 戻る
+    class="back-button"
+    onclick="location.href='index.html'">
+    ← 戻る
     </button>
 
-<h1>どんな本をお探しですか？</h1>
-貸出冊数：１０冊まで<br>
-貸出期間：貸出日を含め１５日間以内<br><br>
+</div>
 
-<!-- 生活情報コーナー -->
-<div class="section">
+<h1 style="margin-bottom: 5px;">
+本棚案内（大まかな位置）
+</h1>
+
+<div style="
+text-align:center;
+font-size:24px;
+font-weight:bold;
+margin-bottom:20px;
+color:#444;">
+お探しの本のジャンルを選んでください
+</div>
+
+詳細な場所は、検索端末でご確認ください<br>
+貸出冊数：１０冊まで<br>
+貸出期間：貸出日を含め１５日間以内
+
+<!-- １階 -->
+<div class="section floor1">
 
 <div class="section-title">
-生活情報コーナー
+１階
 </div>
 <div class="button-area">
 
 <button class="genre-btn"
 onclick="showArea('sinnkann.png','新刊')">
-📕<br>新刊
+    <img
+    src="btn/btn-new.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    新刊
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('zassi.png','雑誌')">
-📰<br>雑誌
+    <img
+    src="btn/btn-zassi.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    雑誌
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('ikikata.png','生き方')">
-❤<br>生き方<br>人生訓
+    <img
+    src="btn/btn-ikikata.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    人生訓
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('ryokou.png','旅行')">
-✈️<br>旅行
+    <img
+    src="btn/btn-ryokou.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    旅行
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('kennkou.png','健康')">
-🏥<br>健康
+    <img
+    src="btn/btn-kennkou.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    健康
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('enngei.png','園芸')">
-🌷<br>園芸<br>ペット
+    <img
+    src="btn/btn-enngei.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    園芸・ペット
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('komi.png','コミック')">
-📕<br>コミック
+    <img
+    src="btn/btn-komikku.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    コミック
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('bunnka.png','文化')">
-🎎<br>諸芸<br>娯楽
+    <img
+    src="btn/btn-bunnka.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    諸芸・娯楽
+    </div>
 </button>
+
 
 <button class="genre-btn"
 onclick="showArea('genngo.png','言語')">
-📖<br>スピーチ<br>マナー
+    <img
+    src="btn/btn-genngo.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    スピーチ<br>マナー
+    </div>
 </button>
-
-</div>
-
-</div>
-
-
-<!-- 家族応援コーナー -->
-<div class="section">
-
-<div class="section-title">
-家族応援コーナー
-</div>
-
-<div class="button-area">
 
 <button class="genre-btn"
 onclick="showArea('ryouri.png','料理')">
-🍳<br>料理
+    <img
+    src="btn/btn-ryouri.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    料理
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('fassyonn.png','ファッション')">
-👗<br>ファッション<br>手芸
+    <img
+    src="btn/btn-fassyonn.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    服・手芸
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('kosodate.png','家事・育児')">
-👶<br>家事・育児
+    <img
+    src="btn/btn-kosodate.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    家事・育児
+    </div>
 </button>
 
 </div>
@@ -212,37 +385,67 @@ onclick="showArea('kosodate.png','家事・育児')">
 
 
 <!-- 児童 -->
-<div class="section">
+<div class="section floor-child">
 
 <div class="section-title">
-児童
+１階（児童室）
 </div>
 
 <div class="button-area">
 
 <button class="genre-btn"
 onclick="showArea('bs.png','乳幼児向け')">
-🍼<br>乳幼児向け
+    <img
+    src="btn/btn-bs.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    乳幼児向け
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('ehon.png','絵本')">
-📕<br>絵本
+    <img
+    src="btn/btn-ehonn.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    絵本
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('zidou.png','よみもの')">
-📚<br>よみもの
+    <img
+    src="btn/btn-yomimono.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    よみもの
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('gakusyu.png','学習')">
-🏫<br>学習
+    <img
+    src="btn/btn-gakusyu.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    学習
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('hatena.png','はてなコーナー')">
-❔<br>はてなコーナー
+    <img
+    src="btn/btn-hatena.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    はてなコーナー
+    </div>
 </button>
 
 </div>
@@ -250,97 +453,167 @@ onclick="showArea('hatena.png','はてなコーナー')">
 </div>
 
 
-<!-- ビジネスコーナー -->
-<div class="section">
+<!-- ２階 -->
+<div class="section floor2">
 
 <div class="section-title">
-ビジネスコーナー
-</div>
-
-<div class="button-area">
-
-<button class="genre-btn"
-onclick="showArea('PC.png','パソコン')">
-💻<br>パソコン
-</button>
-
-<button class="genre-btn"
-onclick="showArea('kinnyuu.png','金融商業')">
-💰<br>金融・商業
-</button>
-
-<button class="genre-btn"
-onclick="showArea('seizi.png','政治経済')">
-👨<br>政治・経済
-</button>
-
-</div>
-
-</div>
-
-
-<!-- 一般書 -->
-<div class="section">
-
-<div class="section-title">
-一般書
+２階
 </div>
 
 <div class="button-area">
 
 <button class="genre-btn"
 onclick="showArea('bunnko.png','小説')">
-📕<br>小説<br>ﾗｲﾄﾉﾍﾞﾙ以外
+    <img
+    src="btn/btn-syousetu.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    小説<br>ﾗｲﾄﾉﾍﾞﾙ以外
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('sinnri.png','宗教・心理学・占い')">
-🧠<br>宗教・哲学
+    <img
+    src="btn/btn-sinnri.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    宗教・哲学
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('rekisi.png','歴史・伝記')">
-🏯<br>歴史・伝記
+    <img
+    src="btn/btn-rekisi.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    歴史・伝記
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('hukusi.png','福祉')">
-🤝<br>福祉・年金
+    <img
+    src="btn/btn-hukusi.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    福祉・年金
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('kagaku.png','社会・科学')">
-🔬<br>科学
+    <img
+    src="btn/btn-kagaku.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    科学
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('gizyutu.png','技術・産業')">
-🏭<br>技術
+    <img
+    src="btn/btn-gizyutu.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    技術・産業
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('geizyutu.png','芸術')">
-🎨<br>芸術
+    <img
+    src="btn/btn-geizyutu.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    芸術
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('supotu.png','スポーツ')">
-⚽<br>スポーツ
+    <img
+    src="btn/btn-supotu.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    スポーツ
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('bunngaku.png','文学')">
-📖<br>文学
+    <img
+    src="btn/btn-bunngaku.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    文学
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('YA.png','中高生向け')">
-🎓<br>進路・勉強<br>ﾗｲﾄﾉﾍﾞﾙ
+    <img
+    src="btn/btn-YA.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    進路・勉強<br>ライトノベル
+    </div>
+</button>
+
+<button class="genre-btn"
+onclick="showArea('PC.png','パソコン')">
+    <img
+    src="btn/btn-PC.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    パソコン
+    </div>
+</button>
+
+<button class="genre-btn"
+onclick="showArea('kinnyuu.png','金融商業')">
+    <img
+    src="btn/btn-kinnyuu.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    金融・商業
+    </div>
+</button>
+
+<button class="genre-btn"
+onclick="showArea('seizi.png','政治経済')">
+    <img
+    src="btn/btn-seizi.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    政治・経済
+    </div>
 </button>
 
 <button class="genre-btn"
 onclick="showArea('yousyo.png','洋書')">
-🌎<br>洋書<br>図書館関係
+    <img
+    src="btn/btn-yousyo.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    洋書<br>図書館関係
+    </div>
 </button>
 
 </div>
@@ -348,52 +621,57 @@ onclick="showArea('yousyo.png','洋書')">
 </div>
 
 
-<!-- 郷土 -->
-<div class="section">
+<!-- ３階 -->
+<div class="section floor3">
 
 <div class="section-title">
-郷土資料等
+３階
 </div>
-
 <div class="button-area">
 
 <button class="genre-btn"
 onclick="showArea('kyoudo.png','郷土')">
-🏠<br>郷土資料<br>辞書等
+    <img
+    src="btn/btn-kyoudo.png"
+    class="btn-image"
+    alt="">
+    <div class="btn-label">
+    郷土
+    </div>
 </button>
 
-
-
-
 </div>
 
 </div>
 
 </div>
+
 
 <div id="detail-screen">
 
-<button
-class="back-button"
-onclick="showMenu()">
-← 戻る
-</button>
+<div class="top-bar">
 
-<h2 id="title"></h2>
-
-<div id="location"></div>
-
-<img
-id="detail-image"
-src=""
-alt="地図">
-
-<div id="message"></div>
+    <button
+    class="back-button"
+    onclick="showMenu()">
+    ← 戻る
+    </button>
 
 </div>
 
-<script>
+    <h2 id="title"></h2>
 
+    <div id="location"></div>
+
+    <img
+    id="detail-image"
+    src=""
+    alt="地図">
+
+    <div id="message"></div>
+</div>
+
+<script>
 //メッセージ一覧(「detail:」で詳細表示。今はすべて削除してある）
 const genreInfo = {
 
@@ -560,99 +838,94 @@ detail:""
 };
 
 
-function showArea(fileName,label){
+function showArea(
+    fileName,
+    label
+){
 
     document.getElementById(
         "menu-screen"
-    ).style.display="none";
+    ).style.display =
+    "none";
 
     document.getElementById(
         "detail-screen"
-    ).style.display="block";
+    ).style.display =
+    "block";
 
     document.getElementById(
         "title"
-    ).textContent=label;
+    ).textContent =
+    label;
 
     document.getElementById(
         "detail-image"
-    ).src=fileName;
+    ).src =
+    fileName;
 
-    const info=
-        genreInfo[label]||{};
+    const info =
+    genreInfo[label] || {};
 
     document.getElementById(
         "location"
-    ).textContent=
-        info.location || "";
+    ).textContent =
+    info.location || "";
 
     document.getElementById(
         "message"
-    ).textContent=
-        info.detail || "";
+    ).textContent =
+    info.detail || "";
 }
 
 function showMenu(){
 
     document.getElementById(
         "detail-screen"
-    ).style.display="none";
+    ).style.display =
+    "none";
 
     document.getElementById(
         "menu-screen"
-    ).style.display="block";
+    ).style.display =
+    "block";
 }
 
-window.addEventListener(
-"load",
-function(){
-
-const params=
-new URLSearchParams(
-location.search
-);
-
-const area=
-params.get("area");
-
-const areaToGenre={
-
-magazine:"雑誌",
-ikikata:"生き方",
-travel:"旅行",
-health:"健康",
-gardening:"園芸",
-komi:"コミック",
-culture:"文化",
-genngo:"言語",
-cooking:"料理",
-fashion:"ファッション",
-family:"家事・育児",
-bs:"乳幼児向け",
-ehon:"絵本",
-zidou:"よみもの",
-hatena:"学習",
-ya:"中高生向け",
-PC:"パソコン",
-kinnyuu:"金融商業",
-seizi:"政治経済",
-novel:"小説",
-psychology:"宗教・心理学・占い",
-history:"歴史・伝記",
-welfare:"福祉",
-science:"社会・科学",
-technology:"技術・産業",
-art:"芸術",
-sports:"スポーツ",
-literature:"文学",
-yousyo:"洋書",
-kyoudo:"郷土",
-sinnkann:"新刊"
-
+const areaToGenre = {
+"magazine":"雑誌",
+"ikikata":"生き方",
+"travel":"旅行",
+"health":"健康",
+"gardening":"園芸",
+"komi":"コミック",
+"culture":"文化",
+"genngo":"言語",
+"cooking":"料理",
+"fashion":"ファッション",
+"family":"家事・育児",
+"bs":"乳幼児向け",
+"ehon":"絵本",
+"zidou":"よみもの",
+"gakusyu":"学習",
+"hatena":"はてなコーナー",
+"YA":"中高生向け",
+"PC":"パソコン",
+"kinnyuu":"金融商業",
+"seizi":"政治経済",
+"novel":"小説",
+"psychology":"宗教・心理学・占い",
+"history":"歴史・伝記",
+"welfare":"福祉",
+"science":"社会・科学",
+"technology":"技術・産業",
+"art":"芸術",
+"sports":"スポーツ",
+"literature":"文学",
+"yousyo":"洋書",
+"kyoudo":"郷土",
+"sinnkann":"新刊"
 };
 
-const genreToFile={
-
+const imageMap = {
 "雑誌":"zassi.png",
 "生き方":"ikikata.png",
 "旅行":"ryokou.png",
@@ -667,7 +940,8 @@ const genreToFile={
 "乳幼児向け":"bs.png",
 "絵本":"ehon.png",
 "よみもの":"zidou.png",
-"学習":"hatena.png",
+"学習":"gakusyu.png",
+"はてなコーナー":"hatena.png",
 "中高生向け":"YA.png",
 "パソコン":"PC.png",
 "金融商業":"kinnyuu.png",
@@ -684,22 +958,35 @@ const genreToFile={
 "洋書":"yousyo.png",
 "郷土":"kyoudo.png",
 "新刊":"sinnkann.png"
-
 };
 
-if(area && areaToGenre[area]){
+window.onload = function(){
 
-const genre=
-areaToGenre[area];
+    const params =
+    new URLSearchParams(
+        location.search
+    );
 
-showArea(
-genreToFile[genre],
-genre
-);
+    const area =
+    params.get("area");
 
-}
+    if(!area){
+        return;
+    }
 
-});
+    const label =
+    areaToGenre[area];
+
+    if(!label){
+        return;
+    }
+
+    showArea(
+        imageMap[label],
+        label
+    );
+
+};
 
 </script>
 

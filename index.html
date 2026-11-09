@@ -4,52 +4,76 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="図書館アプリ">
+
 
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-512.png">
 <link rel="stylesheet" href="css/style.css">
 
+
 <title>図書館アプリ</title>
+
 
 <style>
 
+
 .library-button:active{
 
+
     transform:translateY(2px);
+
 
     box-shadow:
         0 1px 4px rgba(0,0,0,0.08);
 
+
 }
+
+
+.header-title{
+    width:90%;
+    margin:15px auto;
+    color:#5d8c72;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+}
+
 
 </style>
 
+
 </head>
 
+
 <script>
+
 
 const libraries = [
 {
     id: "ogk-honkan",
-    name: "大垣市（本館）",
+    name: "大　垣",
     url: "./OGK/index.html"
 },
 {
     id: "ogk-kamishizu",
-    name: "大垣市（上石津）",
+    name: "上石津",
     url: "./KAMI/index.html"
 },
 {
     id: "ogk-sunomata",
-    name: "大垣市（墨俣）",
+    name: "墨　俣",
     url: "./SUNO/index.html"
 }
 ];
 
+
 function getFavorites(){
+
 
     return JSON.parse(
         localStorage.getItem(
@@ -57,52 +81,71 @@ function getFavorites(){
         ) || "[]"
     );
 
+
 }
+
 
 function isFavorite(id){
 
+
     return getFavorites().includes(id);
+
 
 }
 
+
 function toggleFavorite(id){
+
 
     let favorites =
         getFavorites();
 
+
     if(favorites.includes(id)){
+
 
         favorites =
             favorites.filter(
                 x => x !== id
             );
 
+
     }else{
+
 
         favorites.push(id);
 
+
     }
+
 
     localStorage.setItem(
         "favoriteLibraries",
         JSON.stringify(favorites)
     );
 
+
     renderLibraries();
     renderFavoriteLibraries();
 
+
 }
 
+
 function renderLibraries(){
+
 
     const area =
         document.getElementById(
             "library-list"
         );
 
+
     if(!area)return;
 
+
     area.innerHTML = "";
+
 
     const favorites =
         JSON.parse(
@@ -111,16 +154,21 @@ function renderLibraries(){
             ) || "[]"
         );
 
+
     libraries.forEach(lib => {
+
 
         const isFavorite =
             favorites.includes(lib.id);
 
+
         const card =
             document.createElement("div");
 
+
         card.className =
             "library-card";
+
 
         card.innerHTML =
 `
@@ -130,6 +178,7 @@ onclick="toggleFavorite('${lib.id}')"
 >
 ★
 </span>
+
 
 <a
 class="library-button"
@@ -144,20 +193,27 @@ ${lib.name}
 </a>
 `;
 
+
         area.appendChild(card);
+
 
     });
 
+
 }
 
+
 function renderFavoriteLibraries(){
+
 
     const area =
         document.getElementById(
             "favorite-library-menu"
         );
 
+
     if(!area) return;
+
 
     const favorites =
         JSON.parse(
@@ -166,43 +222,68 @@ function renderFavoriteLibraries(){
             ) || "[]"
         );
 
+
     let html =
 `
 <div
 style="
-font-size:22px;
+font-size:18px;
 font-weight:bold;
 text-align:center;
 margin-bottom:12px;
 "
 >
-🏛 図書館へ
+図書館一覧
 </div>
 `;
 
+
     libraries.forEach(lib => {
+
 
         if(!favorites.includes(lib.id))
             return;
 
-        html +=
+
+        let bgColor = "#e3f2fd"; // デフォルト
+
+
+/*図書館一覧の色指定*/
+if(lib.id === "ogk-honkan"){
+    bgColor = "#eef7f0";   // 大垣のボタンの色
+}else if(lib.id === "ogk-kamishizu"){
+    bgColor = "#eef7f0";   // 上石津のボタンの色
+}else if(lib.id === "ogk-sunomata"){
+    bgColor = "#eef7f0";   // 墨俣のボタンの色
+}
+
+
+html +=
 `
 <a
 href="${lib.url}"
 style="
 display:block;
 text-align:center;
-padding:8px;
+padding:10px;
 margin-bottom:8px;
 text-decoration:none;
-color:#1976d2;
+color:#333;
 font-weight:bold;
+background:${bgColor};
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.15);
+border:1px solid rgba(0,0,0,0.08);
+transition:all 0.15s ease;
 "
 >
 ${lib.name}
 </a>
 `;
+
+
     });
+
 
     html +=
 `
@@ -221,89 +302,118 @@ cursor:pointer;
 </button>
 `;
 
+
     area.innerHTML = html;
 }
 
 
+
+
 function renderBookStats(){
+
 
     const books =
         JSON.parse(
             localStorage.getItem("books") || "[]"
         );
 
+
     const wishlist =
         books.filter(
             b => b.status === "wishlist" && !b.reserved
         ).length;
+
 
     const reserved =
         books.filter(
             b => b.reserved
         ).length;
 
+
     const reading =
         books.filter(
             b => b.status === "reading"
         ).length;
+
 
     const read =
         books.filter(
             b => b.status === "read"
         ).length;
 
+
     const statsArea =
         document.getElementById(
             "book-stats-card"
         );
 
+
     if(statsArea){
+
 
         statsArea.innerHTML =
 
-            "読みたい本：" + wishlist + "冊<br>" +
-            "予約済　　：" + reserved + "冊<br>" +
-            "読書中　　：" + reading + "冊<br>" +
-            "読んだ本　：" + read + "冊";
+
+            "読みたい：" + wishlist + "冊<br>" +
+            "予約済　：" + reserved + "冊<br>" +
+            "読書中　：" + reading + "冊<br>" +
+            "読んだ　：" + read + "冊";
+
 
     }
 
+
     const monthData = {};
+
 
     for(let i=5;i>=0;i--){
 
+
         const d = new Date();
+
 
         d.setMonth(
             d.getMonth() - i
         );
 
+
         const month =
             d.toISOString().substring(0,7);
 
+
         monthData[month] = 0;
+
 
     }
 
+
     books.forEach(book => {
+
 
         if(
             book.status === "read" &&
             book.finishDate
         ){
 
+
             const month =
                 book.finishDate.substring(0,7);
 
+
             if(month in monthData){
+
 
                 monthData[month]++;
 
+
             }
+
 
         }
 
+
     });
+
 
     const max =
         Math.max(
@@ -311,38 +421,31 @@ function renderBookStats(){
             1
         );
 
+
 let html =
 `
-<div
-style="
-text-align:center;
-font-size:22px;
-font-weight:bold;
-color:white;
-margin-bottom:15px;
-"
->
-📚月別読書冊数
-</div>
-
 <div
 style="
 display:flex;
 justify-content:space-between;
 align-items:flex-end;
 width:100%;
-height:180px;
+height:200px;
 margin:0 auto;
 "
 >
 `;
 
 
+
+
 Object.entries(monthData).forEach(
     ([month,count]) => {
 
+
     const height =
         Math.max((count / max) * 140,0); /* グラフの最高と最低 */
+
 
     html +=
 `
@@ -357,116 +460,174 @@ height:100%;
 "
 >
 
+
 <div
 style="
 font-size:14px;
 font-weight:bold;
 margin-bottom:4px;
-color:#81d4fa;
+color:#001144;  /*グラフの棒の上の数字（冊数）*/
 "
 >
 ${count}
 </div>
 
+
 <div
 style="
 width:70%;
 height:${height}px;
-background:#81d4fa;
+background:#001144;  /*グラフの棒の色*/
 border-radius:8px 8px 0 0;
 "
 >
 </div>
 
+
 <div
 style="
 margin-top:6px;
 font-size:18px;
-color:white;
+color:#000000;   /*グラフの○月の色*/
 "
 >
 ${parseInt(month.substring(5))}月
 </div>
+
 
 </div>
 `;
 });
 
 
+
+
     html += "</div>";
+
 
     const chart =
         document.getElementById(
             "month-chart"
         );
 
+
     if(chart){
+
 
         chart.innerHTML = html;
 
+
     }
+
 
 }
 
+
 function toggleLibraryArea(){
+
 
     const area =
         document.getElementById(
             "library-area"
         );
 
+
     if(area.style.display === "none"){
+
 
         area.style.display = "block";
 
+
         area.open = true;
+
 
         area.scrollIntoView({
             behavior:"smooth",
             block:"start"
         });
 
+
     }else{
+
 
         area.style.display = "none";
 
+
     }
+
 
 }
 
+
 window.onload = function(){
+
 
     renderLibraries();
     renderBookStats();
     renderFavoriteLibraries();
 
+
 };
+
+
+function closeLibraryArea(){
+    const area =
+        document.getElementById(
+            "library-area"
+        );
+
+
+    area.open = false;
+    area.style.display = "none";
+}
+
 
 </script>
 
+
 <body>
 
-<div class="header">
-  📚 図書館アプリ
+
+<div class="header-title">
+  📚 図書館アプリ📚
 </div>
+
 
 <!-- 読了グラフ -->
 
+
 <div
-  class="library-card"
-  style="
-    width:90%;
-    margin:15px auto;
-    box-sizing:border-box;
-    background:#1976d2;
-  "
+style="
+width:90%;
+margin:15px auto;
+background:#AADDDD;   /* グラフ部分の背景色 */
+border:1px solid #cfe3cf;
+border-radius:12px;
+box-sizing:border-box;
+overflow:hidden;
+"
 >
 
-  <div
-  id="month-chart"
-  style="
-    width:100%;
-  "
+<div
+style="
+background:#005588;   /* タイトル帯 */
+color:#FFFFFF;        /* 文字色 */
+text-align:center;
+font-size:22px;
+font-weight:bold;
+padding:6px 0;
+"
+>
+月別読書冊数
+</div>
+
+<div
+id="month-chart"
+style="
+padding:12px;
+width:100%;
+box-sizing:border-box;
+"
 ></div>
 
 </div>
@@ -474,29 +635,47 @@ window.onload = function(){
 <div
 style="
 width:90%;
-margin:15px auto;
-text-align:center;
-font-size:24px;
-font-weight:bold;
-color:#ff9800;
+margin:15px auto 20px auto;
+padding:12px;
+background:#AADDAA; /*各種メニューの表示エリア部分の背景色*/
+border:1px solid #cfe3cf;
+border-radius:12px;
+box-sizing:border-box;
 "
 >
-メニュー
+
+
+<div
+style="
+margin:-12px -12px 12px -12px; /*各種メニューの位置*/
+width:calc(100% + 24px);
+background:#559966; /*各種メニューの帯の背景色*/
+color:#FFFFFF;/*各種メニューの帯の文字色*/
+text-align:center;
+font-size:22px;
+font-weight:bold;
+padding:6px 0;
+border-radius:12px 12px 0 0;
+box-sizing:border-box;
+"
+>
+各種メニュー
 </div>
+
 
 <!-- 中段 -->
 
+
 <div
   style="
-    width:90%;
-    margin:0 auto 20px auto;
+    width:100%;
     display:flex;
     gap:12px;
     align-items:stretch;
   "
 >
-
   <!-- 左 -->
+
 
   <div
 style="
@@ -507,6 +686,7 @@ gap:10px;
 "
 >
 
+
 <a
 href="rireki.html"
 class="library-card"
@@ -515,12 +695,17 @@ margin:0;
 display:block;
 text-decoration:none;
 color:#333;
+background:#ffffff;
+box-shadow:0 3px 8px rgba(0,0,0,0.18);
+border:1px solid rgba(0,0,0,0.08);
+border-radius:12px;
 "
 >
 
+
 <div
 style="
-font-size:22px;
+font-size:18px;
 font-weight:bold;
 text-align:center;
 margin-bottom:15px;
@@ -529,23 +714,44 @@ margin-bottom:15px;
 📖読書ノート
 </div>
 
+
 <div
 id="book-stats-card"
 style="
 line-height:2;
 text-align:center;
-font-size:16px;
+font-size:15px;
 font-weight:bold;
 "
 >
-
 </div>
+
+
+<div
+style="
+width:100%;
+margin-top:10px;
+padding:10px;
+background:#f0f0f0;
+border-radius:12px;
+text-align:center;
+font-size:14px;
+font-weight:bold;
+box-sizing:border-box;
+"
+>
+詳細をみる
+</div>
+
 
 </a>
 
+
 </div>
 
+
   <!-- 右 -->
+
 
 <div
 style="
@@ -555,6 +761,7 @@ flex-direction:column;
 gap:12px;
 "
 >
+
 
 <div
 id="favorite-library-menu"
@@ -566,13 +773,13 @@ display:block;
 "
 >
 </div>
-
-
-    </div>
-
+</div>
+</div>
 </div>
 
+
 <!-- 図書館一覧 -->
+
 
 <details
   id="library-area"
@@ -585,19 +792,46 @@ display:block;
   "
 >
 
+
   <summary
-    style="
-      cursor:pointer;
-      font-size:18px;
-      font-weight:bold;
-    "
-  >
-    🏛 図書館一覧
-  </summary>
+style="
+display:flex;
+justify-content:space-between;
+align-items:center;
+cursor:pointer;
+font-size:22px;
+font-weight:bold;
+"
+>
+<span>🏛 図書館一覧</span>
+
+
+<button
+type="button"
+onclick="
+event.preventDefault();
+event.stopPropagation();
+closeLibraryArea();
+"
+style="
+font-size:14px;
+padding:4px 10px;
+border:none;
+border-radius:8px;
+background:#ddd;
+cursor:pointer;
+"
+>
+閉じる
+</button>
+</summary>
+
 
   <h4>
     ☆を押してお気に入り登録できます<br>
+    お気に入りに登録すると「図書館一覧」に表示されます
   </h4>
+
 
   <div
     id="library-list"
@@ -605,11 +839,16 @@ display:block;
   >
   </div>
 
+
 </details>
 
 
 
+
+
+
 <!-- 利用案内 -->
+
 
 <details
   class="library-card"
@@ -620,6 +859,7 @@ display:block;
     box-sizing:border-box;
   "
 >
+
 
   <summary
     style="
@@ -632,6 +872,7 @@ display:block;
     📱 初めて利用される方へ<br>（ホーム画面への追加方法）
   </summary>
 
+
   <div
     style="
       margin-top:15px;
@@ -640,10 +881,13 @@ display:block;
     "
   >
 
+
     本アプリをご利用いただきありがとうございます。<br>
     ホーム画面に追加すると、アプリのようにワンタップで開くことができ、便利にご利用いただけます。<br><br>
 
+
     <strong>【iPhoneの場合】</strong><br>
+
 
     ① この画面を開いたまま、画面下部の「…」を押します。<br>
     ② 「共有」ボタンを押します。<br>
@@ -651,18 +895,26 @@ display:block;
     ④ 「ホーム画面に追加」を押します。<br>
     ⑤ 右上の「追加」を押します。<br><br>
 
+
     ※「表示を増やす」が見つからない場合は、メニューを下から上へスクロールしてください。<br><br>
+
 
     <strong>【Androidの場合】</strong><br>
     各端末ごとに設定方法が異なるため各端末の設定に従ってください。
 
+
   </div>
+
 
 </details>
 
 
 
+
+
+
 <!-- QRコード -->
+
 
 <details
   class="library-card"
@@ -672,6 +924,7 @@ display:block;
     box-sizing:border-box;
   "
 >
+
 
   <summary
     style="
@@ -683,10 +936,12 @@ display:block;
     📱 ＱＲ表示（後で削除予定）
   </summary>
 
+
   <p>
     こちらのQRコードを読み込むことで、他の端末で利用できます。<br>
     データは共有されませんので、友人やご家族とご利用ください。
   </p>
+
 
   <img
     src="QR.png"
@@ -700,11 +955,16 @@ display:block;
     "
   >
 
+
 </details>
 
 
 
+
+
+
 <div style="text-align:center;">
+
 
   <a
     href="mennseki.html"
@@ -713,10 +973,15 @@ display:block;
     免責事項
   </a>
 
+
 </div>
+
 
 <br>
 
+
 </body>
 
+
 </html>
+

@@ -641,7 +641,7 @@ onclick="showArea('mobile/yousyo.png','洋書・図書館関係')">
 <div style="display:flex; align-items:flex-start; gap:30px;">
 
 <button class="genre-btn"
-onclick="showArea('ipad1/kyoudo.png','郷土')">
+onclick="showArea('mobile/kyoudo.png','郷土')">
     <img
     src="btn/btn-kyoudo.png"
     class="btn-image"
@@ -669,7 +669,7 @@ onclick="showArea('ipad1/kyoudo.png','郷土')">
 
 </div>
 </div>
-
+</div>
 
 <div id="detail-screen">
 
@@ -861,7 +861,6 @@ detail:""
 
 };
 
-
 function showArea(
     fileName,
     label
@@ -899,6 +898,26 @@ function showArea(
         "message"
     ).textContent =
     info.detail || "";
+
+    const qrArea =
+    document.getElementById(
+        "qrcode"
+    );
+
+    qrArea.innerHTML = "";
+
+    new QRCode(
+        qrArea,
+        {
+            text:
+            "https://web-librarysystem.github.io/OGK/map-mobile.html?area="
+            +
+            areaIdMap[label],
+
+            width:100,
+            height:100
+        }
+    );
 }
 
 function showMenu(){

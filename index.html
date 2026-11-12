@@ -78,6 +78,22 @@ const libraries = [
 }
 ];
 
+/*画像・リンク先*/
+const slideData = {
+    "ogk-honkan": {
+        image: "Top-ss/Top-ss-ogk.png",
+        url: "https://www.ocpl.ogaki.gifu.jp/"
+    },
+    "ogk-kamishizu": {
+        image: "Top-ss/Top-ss-kami.png",
+        url: "https://www.ocpl.ogaki.gifu.jp/"
+    },
+    "ogk-sunomata": {
+        image: "Top-ss/Top-ss-suno.png",
+        url: "https://www.ocpl.ogaki.gifu.jp/"
+    }
+};
+
 
 function getFavorites(){
 
@@ -131,10 +147,9 @@ function toggleFavorite(id){
         JSON.stringify(favorites)
     );
 
-
     renderLibraries();
     renderFavoriteLibraries();
-
+    renderFavoriteSlideshow();
 
 }
 
@@ -305,6 +320,8 @@ border-radius:12px;
 cursor:pointer;
 "
 >
+
+
 <b>設　定</b>
 </button>
 `;
@@ -529,6 +546,113 @@ ${parseInt(month.substring(5))}月
 
 }
 
+let slideIndex = 0;
+let slideTimer = null;
+
+function renderFavoriteSlideshow(){
+
+    const area =
+        document.getElementById(
+            "favorite-slideshow"
+        );
+
+    if(!area) return;
+
+    const favorites =
+        getFavorites();
+
+    const slides =
+        favorites.filter(
+            id => slideData[id]
+        );
+
+    if(slides.length === 0){
+
+        area.innerHTML = `
+        <div style="
+            height:140px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:bold;
+            color:#666;
+        ">
+            お気に入りの図書館を登録してください
+        </div>
+        `;
+
+        return;
+    }
+
+    function draw(){
+
+        const id =
+            slides[slideIndex];
+
+        const data =
+            slideData[id];
+
+        const dots =
+            slides.map(
+                (_,i)=>
+                `<span style="
+                    font-size:18px;
+                    color:${i===slideIndex ? '#005588' : '#cccccc'};
+                ">●</span>`
+            ).join(" ");
+
+        area.innerHTML = `
+        <a
+            href="${data.url}"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="
+                display:block;
+                text-decoration:none;
+            "
+        >
+            <img
+                src="${data.image}"
+                style="
+                    width:100%;
+                    height:140px;
+                    object-fit:cover;
+                    display:block;
+                    border-radius:10px;
+                "
+            >
+        </a>
+
+        <div style="
+            text-align:center;
+            margin-top:8px;
+        ">
+            ${dots}
+        </div>
+        `;
+    }
+
+    draw();
+
+    if(slideTimer){
+        clearInterval(slideTimer);
+    }
+
+    if(slides.length > 1){
+
+        slideTimer =
+            setInterval(()=>{
+
+                slideIndex =
+                    (slideIndex + 1)
+                    % slides.length;
+
+                draw();
+
+            },7000);
+
+    }
+}
 
 function toggleLibraryArea(){
 
@@ -567,15 +691,11 @@ function toggleLibraryArea(){
 
 
 window.onload = function(){
-
-
     renderLibraries();
     renderBookStats();
     renderFavoriteLibraries();
-
-
+    renderFavoriteSlideshow();
 };
-
 
 function closeLibraryArea(){
     const area =
@@ -600,87 +720,85 @@ function closeLibraryArea(){
 </div>
 
 
-<!-- 読了グラフ -->
+<!-- お気に入りの図書館 -->
+
+<div
+style="
+width:90%;
+margin:15px auto;
+background:#DDF0DD;
+border:1px solid #cfe3cf;
+border-radius:12px;
+overflow:hidden;
+box-sizing:border-box;
+"
+>
+
+<div
+style="
+background:#559966;
+color:#FFFFFF;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+padding:6px 0;
+"
+>
+お気に入りの図書館
+</div>
+
+<div
+id="favorite-slideshow"
+style="
+padding:6px;
+"
+>
+</div>
+
+</div>
+
+<!-- 中段 -->
 
 
 <div
 style="
 width:90%;
 margin:15px auto;
-background:#B0ECFF;   /* グラフ部分の背景色　元はAADDDD */
+background:#DDF0DD;
 border:1px solid #cfe3cf;
 border-radius:12px;
-box-sizing:border-box;
 overflow:hidden;
+box-sizing:border-box;
 "
 >
 
 <div
 style="
-background:#005588;   /* タイトル帯 */
-color:#FFFFFF;        /* 文字色 */
+background:#559966;
+color:#FFFFFF;
 text-align:center;
 font-size:22px;
 font-weight:bold;
 padding:6px 0;
 "
 >
-月別読書冊数
-</div>
-
-<div
-id="month-chart"
-style="
-padding:12px;
-width:100%;
-box-sizing:border-box;
-"
-></div>
-
+メニュー
 </div>
 
 <div
 style="
-width:90%;
-margin:15px auto 20px auto;
-padding:12px;
-background:#AADDAA; /*各種メニューの表示エリア部分の背景色*/
-border:1px solid #cfe3cf;
-border-radius:12px;
-box-sizing:border-box;
+padding:10px;
 "
 >
-
 
 <div
 style="
-margin:-12px -12px 12px -12px; /*各種メニューの位置*/
-width:calc(100% + 24px);
-background:#559966; /*各種メニューの帯の背景色*/
-color:#FFFFFF;/*各種メニューの帯の文字色*/
-text-align:center;
-font-size:22px;
-font-weight:bold;
-padding:6px 0;
-border-radius:12px 12px 0 0;
-box-sizing:border-box;
+display:flex;
+gap:12px;
+align-items:stretch;
 "
 >
-各種メニュー
-</div>
 
-
-<!-- 中段 -->
-
-
-<div
-  style="
-    width:100%;
-    display:flex;
-    gap:12px;
-    align-items:stretch;
-  "
->
   <!-- 左 -->
 
 
@@ -779,6 +897,8 @@ padding:15px;
 display:block;
 "
 >
+</div>
+</div>
 </div>
 </div>
 </div>

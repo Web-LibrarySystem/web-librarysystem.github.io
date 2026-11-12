@@ -21,17 +21,18 @@ body{
 }
 
 .header{
-    background:#999999;
-    color:#FFFFFF;
+    background:#f5f7fa;
+    color:#000000;
 
-    padding:20px;
+    display:flex;
+    align-items:center;
 
-    text-align:center;
+    padding:15px 10px;
+
     font-size:26px;
     font-weight:bold;
 
-    box-shadow:
-    0 2px 8px rgba(0,0,0,0.15);
+    position:relative;
 }
 
 .tab-button{
@@ -170,7 +171,7 @@ body{
     background:#ffffff;
 
     box-shadow:
-    0 2px 6px rgba(0,0,0,0.08);
+    0 2px 6px rgba(0,0,0,0.12);
 
     cursor:pointer;
 
@@ -181,21 +182,78 @@ body{
 <body>
 
 <div class="header">
-📖 読書ノート
-</div>
-
-<div style="text-align:left; margin:5px 10px 0 10px;">
 
 <button
 class="back-button"
-onclick="goBack()">
+onclick="goBack()"
+style="
+position:absolute;
+left:10px;
+">
 ← 戻る
 </button>
 
-<div id="description"></div>
+<div style="
+width:100%;
+text-align:center;
+">
+📖 読書ノート 📖
+</div>
+
+</div>
+
 
 <!-- 上段：ボタン -->
-<div id="top-area" style="margin:0 20px 10px 15px; text-align:center;"></div>
+
+<!-- 月別読書冊数 -->
+
+<div
+style="
+width:90%;
+margin:15px auto;
+background:#B0ECFF;
+border:1px solid #cfe3cf;
+border-radius:12px;
+box-sizing:border-box;
+overflow:hidden;
+"
+>
+
+<div
+style="
+background:#005588;
+color:#FFFFFF;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+padding:6px 0;
+"
+>
+月別読書冊数
+</div>
+
+<div
+id="month-chart"
+style="
+padding:12px;
+width:100%;
+box-sizing:border-box;
+"
+>
+</div>
+
+</div>
+
+<div
+id="top-area"
+style="
+width:90%;
+margin:0 auto;
+text-align:center;
+">
+</div>
+
+
 
 <h3>　読書記録</h3>
 
@@ -374,45 +432,6 @@ btn.textContent = "説明文を表示";
 }
 }
  
-function setDescription(html) {
-document.getElementById("description").innerHTML = `
-<div
-id="right-menu"
-style="
-position:absolute;
-top:85px;
-right:10px;
-z-index:1000;
-text-align:right;
-">
- 
-<button
-id="description-toggle"
-onclick="toggleDescription()"
-style="
-padding:2px 2px;
-font-size:18px;
-">
-説明文を表示
-</button>
- 
-</div>
- 
-<div
-id="description-body"
-style="
-display:none;
-margin-top:10px;
-">
-${html}
-</div>
-`; 
-descriptionVisible = false;
-}
-let duplicateAlertShown = false;
-let cameraStopped = false;
-let lastCode = "";
-let isProcessing = false;
 
 function toggleReadTabs() {
 
@@ -1079,44 +1098,51 @@ return null;
 function drawTopButtons() {
   currentScreen = "main";
   setDescription(`
-<b><本の登録></b><br>
-・「読み取り」ボタンを押して、本のバーコードを読み込んでください<br>
-・読み込むバーコードは、本の裏面の２段のバーコードです<br>
-・うまく読み込めない場合は、再度読み込むか、手動で登録することもできます<br>
-・ISBNには「978」で始まるバーコード番号を入力してください<br>
-なお、入力せずに登録することも可能ですが、その場合は、本の表紙の絵は出ません<br>
-<br>
-<b><本を探す></b><br>
-・このアプリに登録された本を検索します<br>
-・本の状態（読みたい・予約中・読書中・読んだ）を確認したり、編集・削除することができます<br>
-<br>
-<b><読書統計></b><br>
-・直近６か月・直近１年・直近３年の読書冊数等を見ることができます<br>
-<br>
-<b><保存作成></b><br>
-①ファイル作成・復元（おすすめ）<br>
-登録した本等のデータファイルを作成したり、作成されたファイルからデータを復元できます<br>
- 1)iPhoneの方：<br>
-　①ファイル作成を押す<br>
-　②画面左下の□+↑のマークを押す<br>
-　③「ファイルに保存」を押す<br>
-　④右上の「保存」を押す<br>
-　⑤２度目以降の場合は、「置き換え」または「両方とも残す」を選択<br>
-で、保存することができます。<br>
-ファイル復元時は、上記で作成したファイルを選ぶことで、データを復元できます<br>
-また、このファイルを他端末に送ることで、別端末へデータを引き継ぐこともできます<br>
- 2)androidの方：各端末のファイル保存方法に従って実施してください<br>
-②文字列作成
-登録した本等のデータを圧縮した文字列を作成したり、作成された文字列からデータを復元できます<br>
-上手くデータが作成できない場合があるため、ファイル作成がどうしても出来ない際にお使いください<br>
-
-<p style="color: red;">なお、個人情報保護のため、各図書館・開発者側では一切情報を保存しておりませんのでデータ消失時の復帰は不可能です。データ消失を防ぐため、バックアップはこまめに作成してください。</p><br>
-
-
+  読み取りボタンを押して、カメラで本のバーコードを読み込んでください。<br>
+  読み込むバーコードは、本の裏面の２段のバーコードです。<br>
+  上手く読み込めない場合は、再度読み込むか、手動で登録することも可能です。<br>
+  ISBNには、「978」で始まるバーコード番号を入力してください。<br>
+  よみは「ひらがな」「アルファベット」「数字」「記号」のみ入力できます。<br><br><br>
   `);
 
   const top = document.getElementById("top-area");
   top.innerHTML = "";
+
+const menuBox =
+document.createElement("div");
+
+menuBox.style =
+"width:100%;" +
+"margin:15px auto;" +
+"background:#DDF0DD;" +
+"border:1px solid #cfe3cf;" +
+"border-radius:12px;" +
+"overflow:hidden;";
+
+const menuTitle =
+document.createElement("div");
+
+menuTitle.style =
+"background:#559966;" +
+"color:white;" +
+"text-align:center;" +
+"font-size:22px;" +
+"font-weight:bold;" +
+"padding:6px 0;";
+
+menuTitle.textContent =
+"メニュー";
+
+menuBox.appendChild(menuTitle);
+
+const menuBody =
+document.createElement("div");
+
+menuBody.style =
+"padding:8px;";
+
+menuBox.appendChild(menuBody);
+top.appendChild(menuBox);
 
   /* -----------------------
      本の登録
@@ -1126,7 +1152,10 @@ function drawTopButtons() {
   regRow.className = "top-menu-card";
 
   regRow.style =
-"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
+  "display:flex;" +
+  "flex-direction:column;" +
+  "align-items:stretch;" +
+  "gap:15px;";
 
   regRow.innerHTML = `
   <span style="
@@ -1139,23 +1168,58 @@ function drawTopButtons() {
   `;
 
   const btn1 = document.createElement("button");
-  btn1.textContent = "読み取り";
-  btn1.style = "padding:2px 5px;font-size:18px;";
+  btn1.textContent = "📷 読み取り";
+  btn1.className =
+"back-button";
+
+btn1.style =
+"width:100%;" +
+"height:44px;";/*左ボタンの高さ*/
   btn1.onclick = showCamera;
 
   const btn2 = document.createElement("button");
-  btn2.textContent = "手動登録";
-  btn2.style = "padding:2px 5px;font-size:18px;";
+  btn2.textContent = "✏ 手動登録";
+  btn2.className =
+  "back-button";
+
+  btn2.style =
+  "width:100%;" +
+  "height:44px;";/*左ボタンの高さ*/
   btn2.onclick = showManualEntryForm;
 
   regRow.appendChild(btn1);
   regRow.appendChild(btn2);
 
-  top.appendChild(regRow);
+  /* 横並び用 */
+  const topRow =
+  document.createElement("div");
+
+  topRow.style =
+"display:flex;" +
+"gap:8px;" +
+"margin-bottom:8px;";
+
+const rightColumn =
+document.createElement("div");
+
+rightColumn.style =
+"display:flex;" +
+"flex-direction:column;" +
+"width:35%;" +
+"gap:4px;";
+
+regRow.style.width = "45%";
+
+topRow.appendChild(regRow);
+topRow.appendChild(rightColumn);
+menuBody.appendChild(topRow);
+
+  // top.appendChild(regRow);
 
   /* -----------------------
      本を探す
   ----------------------- */
+  
 
   const searchRow = document.createElement("div");
   searchRow.className = "top-menu-card";
@@ -1199,30 +1263,75 @@ searchInput.style =
 
   searchBtn.onclick = searchBooks;
 
-  searchRow.appendChild(searchInput);
-  searchRow.appendChild(searchBtn);
-
-  top.appendChild(searchRow);
+searchRow.appendChild(searchInput);
+searchRow.appendChild(searchBtn);
+menuBody.appendChild(searchRow);
 
   /* -----------------------
      読書統計
   ----------------------- */
 
-  const statsRow = document.createElement("div");
-  statsRow.className = "top-menu-card";
+const statsRow = document.createElement("div");
+statsRow.className = "top-menu-card";
 
-  statsRow.style =
-"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
+statsRow.style =
+"display:flex;" +
+"flex-direction:column;" +
+"align-items:center;" +
+"justify-content:center;" +
+"gap:8px;";
 
-  statsRow.innerHTML = `
-  <span style="
-  font-size:1.17em;
-  font-weight:bold;
-  min-width:90px;
-  ">
-  読書統計
-  </span>
-  `;
+statsRow.innerHTML = `
+<span style="
+font-size:1.17em;
+font-weight:bold;
+">
+読書統計
+</span>
+`;
+
+const allBooks =
+BooksManager.getBooks();
+
+const totalRead =
+allBooks.filter(
+b => b.status === "read"
+).length;
+
+const currentMonth =
+new Date().toISOString().substring(0,7);
+
+const monthRead =
+allBooks.filter(
+b =>
+b.status === "read" &&
+b.finishDate &&
+b.finishDate.substring(0,7)
+=== currentMonth
+).length;
+
+const statsInfo =
+document.createElement("div");
+
+statsInfo.innerHTML =
+`
+<div style="
+font-size:20px;
+font-weight:bold;
+color:#005588;
+">
+📚 累計 ${totalRead}冊
+</div>
+
+<div style="
+font-size:18px;
+font-weight:bold;
+color:#559966;
+margin-top:4px;
+">
+📖 今月 ${monthRead}冊
+</div>
+`;
 
   const statsBtn =
   document.createElement("button");
@@ -1231,15 +1340,17 @@ searchInput.style =
   "統計を見る";
 
   statsBtn.style =
-  "padding:2px 5px;font-size:18px;";
+  "width:180px;" +
+  "height:44px;" +
+  "font-size:18px;";
 
   statsBtn.onclick =
   showStatistics;
 
+  statsRow.appendChild(statsInfo);
   statsRow.appendChild(statsBtn);
 
-  top.appendChild(statsRow);
-
+ 
   /* -----------------------
      読書記録＋バックアップ
   ----------------------- */
@@ -1250,8 +1361,45 @@ searchInput.style =
   recordRow.className =
   "top-menu-card";
 
+  recordRow.style.cursor = "pointer";
+  
+recordRow.onclick = function(e){
+
+    if(
+        e.target.tagName === "BUTTON"
+    ){
+        return;
+    }
+
+    const area =
+    document.getElementById(
+        "backup-area"
+    );
+
+    if(
+        area.style.display === "none"
+    ){
+
+        area.style.display =
+        "block";
+
+    }else{
+
+        area.style.display =
+        "none";
+
+    }
+
+};
+
   recordRow.style =
-"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
+  "display:flex;" +
+  "flex-direction:column;" +
+  "align-items:center;" +
+  "justify-content:center;" +
+  "gap:4px;" +
+  "min-height:60px;" +
+  "cursor:pointer;";
 
   const label =
   document.createElement("div");
@@ -1272,10 +1420,10 @@ searchInput.style =
   document.createElement("button");
 
   btn3.textContent =
-  "文字列作成";
+  "📄 文字列作成";
 
   btn3.style =
-  "width:140px;padding:8px;font-size:16px;";
+  "width:180px;padding:8px;font-size:16px;";
 
   btn3.onclick =
   showBackupData;
@@ -1284,10 +1432,10 @@ searchInput.style =
   document.createElement("button");
 
   btnJson.textContent =
-  "ファイル作成";
+  "💾 ファイル作成";
 
   btnJson.style =
-  "width:140px;padding:8px;font-size:16px;";
+  "width:180px;padding:8px;font-size:16px;";
 
   btnJson.onclick =
   exportJsonBackup;
@@ -1296,10 +1444,10 @@ searchInput.style =
   document.createElement("button");
 
   btn4.textContent =
-  "文字列復元";
+  "📋 文字列復元";
 
   btn4.style =
-  "width:140px;padding:8px;font-size:16px;";
+  "width:180px;padding:8px;font-size:16px;";
 
   btn4.onclick =
   showRestoreTextUI;
@@ -1308,10 +1456,10 @@ searchInput.style =
   document.createElement("button");
 
   btnJsonRestore.textContent =
-  "ファイル復元";
+  "📂 ファイル復元";
 
   btnJsonRestore.style =
-  "width:140px;padding:8px;font-size:16px;";
+  "width:180px;padding:8px;font-size:16px;";
 
   btnJsonRestore.onclick = function() {
       currentScreen = "restore";
@@ -1343,56 +1491,82 @@ document.createElement("div");
 backupWrap.style =
 "display:flex;" +
 "flex-direction:column;" +
-"align-items:flex-start;" +
-"gap:4px;" +
-"margin-left:1em;";
-
+"align-items:center;" +
+"gap:4px;";
 
   backupWrap.innerHTML = `
 
-  <button
-  id="backup-toggle"
-  style="
-  padding:2px 8px;
-  font-size:16px;
-  ">
+<div style="
+font-size:12px;
+font-weight:bold;
+margin-bottom:8px;
+">
+最終：
+${lastBackup
+ ? formatDateJP(lastBackup)
+ : "未作成"}
+</div>
 
-  ▶ バックアップ
-  </button>
-  <div style="
-  font-size:14px;
-  margin-top:2px;
-  ">
+<div
+id="backup-area"
+style="
+display:none;
+margin-top:10px;
+width:100%;
+text-align:center;
+">
+</div>
+`;
 
-  最終：
-  ${lastBackup
-    ? formatDateJP(lastBackup)
-    : "未作成"}
-  </div>
+recordRow.appendChild(
+    backupWrap
+);
 
+recordRow.style.width = "100%";
 
-  <div
-  id="backup-area"
-  style="
-  display:none;
-  margin-top:6px;
-  ">
-  </div>
+rightColumn.appendChild(recordRow);
 
-  `;
+const statsCard =
+document.createElement("div");
 
-  recordRow.appendChild(
-      backupWrap
-  );
+statsCard.className =
+"top-menu-card";
 
-  top.appendChild(
-      recordRow
-  );
+statsCard.style =
+"display:flex;" +
+"flex-direction:column;" +
+"justify-content:center;" +
+"align-items:center;" +
+"width:100%;" +
+"min-height:60px;" +
+"cursor:pointer;";
 
-  const backupArea =
-  document.getElementById(
-      "backup-area"
-  );
+statsCard.innerHTML =
+`
+<div style="
+font-size:20px;
+font-weight:bold;
+">
+📈
+</div>
+
+<div style="
+font-size:16px;
+font-weight:bold;
+margin-top:5px;
+">
+詳細統計
+</div>
+`;
+
+statsCard.onclick =
+showStatistics;
+
+const backupArea =
+document.getElementById(
+    "backup-area"
+);
+
 
   const row1 =
   document.createElement("div");
@@ -1414,43 +1588,33 @@ backupWrap.style =
 
   backupArea.appendChild(row1);
   backupArea.appendChild(row2);
+  rightColumn.appendChild(statsCard);
 
-  document
-  .getElementById(
-      "backup-toggle"
-  )
-  .onclick = function() {
+  recordRow.onclick = function() {
 
-      const area =
-      document.getElementById(
-          "backup-area"
-      );
+    const area =
+    document.getElementById(
+        "backup-area"
+    );
 
-      const btn =
-      document.getElementById(
-          "backup-toggle"
-      );
+    if(area.style.display === "none"){
 
-      if (
-          area.style.display === "none"
-      ) {
+        area.style.display = "block";
 
-          area.style.display =
-          "block";
+    } else {
 
-          btn.textContent =
-          "▼ バックアップ";
+        area.style.display = "none";
 
-      } else {
+    }
 
-          area.style.display =
-          "none";
+};
 
-          btn.textContent =
-          "▶ バックアップ";
+renderMonthChart();
 
-      }
-  };
+}
+
+
+function setDescription(html) {
 }
 
 function searchBooks() {
@@ -3252,6 +3416,119 @@ function backToMain() {
     ).textContent = "";
 }
 
+function renderMonthChart(){
+
+const chart =
+document.getElementById(
+"month-chart"
+);
+
+if(!chart) return;
+
+const books =
+BooksManager.getBooks()
+.filter(
+b => b.status==="read"
+&& b.finishDate
+);
+
+const monthly = {};
+
+books.forEach(book => {
+
+const m =
+book.finishDate.substring(0,7);
+
+monthly[m] =
+(monthly[m] || 0) + 1;
+
+});
+
+const now = new Date();
+
+const targetMonths = [];
+
+for(let i=5;i>=0;i--){
+
+const d =
+new Date(
+now.getFullYear(),
+now.getMonth()-i,
+1
+);
+
+targetMonths.push(
+d.getFullYear()
++
+"-"
++
+String(
+d.getMonth()+1
+).padStart(2,"0")
+);
+
+}
+
+const counts =
+targetMonths.map(
+m => monthly[m] || 0
+);
+
+const max =
+Math.max(
+...counts,
+1
+);
+
+let html =
+'<div style="display:flex;align-items:flex-end;height:150px;gap:8px;">';
+
+targetMonths.forEach((m,index)=>{
+
+const c = counts[index];
+
+const h =
+(c/max)*100;/*グラフの棒の最高*/
+
+html += `
+<div style="
+flex:1;
+text-align:center;
+">
+
+<div style="
+font-size:14px;
+font-weight:bold;
+color:#005588;
+">
+${c}冊
+</div>
+
+<div style="
+height:${h}px;
+background:#005588;/*グラフの棒の色*/
+margin:4px auto;
+border-radius:6px 6px 0 0;
+width:80%;
+">
+</div>
+
+<div style="
+font-size:13px;
+">
+${Number(m.substring(5,7))}月
+</div>
+
+</div>
+`;
+
+});
+
+html += "</div>";
+
+chart.innerHTML = html;
+}
+
 function showStatistics() {
     currentScreen = "stats";
     document.getElementById(
@@ -3643,6 +3920,8 @@ function toggleReserved(index) {
    初期表示
 ----------------------------------- */
 drawTopButtons();
+
+renderMonthChart();
 
 document.getElementById(
     "book-list"

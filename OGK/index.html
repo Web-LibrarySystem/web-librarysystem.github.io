@@ -15,8 +15,23 @@
 
 <style>
 
+/*タイトルの書式設定*/
+.header-title{
+    color:#000000;
+    text-align:center;
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    font-family:
+        "Hiragino Maru Gothic ProN",
+        "ヒラギノ丸ゴ ProN",
+        sans-serif;
+    text-shadow:
+        1px 1px 2px rgba(255,255,255,0.5);
+}
+
 body{
-    background-color:#bbdbf3;
+    background:#f6faf6;
 }
 
 .header{
@@ -28,12 +43,12 @@ body{
     flex-wrap:wrap;
     justify-content:center;
     gap:12px;
-    padding:15px;
+    padding:8px;
 }
 
 .menu-button{
     width:44%;
-    min-height:90px;
+    min-height:80px;
     color:#0288D1;
 
     display:flex;
@@ -53,6 +68,18 @@ body{
     cursor:pointer;
 }
 
+.back-button{
+    font-size:16px;
+    font-weight:bold;
+    padding:5px 10px;
+    border:none;
+    border-radius:16px;
+    background:#ffffff;
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.12);
+    cursor:pointer;
+}
+
 .menu-button:active{
     background:#89c3ed;
 }
@@ -63,17 +90,16 @@ body{
 }
 
 .top-image{
-    width:95%;
-    max-width:600px;
-
+    width:100%;
+    height:220px;
+    object-fit:cover;
     display:block;
-    margin:15px auto;
 
-    border-radius:20px;
+    margin:0;
 
-    box-shadow:
-    0 4px 12px rgba(0,0,0,0.15);
+    border-radius:0 0 10px 10px;
 }
+
 
 .back-button button{
     background:white;
@@ -102,6 +128,35 @@ body{
     font-weight:bold;
 }
 
+.section-card{
+    width:90%;
+    margin:15px auto;
+    background:#DCEAF7;
+    border:1px solid #C6DCEF;
+    border-radius:12px;
+    overflow:hidden;
+    box-sizing:border-box;
+    padding:0;
+}
+
+.section-header{
+    background:#4C78A8;
+    color:#fff;
+    text-align:center;
+    font-size:22px;
+    font-weight:bold;
+    padding:6px 0;
+}
+
+
+/*館ごとのメインテーマ色(この下に.section-header、.section-cardを書かないこと)*/
+.section-card{
+    background:#DCEAF7;
+}
+.section-header{
+    background:#4C78A8;
+}
+
 </style>
 </head>
 
@@ -127,23 +182,56 @@ function openLibraryCalendar(lib){
 
     document.body.removeChild(form);
 }
+
 </script>
 
 <body>
 
-<div class="header">
-大垣市立図書館
+<div
+style="
+position:relative;
+width:90%;
+margin:15px auto;
+"
+>
+
+<button
+class="back-button"
+onclick="location.href='../index.html'"
+style="
+position:absolute;
+left:0;
+top:50%;
+transform:translateY(-50%);
+"
+>
+← 戻る
+</button>
+
+<div class="header-title">
+📚 図書館アプリ📚
 </div>
 
-<div class="back-button button">
-    <button onclick="location.href='../index.html'">
-        ← 図書館選択へ
-    </button>
 </div>
 
-<img src="top.png"
-     alt="図書館トップ画像"
-     class="top-image">
+<div class="section-card">
+
+    <div class="section-header">
+        大垣市立図書館
+    </div>
+
+    <img
+        src="top.png"
+        alt="図書館トップ画像"
+        class="top-image"
+    >
+    </div>
+
+<div class="section-card">
+
+    <div class="section-header">
+        メニュー
+    </div>
 
 <div class="menu-grid">
 
@@ -204,6 +292,6 @@ function openLibraryCalendar(lib){
     </button>
 
 </div>
-
+</div>
 </body>
 </html>

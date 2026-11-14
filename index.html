@@ -59,38 +59,41 @@
 
 <script>
 
-
+/*ここで、図書館ボタンの追加削除ができる*/
 const libraries = [
 {
     id: "ogk-honkan",
     name: "大　垣",
+    fullName: "大垣市立図書館",
     url: "./OGK/index.html"
 },
 {
     id: "ogk-kamishizu",
     name: "上石津",
+    fullName: "上石津図書館",
     url: "./KAMI/index.html"
 },
 {
     id: "ogk-sunomata",
     name: "墨　俣",
+    fullName: "墨俣図書館",
     url: "./SUNO/index.html"
 }
 ];
 
-/*画像・リンク先*/
+/*画像の指定と、画像を押したときのリンク先*/
 const slideData = {
     "ogk-honkan": {
         image: "Top-ss/Top-ss-ogk.png",
-        url: "https://www.ocpl.ogaki.gifu.jp/"
+        url: "./OGK/index.html"
     },
     "ogk-kamishizu": {
         image: "Top-ss/Top-ss-kami.png",
-        url: "https://www.ocpl.ogaki.gifu.jp/"
+        url: "./KAMI/index.html"
     },
     "ogk-sunomata": {
         image: "Top-ss/Top-ss-suno.png",
-        url: "https://www.ocpl.ogaki.gifu.jp/"
+        url: "./SUNO/index.html"
     }
 };
 
@@ -211,11 +214,9 @@ display:block;
 text-align:center;
 "
 >
-${lib.name}
+${lib.fullName}
 </a>
 `;
-
-
         area.appendChild(card);
 
 
@@ -549,6 +550,8 @@ ${parseInt(month.substring(5))}月
 let slideIndex = 0;
 let slideTimer = null;
 
+let touchStartX = 0;
+
 function renderFavoriteSlideshow(){
 
     const area =
@@ -569,14 +572,18 @@ function renderFavoriteSlideshow(){
     if(slides.length === 0){
 
         area.innerHTML = `
-        <div style="
-            height:140px;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            font-weight:bold;
-            color:#666;
-        ">
+        <div
+            onclick="toggleLibraryArea()"
+            style="
+                height:140px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-weight:bold;
+                color:#666;
+                cursor:pointer;
+            "
+        >
             お気に入りの図書館を登録してください
         </div>
         `;
@@ -649,10 +656,49 @@ function renderFavoriteSlideshow(){
 
                 draw();
 
-            },7000);
-
+            },7000);	/*上部のスライドの動作間隔*/
     }
+const slideArea =
+    document.getElementById(
+        "favorite-slideshow"
+    );
+
+slideArea.ontouchstart = function(e){
+
+    touchStartX =
+        e.changedTouches[0].screenX;
+
+};
+
+slideArea.ontouchend = function(e){
+
+    const touchEndX =
+        e.changedTouches[0].screenX;
+
+    const diff =
+        touchStartX - touchEndX;
+
+    if(diff > 50){
+
+        slideIndex =
+            (slideIndex + 1)
+            % slides.length;
+
+        draw();
+
+    }else if(diff < -50){
+
+        slideIndex =
+            (slideIndex - 1 +
+             slides.length)
+            % slides.length;
+
+        draw();
+    }
+};
+
 }
+
 
 function toggleLibraryArea(){
 

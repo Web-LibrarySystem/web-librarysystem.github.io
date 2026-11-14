@@ -1205,10 +1205,10 @@ document.createElement("div");
 rightColumn.style =
 "display:flex;" +
 "flex-direction:column;" +
-"width:35%;" +
+"width:52%;" +
 "gap:4px;";
 
-regRow.style.width = "45%";
+regRow.style.width = "35%";
 
 topRow.appendChild(regRow);
 topRow.appendChild(rightColumn);
@@ -1410,7 +1410,7 @@ recordRow.onclick = function(e){
   font-weight:bold;
   min-width:90px;
   ">
-  保存作成
+  💾保存作成
   </span>
   `;
 
@@ -1544,20 +1544,17 @@ statsCard.style =
 statsCard.innerHTML =
 `
 <div style="
-font-size:20px;
+font-size:18px;
 font-weight:bold;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100%;
 ">
-📈
-</div>
-
-<div style="
-font-size:16px;
-font-weight:bold;
-margin-top:5px;
-">
-詳細統計
+📈 詳細統計
 </div>
 `;
+
 
 statsCard.onclick =
 showStatistics;

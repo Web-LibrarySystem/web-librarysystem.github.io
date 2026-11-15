@@ -75,25 +75,12 @@ body{
 }
 
 .book-buttons button{
-
-    width:100%;
-
     min-height:44px;
-
     font-size:16px;
-
     padding:8px;
-
     border:none;
-
     background:#ffffff;
-
     border-radius:10px;
-
-    box-shadow:
-    0 2px 6px rgba(0,0,0,0.08);
-
-    cursor:pointer;
 }
 
 .book-buttons-top{
@@ -118,10 +105,11 @@ body{
 }
 
 .book-buttons-bottom button{
-
     flex:1;
-
     width:auto;
+    font-size:16px;
+    min-height:44px;
+    padding:8px;
 }
 
 .top-menu-card{
@@ -253,9 +241,53 @@ text-align:center;
 ">
 </div>
 
-
+<div
+id="global-help-area"
+style="
+display:none;
+width:90%;
+margin:15px auto;
+background:white;
+border-radius:16px;
+padding:20px;
+box-sizing:border-box;
+box-shadow:
+0 2px 8px rgba(0,0,0,0.08);
+">
+</div>
 
 <h3>　読書記録</h3>
+
+<!-- 検索欄ここから -->
+<div
+style="
+text-align:center;
+margin-bottom:15px;
+">
+
+<input
+id="search-keyword"
+type="text"
+placeholder="タイトル・著者・ISBN"
+style="
+width:220px;
+height:36px;
+font-size:16px;
+padding:0 8px;
+">
+
+<button
+onclick="searchBooks()"
+style="
+font-size:18px;
+padding:6px 12px;
+">
+検索
+</button>
+
+</div>
+<!-- 検索欄ここまで -->
+
 
 <!-- タブ分類 -->
 <div id="tabs" style="margin:0px; text-align:center;">
@@ -281,72 +313,15 @@ text-align:center;
   </button>
 
   <button
-    id="read-book-button"
-    class="tab-button"
-    onclick="toggleReadTabs()">
-    ▶ 読んだ本
+  class="tab-button"
+  onclick="
+  closeReadTabs();
+  BooksManager.renderBookList(
+  currentSort,
+  '読んだ本'
+  )">
+  読んだ本
   </button>
-
-  <div
-    id="read-tabs"
-    style="display:none; margin-top:10px;">
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'ア行')">
-      あ行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'カ行')">
-      か行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'サ行')">
-      さ行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'タ行')">
-      た行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'ナ行')">
-      な行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'ハ行')">
-      は行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'マ行')">
-      ま行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'ヤ行')">
-      や行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'ラ行')">
-      ら行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'ワ行')">
-      わ行
-    </button>
-
-    <button class="tab-button"
-      onclick="BooksManager.renderBookList(currentSort,'その他')">
-      その他
-    </button>
-
-  </div>
 
 </div>
 <!-- 中段：読み取り終了ボタン -->
@@ -365,7 +340,7 @@ text-align:center;
 <!-- 自前のスクリプト -->
 <script>
 let currentSort = "yomiAsc";
-let currentGroup = "ア行";
+let currentGroup = "読んだ本";
 
 /* 統計期間 */
 let statsRange = "6m";
@@ -433,67 +408,49 @@ btn.textContent = "説明文を表示";
 }
  
 
-function toggleReadTabs() {
-
-    const area =
-        document.getElementById(
-            "read-tabs"
-        );
-
-    const button =
-        document.getElementById(
-            "read-book-button"
-        );
-
-if (
-    area.style.display === "none"
-) {
-
-    document.getElementById(
-        "book-list"
-    ).innerHTML = "";
-
-    document.getElementById(
-        "list-title"
-    ).textContent = "";
-
-    area.style.display = "block";
-
-    button.textContent =
-        "▼ 読んだ本";
-    } else {
-
-area.style.display = "none";
-
-button.textContent =
-    "▶ 読んだ本";
-
-document.getElementById(
-    "book-list"
-).innerHTML = "";
-
-document.getElementById(
-    "list-title"
-).textContent = "";
-    }
+function closeReadTabs() {
 }
 
-function closeReadTabs() {
+function toggleHelp(){
 
-    const area =
-        document.getElementById(
-            "read-tabs"
-        );
+const area =
+document.getElementById(
+    "global-help-area"
+);
+    if(
+        area.style.display
+        === "none"
+    ){
 
-    const button =
-        document.getElementById(
-            "read-book-button"
-        );
+        area.style.display =
+        "block";
 
-    area.style.display = "none";
+        area.innerHTML = `
+        <div style="
+        text-align:center;
+        font-size:24px;
+        font-weight:bold;
+        margin-bottom:15px;
+        ">
+        データ保存について
+        </div>
 
-    button.textContent =
-        "▶ 読んだ本";
+        <div style="
+        text-align:left;
+        font-size:14px;
+        line-height:1.8;
+        ">
+        説明文を表示する
+        （今は仮）
+        </div>
+        `;
+
+    }else{
+
+        area.style.display =
+        "none";
+
+    }
 }
 
 /* -----------------------------------
@@ -539,6 +496,11 @@ function moveToReserved(index) {
 
     alert("予約済の本へ移動しました");
 
+    if(window.isSearchMode){
+        refreshSearchResults();
+        return;
+    }
+
     BooksManager.renderBookList(
         currentSort,
         "読みたい本",
@@ -566,20 +528,16 @@ if (currentGroup === "読みたい本") {
         book.status === "wishlist"
     );
 
-} else if (
-    currentGroup === "読書中"
-) {
+} else if (currentGroup === "読書中") {
 
     books = books.filter(book =>
         book.status === "reading"
     );
 
-} else {
+} else if (currentGroup === "読んだ本") {
 
     books = books.filter(book =>
-        book.status === "read" &&
-        this.getGroupFromYomi(book.yomi)
-            === currentGroup
+        book.status === "read"
     );
 
 }
@@ -636,18 +594,15 @@ if (currentGroup === "読みたい本") {
     title.textContent =
         "読みたい本一覧";
 
-} else if (
-    currentGroup === "読書中"
-) {
+} else if (currentGroup === "読書中") {
 
     title.textContent =
         "読書中一覧";
 
-} else {
+} else if (currentGroup === "読んだ本") {
 
     title.textContent =
-        currentGroup
-        + " の読んだ本";
+        "読んだ本一覧";
 
 }
 
@@ -796,8 +751,9 @@ book.comment.length > 30
 <button
 style="
 flex:1;
-font-size:16px;
-padding:8px;
+font-size:18px;
+font-weight:bold;
+padding:10px 14px;
 "
 onclick="editBook(${originalIndex})">
 編集
@@ -806,8 +762,9 @@ onclick="editBook(${originalIndex})">
 <button
 style="
 flex:1;
-font-size:16px;
-padding:8px;
+font-size:18px;
+font-weight:bold;
+padding:10px 14px;
 "
 onclick="BooksManager.confirmDelete(${originalIndex})">
 削除
@@ -1214,58 +1171,6 @@ topRow.appendChild(regRow);
 topRow.appendChild(rightColumn);
 menuBody.appendChild(topRow);
 
-  // top.appendChild(regRow);
-
-  /* -----------------------
-     本を探す
-  ----------------------- */
-  
-
-  const searchRow = document.createElement("div");
-  searchRow.className = "top-menu-card";
-
-  searchRow.style =
-"display:flex;align-items:center;gap:10px;flex-wrap:wrap;";
-
-  searchRow.innerHTML = `
-  <span style="
-  font-size:1.17em;
-  font-weight:bold;
-  min-width:90px;
-  ">
-  本を探す
-  </span>
-  `;
-
-const searchInput =
-document.createElement("input");
-
-searchInput.type = "text";
-
-searchInput.id =
-"search-keyword";
-
-searchInput.placeholder =
-"タイトル・著者・ISBN";
-
-searchInput.style =
-"width:200px;" +
-"height:30px;" +
-"font-size:16px;" +
-"padding:0 8px;";
-
-  const searchBtn = document.createElement("button");
-
-  searchBtn.textContent = "検索";
-
-  searchBtn.style =
-  "padding:2px 5px;font-size:18px;";
-
-  searchBtn.onclick = searchBooks;
-
-searchRow.appendChild(searchInput);
-searchRow.appendChild(searchBtn);
-menuBody.appendChild(searchRow);
 
   /* -----------------------
      読書統計
@@ -1410,7 +1315,7 @@ recordRow.onclick = function(e){
   font-weight:bold;
   min-width:90px;
   ">
-  💾保存作成
+  💾データ保存
   </span>
   `;
 
@@ -1422,8 +1327,10 @@ recordRow.onclick = function(e){
   btn3.textContent =
   "📄 文字列作成";
 
+  btn3.className = "back-button";
   btn3.style =
-  "width:180px;padding:8px;font-size:16px;";
+  "width:100%;" +
+  "height:44px;";
 
   btn3.onclick =
   showBackupData;
@@ -1434,8 +1341,10 @@ recordRow.onclick = function(e){
   btnJson.textContent =
   "💾 ファイル作成";
 
+  btnJson.className = "back-button";
   btnJson.style =
-  "width:180px;padding:8px;font-size:16px;";
+  "width:100%;" +
+  "height:44px;";
 
   btnJson.onclick =
   exportJsonBackup;
@@ -1446,8 +1355,12 @@ recordRow.onclick = function(e){
   btn4.textContent =
   "📋 文字列復元";
 
+  btn4.className =
+  "back-button";
+
   btn4.style =
-  "width:180px;padding:8px;font-size:16px;";
+  "width:100%;" +
+  "height:44px;";
 
   btn4.onclick =
   showRestoreTextUI;
@@ -1458,8 +1371,12 @@ recordRow.onclick = function(e){
   btnJsonRestore.textContent =
   "📂 ファイル復元";
 
+  btnJsonRestore.className =
+  "back-button";
+
   btnJsonRestore.style =
-  "width:180px;padding:8px;font-size:16px;";
+  "width:100%;" +
+  "height:44px;";
 
   btnJsonRestore.onclick = function() {
       currentScreen = "restore";
@@ -1476,7 +1393,21 @@ recordRow.onclick = function(e){
       input.click();
   };
 
+  const btnHelp =
+  document.createElement("button");
 
+  btnHelp.textContent =
+  "⭐ 説 明 ⭐";
+
+  btnHelp.className =
+  "back-button";
+
+  btnHelp.style =
+  "width:100%;" +
+  "height:44px;";
+
+  btnHelp.onclick =
+  toggleHelp;
 
   const lastBackup =
   localStorage.getItem(
@@ -1516,6 +1447,7 @@ width:100%;
 text-align:center;
 ">
 </div>
+
 `;
 
 recordRow.appendChild(
@@ -1567,24 +1499,19 @@ document.getElementById(
 
   const row1 =
   document.createElement("div");
+ 
+  btnJson.style.marginTop = "5px";
+  btnJsonRestore.style.marginTop = "5px";
+  btn3.style.marginTop = "5px";
+  btn4.style.marginTop = "5px";
+  btnHelp.style.marginTop = "5px";
 
-  row1.style =
-  "margin-top:5px;";
+  backupArea.appendChild(btnJson);
+  backupArea.appendChild(btnJsonRestore);
+  backupArea.appendChild(btn3);
+  backupArea.appendChild(btn4);
+  backupArea.appendChild(btnHelp);
 
-  row1.appendChild(btn3);
-  row1.appendChild(btnJson);
-
-  const row2 =
-  document.createElement("div");
-
-  row2.style =
-  "margin-top:5px;";
-
-  row2.appendChild(btn4);
-  row2.appendChild(btnJsonRestore);
-
-  backupArea.appendChild(row1);
-  backupArea.appendChild(row2);
   rightColumn.appendChild(statsCard);
 
   recordRow.onclick = function() {
@@ -1813,7 +1740,9 @@ function showSearchResults(results) {
     著者：${book.author}<br>
 
     ISBN：
-    <b>${book.isbn}</b><br>
+    <span style="font-size:14px;">
+    ${book.isbn}
+    </span><br>
 
     状態：
     <b>${statusName}</b><br>
@@ -1836,13 +1765,16 @@ function showSearchResults(results) {
     <br>`
     : ""}
 
-    <div style="
-    margin-top:10px;
-    display:flex;
-    gap:10px;
-    ">
+    </div>
 
-    <button
+    </div>
+
+    <div style="margin-top:10px;">
+    <div class="book-buttons">
+
+    <div class="book-buttons-top">
+
+    <button style="font-size:14px;padding:4px 6px;"
     onclick="
     editBook(
     BooksManager.getBooks()
@@ -1854,7 +1786,7 @@ function showSearchResults(results) {
     編集
     </button>
 
-    <button
+    <button style="font-size:14px;padding:4px 6px;"
     onclick="
     BooksManager.confirmDelete(
     BooksManager.getBooks()
@@ -1866,6 +1798,67 @@ function showSearchResults(results) {
     削除
     </button>
 
+    </div>
+
+    <div class="book-buttons-bottom">
+
+    ${!book.reserved ? `
+    <button
+    onclick="
+    moveToReserved(
+    BooksManager.getBooks()
+    .findIndex(
+    b=>b.isbn==='${book.isbn}'
+    )
+    )
+    ">
+    予約済へ
+    </button>
+    ` : ""}
+
+    ${book.status !== "wishlist" ? `
+    <button
+    onclick="
+    moveToWishlist(
+    BooksManager.getBooks()
+    .findIndex(
+    b=>b.isbn==='${book.isbn}'
+    )
+    )
+    ">
+    読みたいへ
+    </button>
+    ` : ""}
+
+    ${book.status !== "reading" ? `
+    <button
+    onclick="
+    moveToReading(
+    BooksManager.getBooks()
+    .findIndex(
+    b=>b.isbn==='${book.isbn}'
+    )
+    )
+    ">
+    読書中へ
+    </button>
+    ` : ""}
+
+    ${book.status !== "read" ? `
+    <button
+    onclick="
+    moveToRead(
+    BooksManager.getBooks()
+    .findIndex(
+    b=>b.isbn==='${book.isbn}'
+    )
+    )
+    ">
+    読了へ
+    </button>
+    ` : ""}
+    </div>
+    </div>
     </div>
     </div>
     </div>
@@ -2318,25 +2311,21 @@ const info = {
 
     let group;
 
-    if (info.status === "wishlist") {
+if (info.status === "wishlist") {
 
-        group = "読みたい本";
+    group = "読みたい本";
 
-    } else if (
-        info.status === "reading"
-    ) {
+} else if (
+    info.status === "reading"
+) {
 
-        group = "読書中";
+    group = "読書中";
 
-    } else {
+} else {
 
-        group =
-            BooksManager.getGroupFromYomi(
-                info.yomi
-            );
+    group = "読んだ本";
 
-    }
-
+}
     alert("更新しました");
 
 if (window.isSearchMode === true) {
@@ -2387,11 +2376,14 @@ function moveToRead(index) {
 
     alert("読んだ本へ移動しました");
 
+    if(window.isSearchMode){
+        refreshSearchResults();
+        return;
+    }
+
     BooksManager.renderBookList(
         currentSort,
-        BooksManager.getGroupFromYomi(
-            books[index].yomi
-        ),
+        "読んだ本",
         books[index].isbn
     );
 }
@@ -2422,8 +2414,13 @@ function moveToReading(index) {
     );
 
     alert(
-        "読書中へ移動しました"
+    "読書中へ移動しました"
     );
+
+    if(window.isSearchMode){
+        refreshSearchResults();
+        return;
+    }
 
     BooksManager.renderBookList(
         currentSort,
@@ -2464,6 +2461,11 @@ function moveToWishlist(index) {
     alert(
         "読みたい本へ移動しました"
     );
+
+    if(window.isSearchMode){
+        refreshSearchResults();
+        return;
+    }
 
     BooksManager.renderBookList(
         currentSort,
@@ -2626,26 +2628,23 @@ ${statusName}
 
     alert("状態を更新しました");
 
-    let group;
+let group;
 
-    if (info.status === "wishlist") {
+if (info.status === "wishlist") {
 
-        group = "読みたい本";
+    group = "読みたい本";
 
-    } else if (
-        info.status === "reading"
-    ) {
+} else if (
+    info.status === "reading"
+) {
 
-        group = "読書中";
+    group = "読書中";
 
-    } else {
+} else {
 
-        group =
-            BooksManager.getGroupFromYomi(
-                existing.yomi
-            );
+    group = "読んだ本";
 
-    }
+}
 
     BooksManager.renderBookList(
         currentSort,
@@ -2663,24 +2662,21 @@ ${statusName}
 
     let group;
 
-    if (info.status === "wishlist") {
+if (info.status === "wishlist") {
 
-        group = "読みたい本";
+    group = "読みたい本";
 
-    } else if (
-        info.status === "reading"
-    ) {
+} else if (
+    info.status === "reading"
+) {
 
-        group = "読書中";
+    group = "読書中";
 
-    } else {
+} else {
 
-        group =
-            BooksManager.getGroupFromYomi(
-                info.yomi
-            );
+    group = "読んだ本";
 
-    }
+}
 
     BooksManager.renderBookList(
         currentSort,
@@ -3202,24 +3198,22 @@ ${statusName}
 
     let group;
 
-    if (info.status === "wishlist") {
+    
+if (info.status === "wishlist") {
 
-        group = "読みたい本";
+    group = "読みたい本";
 
-    } else if (
-        info.status === "reading"
-    ) {
+} else if (
+    info.status === "reading"
+) {
 
-        group = "読書中";
+    group = "読書中";
 
-    } else {
+} else {
 
-        group =
-            BooksManager.getGroupFromYomi(
-                info.yomi
-            );
+    group = "読んだ本";
 
-    }
+}
 
     BooksManager.renderBookList(
         currentSort,

@@ -165,6 +165,17 @@ body{
 
 }
 
+.round-button{
+    font-size:16px;
+    font-weight:bold;
+    padding:5px 10px;
+    border:none;
+    border-radius:16px;
+    background:#ffffff;
+    box-shadow:0 2px 6px rgba(0,0,0,0.12);
+    cursor:pointer;
+}
+
   </style>
 </head>
 <body>
@@ -256,7 +267,16 @@ box-shadow:
 ">
 </div>
 
-<h3>　読書記録</h3>
+<h3 style="text-align:left;">
+<span style="
+background:#e67e22;
+color:white;
+padding:4px 12px;
+border-radius:8px;
+">
+読書記録
+</span>
+</h3>
 
 <!-- 検索欄ここから -->
 <div
@@ -278,10 +298,7 @@ padding:0 8px;
 
 <button
 onclick="searchBooks()"
-style="
-font-size:18px;
-padding:6px 12px;
-">
+class="round-button">
 検索
 </button>
 
@@ -1892,8 +1909,18 @@ top.innerHTML = `
 <div style="text-align:left;">
 <h3 style="text-align:left;">
 手動登録</h3>
+
 <div style="margin-bottom:12px;">
-ISBN：
+ISBN：<br>
+
+<div style="
+color:red;
+font-size:14px;
+margin:4px 0 8px 0;
+">
+※ISBNには本の裏面の978から始まる番号を入力してください。<br>
+未入力でも登録できますが、入力すると本の絵が表示されます
+</div>
 
 <input
 id="m-isbn"
@@ -1902,11 +1929,8 @@ style="font-size:16px; width:50%;">
 
 <button
 onclick="searchIsbn()"
-style="
-font-size:16px;
-padding:6px 12px;
-margin-left:5px;
-">
+class="round-button"
+style="margin-left:5px;">
 検索
 </button>
 
@@ -1940,14 +1964,40 @@ id="m-comment"
 maxlength="100"
 style="
 font-size:16px;
-width:70%;
+width:90%;
 height:80px;
 "></textarea>
 </div>
 <div style="margin-bottom:12px;">
-登録先：
+登録先：<br>
 
-<label style="margin-left:10px;">
+<label>
+<input
+type="radio"
+name="book-status"
+value="wishlist">
+読みたい本
+</label>
+
+<label style="margin-left:30px;">
+<input
+type="radio"
+name="book-status"
+value="reserved">
+予約済
+</label>
+
+<br>
+
+<label>
+<input
+type="radio"
+name="book-status"
+value="reading">
+読書中
+</label>
+
+<label style="margin-left:40px;">
 <input
 type="radio"
 name="book-status"
@@ -1956,47 +2006,18 @@ checked>
 読んだ本
 </label>
 
-<label style="margin-left:15px;">
-<input
-type="radio"
-name="book-status"
-value="reading">
-読書中
-</label>
-
-<label style="margin-left:15px;">
-<input
-type="radio"
-name="book-status"
-value="wishlist">
-読みたい本
-</label>
-
-<label style="margin-left:15px;">
-<input
-type="radio"
-name="book-status"
-value="reserved">
-予約済
-</label>
-
 </div>
+
 <button
 onclick="manualSave()"
-style="
-font-size:18px;
-padding:5px 5px;
-">
+class="round-button">
 登録する
 </button>
  
 <button
 onclick="drawTopButtons()"
-style="
-margin-left:10px;
-font-size:18px;
-padding:5px 5px;
-">
+class="round-button"
+style="margin-left:10px;">
 キャンセル
 </button>
 </div>
@@ -2171,7 +2192,7 @@ id="e-comment"
 maxlength="100"
 style="
 font-size:16px;
-width:70%;
+width:90%;
 height:80px;
 ">${book.comment || ""}</textarea>
 </div>
@@ -3005,68 +3026,94 @@ function showCameraRegisterForm(info) {
 
     <h3>本を登録</h3>
 
-    <div style="margin-bottom:10px;">
-    <b>${info.title}</b>
-    </div>
+    <div
+style="
+display:flex;
+gap:12px;
+background:#FFF8D6;
+padding:10px;
+border-radius:12px;
+box-shadow:0 2px 6px rgba(0,0,0,0.08);
+margin-bottom:15px;
+">
+
+<img
+src="https://books.google.com/books/content?vid=ISBN${info.isbn}&printsec=frontcover&img=1&zoom=1"
+onerror="this.src='https://cover.openbd.jp/${info.isbn}.jpg';"
+style="
+width:80px;
+height:110px;
+object-fit:cover;
+border-radius:6px;
+">
+
+<div>
+<div style="font-weight:bold;font-size:18px;">
+${info.title}
+</div>
+
+<div style="margin-top:8px;">
+著者：${info.author}
+</div>
+
+<div style="margin-top:8px;">
+ISBN：${info.isbn}
+</div>
+</div>
+
+</div>
+
 
     <div style="margin-bottom:15px;">
-    著者：${info.author}
-    </div>
+登録先：<br>
 
-    <div style="margin-bottom:15px;">
-    登録先：
+<label>
+<input
+type="radio"
+name="camera-status"
+value="wishlist">
+読みたい本
+</label>
 
-    <label style="margin-left:10px;">
-    <input
-    type="radio"
-    name="camera-status"
-    value="read"
-    checked>
-    読んだ本
-    </label>
+<label style="margin-left:30px;">
+<input
+type="radio"
+name="camera-status"
+value="reserved">
+予約済
+</label>
 
-    <label style="margin-left:15px;">
-    <input
-    type="radio"
-    name="camera-status"
-    value="reading">
-    読書中
-    </label>
+<br>
 
-    <label style="margin-left:15px;">
-    <input
-    type="radio"
-    name="camera-status"
-    value="wishlist">
-    読みたい本
-    </label>
+<label>
+<input
+type="radio"
+name="camera-status"
+value="reading">
+読書中
+</label>
 
-    <label style="margin-left:15px;">
-    <input
-    type="radio"
-    name="camera-status"
-    value="reserved">
-    予約済
-    </label>
+<label style="margin-left:40px;">
+<input
+type="radio"
+name="camera-status"
+value="read"
+checked>
+読んだ本
+</label>
 
-    </div>
+</div>
 
     <button
     onclick="saveCameraBook('${info.isbn}')"
-    style="
-    font-size:18px;
-    padding:5px 5px;
-    ">
+    class="round-button">
     登録
     </button>
 
     <button
     onclick="drawTopButtons()"
-    style="
-    margin-left:10px;
-    font-size:18px;
-    padding:5px 5px;
-    ">
+    class="round-button"
+    style="margin-left:10px;">
     キャンセル
     </button>
 
@@ -3257,8 +3304,9 @@ function showCamera() {
     stopBtn.textContent =
         "読み取りを終わる";
 
+    stopBtn.className = "round-button";
     stopBtn.style =
-        "padding:5px 5px; font-size:18px; margin-top:10px;";
+        "margin-top:10px;";
 
     stopBtn.onclick =
         stopCamera;

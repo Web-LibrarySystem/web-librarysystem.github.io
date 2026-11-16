@@ -144,6 +144,22 @@ body{
     overflow-y:auto;
 }
 
+/*タイトルの書式設定*/
+.header-title{
+    color:#000000;
+    text-align:center;
+    font-size:30px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    font-family:
+        "Hiragino Maru Gothic ProN",
+        "ヒラギノ丸ゴ ProN",
+        sans-serif;
+    text-shadow:
+        1px 1px 2px rgba(255,255,255,0.5);
+}
+
+/*全体の色設定*/
 .back-button{
 
     font-size:16px;
@@ -180,7 +196,14 @@ body{
 </head>
 <body>
 
-<div class="header">
+<div
+style="
+position:relative;
+width:100%;
+margin:15px auto;
+"
+>
+
 
 <button
 class="back-button"
@@ -192,15 +215,9 @@ left:10px;
 ← 戻る
 </button>
 
-<div style="
-width:100%;
-text-align:center;
-">
-📖 読書ノート 📖
+<div class="header-title">
+📚 読書ノート📚
 </div>
-
-</div>
-
 
 <!-- 上段：ボタン -->
 

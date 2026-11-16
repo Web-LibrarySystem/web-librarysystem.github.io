@@ -37,9 +37,9 @@ body{
 
 .tab-button{
     width:28%;
-    min-height:52px;
+    min-height:40px;
 
-    padding:10px 8px;
+    padding:5px 5px;
     margin:4px;
 
     font-size:16px;
@@ -120,7 +120,7 @@ body{
 
     padding:15px;
 
-    margin-bottom:15px;
+    margin-bottom:10px;/*本の登録・データ保存・詳細統計のボタンとボタンの間隔*/
 
     box-shadow:
     0 2px 8px rgba(0,0,0,0.08);
@@ -1287,7 +1287,7 @@ id="search-keyword"
 type="text"
 placeholder="タイトル・著者・ISBN"
 style="
-width:220px;
+width:70%;
 height:36px;
 font-size:16px;
 padding:0 8px;
@@ -1470,14 +1470,16 @@ recordRow.onclick = function(e){
 
 };
 
-  recordRow.style =
-  "display:flex;" +
-  "flex-direction:column;" +
-  "align-items:center;" +
-  "justify-content:center;" +
-  "gap:4px;" +
-  "min-height:60px;" +
-  "cursor:pointer;";
+recordRow.style =
+"display:flex;" +
+"flex-direction:column;" +
+"align-items:center;" +
+"justify-content:center;" +
+"gap:4px;" +
+"min-height:40px;" +
+"padding-top:4px;" +
+"padding-bottom:4px;" +
+"cursor:pointer;";
 
   const label =
   document.createElement("div");
@@ -1506,7 +1508,7 @@ recordRow.onclick = function(e){
   "height:44px;";
 
   btn3.onclick =
-  showBackupData;
+  showBackupData; 
 
   const btnJson =
   document.createElement("button");
@@ -1587,7 +1589,6 @@ recordRow.onclick = function(e){
       "lastBackupDate"
   );
 
-
 const backupWrap =
 document.createElement("div");
 
@@ -1603,7 +1604,7 @@ backupWrap.style =
 <div style="
 font-size:12px;
 font-weight:bold;
-margin-bottom:8px;
+margin-bottom:4px;
 ">
 最終：
 ${lastBackup
@@ -1644,7 +1645,9 @@ statsCard.style =
 "justify-content:center;" +
 "align-items:center;" +
 "width:100%;" +
-"min-height:30px;" +
+"min-height:40px;" +
+"padding-top:4px;" +
+"padding-bottom:4px;" +
 "cursor:pointer;";
 
 statsCard.innerHTML =

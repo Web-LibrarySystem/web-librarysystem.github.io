@@ -36,7 +36,7 @@ body{
 }
 
 .tab-button{
-    width:30%;
+    width:28%;
     min-height:52px;
 
     padding:10px 8px;
@@ -267,82 +267,6 @@ box-shadow:
 ">
 </div>
 
-<h3 style="text-align:left;">
-<span style="
-background:#e67e22;
-color:white;
-padding:4px 12px;
-border-radius:8px;
-margin-left:5%;
-display:inline-block;
-">
-読書記録
-</span>
-</h3>
-
-<!-- 検索欄ここから -->
-<div
-style="
-text-align:center;
-margin-bottom:15px;
-">
-
-<input
-id="search-keyword"
-type="text"
-placeholder="タイトル・著者・ISBN"
-style="
-width:220px;
-height:36px;
-font-size:16px;
-padding:0 8px;
-">
-
-<button
-onclick="searchBooks()"
-class="round-button">
-検索
-</button>
-
-</div>
-<!-- 検索欄ここまで -->
-
-
-<!-- タブ分類 -->
-<div id="tabs" style="margin:0px; text-align:center;">
-
-  <button class="tab-button"
-    onclick="
-    closeReadTabs();
-    BooksManager.renderBookList(
-    currentSort,
-    '読みたい本'
-    )">
-    読みたい本
-  </button>
-
-  <button class="tab-button"
-    onclick="
-    closeReadTabs();
-    BooksManager.renderBookList(
-    currentSort,
-    '読書中'
-    )">
-    読書中
-  </button>
-
-  <button
-  class="tab-button"
-  onclick="
-  closeReadTabs();
-  BooksManager.renderBookList(
-  currentSort,
-  '読んだ本'
-  )">
-  読んだ本
-  </button>
-
-</div>
 <!-- 中段：読み取り終了ボタン -->
 <div id="middle-area" style="margin:20px; text-align:center;"></div>
 
@@ -748,8 +672,12 @@ border-radius:6px;
 ">
 
 </div>
-
-<div style="flex:1; min-width:0;">
+<div
+style="
+flex:1;
+min-width:0;
+font-size:14px;
+">
 
 ${book.reserved
 ? `<div style="
@@ -761,7 +689,14 @@ font-size:18px;
 </div>`
 : ""}
 
-<div class="book-title">${book.title}</div>
+<div
+class="book-title"
+style="
+font-size:16px;
+font-weight:bold;
+">
+
+${book.title}</div>
 
 <div class="book-meta">
 著者：${book.author}
@@ -1137,7 +1072,7 @@ menuTitle.style =
 "padding:6px 0;";
 
 menuTitle.textContent =
-"メニュー";
+"読書記録";
 
 menuBox.appendChild(menuTitle);
 
@@ -1150,51 +1085,99 @@ menuBody.style =
 menuBox.appendChild(menuBody);
 top.appendChild(menuBox);
 
-  /* -----------------------
-     本の登録
-  ----------------------- */
+/* -----------------------
+   本の登録
+----------------------- */
+const regRow = document.createElement("div");
+regRow.className = "top-menu-card";
 
-  const regRow = document.createElement("div");
-  regRow.className = "top-menu-card";
+regRow.style =
+"display:flex;" +
+"flex-direction:column;" +
+"width:100%;" +
+"cursor:pointer;" +
+"box-shadow:0 4px 10px rgba(0,0,0,0.15);";
 
-  regRow.style =
-  "display:flex;" +
-  "flex-direction:column;" +
-  "align-items:stretch;" +
-  "gap:15px;";
+regRow.innerHTML = `
+<div id="register-title"
+style="
+font-size:1.17em;
+font-weight:bold;
+text-align:center;
+padding:1px;
+">
+📚 本の登録
+</div>
 
-  regRow.innerHTML = `
-  <span style="
-  font-size:1.17em;
-  font-weight:bold;
-  min-width:90px;
-  ">
-  本の登録
-  </span>
-  `;
+<div id="register-area"
+style="
+display:none;
+padding-top:10px;
+">
+</div>
+`;
 
-  const btn1 = document.createElement("button");
-  btn1.textContent = "📷 読み取り";
-  btn1.className =
+regRow.onclick = function(e){
+
+if(
+e.target.tagName === "BUTTON"
+){
+return;
+}
+
+const area =
+regRow.querySelector(
+"#register-area"
+);
+
+area.style.display =
+area.style.display === "none"
+? "block"
+: "none";
+
+};
+
+const btn1 =
+document.createElement("button");
+
+btn1.textContent =
+"📷 読み取り";
+
+btn1.className =
 "back-button";
 
 btn1.style =
 "width:100%;" +
-"height:44px;";/*左ボタンの高さ*/
-  btn1.onclick = showCamera;
+"height:44px;" +
+"margin-bottom:5px;";
 
-  const btn2 = document.createElement("button");
-  btn2.textContent = "✏ 手動登録";
-  btn2.className =
-  "back-button";
+btn1.onclick =
+showCamera;
 
-  btn2.style =
-  "width:100%;" +
-  "height:44px;";/*左ボタンの高さ*/
-  btn2.onclick = showManualEntryForm;
+const btn2 =
+document.createElement("button");
 
-  regRow.appendChild(btn1);
-  regRow.appendChild(btn2);
+btn2.textContent =
+"✏ 手動登録";
+
+btn2.className =
+"back-button";
+
+btn2.style =
+"width:100%;" +
+"height:44px;";
+
+btn2.onclick =
+showManualEntryForm;
+
+const registerArea =
+regRow.querySelector(
+"#register-area"
+);
+
+registerArea.appendChild(btn1);
+
+registerArea.appendChild(btn2);
 
   /* 横並び用 */
   const topRow =
@@ -1208,18 +1191,162 @@ btn1.style =
 const rightColumn =
 document.createElement("div");
 
+
 rightColumn.style =
 "display:flex;" +
 "flex-direction:column;" +
 "width:45%;" +
 "gap:4px;";
 
-regRow.style.width = "35%";
+const allBooks =
+BooksManager.getBooks();
 
-topRow.appendChild(regRow);
+const wishlistCount =
+allBooks.filter(
+b => b.status === "wishlist" &&
+!b.reserved
+).length;
+
+const reservedCount =
+allBooks.filter(
+b => b.reserved
+).length;
+
+const readingCount =
+allBooks.filter(
+b => b.status === "reading"
+).length;
+
+const readCount =
+allBooks.filter(
+b => b.status === "read"
+).length;
+
+const noteCard =
+document.createElement("div");
+
+noteCard.className =
+"top-menu-card";
+
+noteCard.style =
+"display:flex;" +
+"flex-direction:column;" +
+"justify-content:center;" +
+"align-items:center;" +
+"width:35%;";
+
+noteCard.innerHTML = `
+<div
+style="
+font-size:18px;
+font-weight:bold;
+text-align:center;
+margin-bottom:12px;
+">
+📖読書ノート
+</div>
+
+<div
+style="
+line-height:2;
+text-align:center;
+font-size:15px;
+font-weight:bold;
+">
+読みたい：${wishlistCount}冊<br>
+予約済　：${reservedCount}冊<br>
+読書中　：${readingCount}冊<br>
+読んだ　：${readCount}冊
+</div>
+`;
+
+/*regRow.style.width = "35%";*/
+
+
+topRow.appendChild(noteCard);
+
 topRow.appendChild(rightColumn);
+
 menuBody.appendChild(topRow);
 
+
+const searchArea =
+document.createElement("div");
+
+searchArea.innerHTML = `
+<div id="book-list-anchor"></div>
+
+<div
+style="
+text-align:center;
+margin-top:15px;
+">
+
+<input
+id="search-keyword"
+type="text"
+placeholder="タイトル・著者・ISBN"
+style="
+width:220px;
+height:36px;
+font-size:16px;
+padding:0 8px;
+">
+
+<button
+onclick="searchBooks()"
+class="round-button">
+検索
+</button>
+
+</div>
+
+<div
+id="tabs"
+style="
+margin-top:15px;
+text-align:center;
+">
+
+<button
+class="tab-button"
+onclick="
+showBookGroup('読みたい本')
+">
+読みたい本
+</button>
+
+<button
+class="tab-button"
+onclick="
+showBookGroup('読書中')
+">
+読書中
+</button>
+
+<button
+class="tab-button"
+onclick="
+showBookGroup('読んだ本')
+">
+読んだ本
+</button>
+
+</div>
+
+<div
+id="empty-message"
+style="
+display:none;
+text-align:center;
+margin-top:15px;
+font-size:16px;
+">
+該当する本はありませんでした。
+</div>
+`;
+
+menuBody.appendChild(searchArea);
 
   /* -----------------------
      読書統計
@@ -1243,9 +1370,6 @@ font-weight:bold;
 読書統計
 </span>
 `;
-
-const allBooks =
-BooksManager.getBooks();
 
 const totalRead =
 allBooks.filter(
@@ -1505,6 +1629,7 @@ recordRow.appendChild(
 
 recordRow.style.width = "100%";
 
+rightColumn.appendChild(regRow);
 rightColumn.appendChild(recordRow);
 
 const statsCard =
@@ -1683,9 +1808,52 @@ function refreshSearchResults() {
 
 
 function showSearchForm() {
-
     drawTopButtons();
+}
 
+/* -------------------------
+   読書記録タブ表示
+------------------------- */
+function showBookGroup(group){
+
+    BooksManager.renderBookList(
+        currentSort,
+        group
+    );
+
+    const cards =
+    document.querySelectorAll(
+        "#book-list .book-card"
+    );
+
+    const msg =
+    document.getElementById(
+        "empty-message"
+    );
+
+    if(msg){
+
+        if(cards.length === 0){
+            msg.style.display = "block";
+        }else{
+            msg.style.display = "none";
+        }
+
+    }
+
+    const anchor =
+    document.getElementById(
+        "book-list-anchor"
+    );
+
+    if(anchor){
+
+        anchor.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }
 }
 
 function showSearchResults(results) {
@@ -1851,33 +2019,47 @@ function showSearchResults(results) {
 
     <div class="book-buttons-bottom">
 
-    ${!book.reserved ? `
-    <button
-    onclick="
-    moveToReserved(
-    BooksManager.getBooks()
-    .findIndex(
-    b=>b.isbn==='${book.isbn}'
-    )
-    )
-    ">
-    予約済へ
-    </button>
-    ` : ""}
-
-    ${book.status !== "wishlist" ? `
-    <button
-    onclick="
-    moveToWishlist(
-    BooksManager.getBooks()
-    .findIndex(
-    b=>b.isbn==='${book.isbn}'
-    )
-    )
-    ">
-    読みたいへ
-    </button>
-    ` : ""}
+${book.reserved ? `
+<button
+onclick="
+toggleReserved(
+BooksManager.getBooks()
+.findIndex(
+b=>b.isbn==='${book.isbn}'
+)
+)
+">
+予約済解除
+</button>
+`
+:
+`
+<button
+onclick="
+moveToReserved(
+BooksManager.getBooks()
+.findIndex(
+b=>b.isbn==='${book.isbn}'
+)
+)
+">
+予約済へ
+</button>
+`
+}
+${book.status !== "wishlist" ? `
+<button
+onclick="
+moveToWishlist(
+BooksManager.getBooks()
+.findIndex(
+b=>b.isbn==='${book.isbn}'
+)
+)
+">
+読みたいへ
+</button>
+` : ""}
 
     ${book.status !== "reading" ? `
     <button

@@ -101,7 +101,7 @@ body{
 
     display:flex;
 
-    gap:8px;
+    gap:4px;
 }
 
 .book-buttons-bottom button{
@@ -109,7 +109,7 @@ body{
     width:auto;
     font-size:16px;
     min-height:44px;
-    padding:8px;
+    padding:4px;
 }
 
 .top-menu-card{
@@ -124,6 +124,11 @@ body{
 
     box-shadow:
     0 2px 8px rgba(0,0,0,0.08);
+}
+
+#bottom-area{
+    margin-top:20px;
+    text-align:left;
 }
 
 #description-body{
@@ -288,9 +293,25 @@ box-shadow:
 <div id="middle-area" style="margin:20px; text-align:center;"></div>
 
 <!-- 下段：一覧 -->
-<div id="bottom-area" style="margin:20px;">
+<div id="bottom-area">
+
   <h3 id="list-title">読んだ本一覧</h3>
+
+  <div
+    id="empty-message"
+    style="
+      display:none;
+      text-align:center;
+      font-size:16px;
+      font-weight:bold;
+      margin:15px 0;
+    "
+  >
+    該当する本はありませんでした。
+  </div>
+
   <div id="book-list"></div>
+
 </div>
 
 <!-- 外部ライブラリ（QR関連は削除） -->
@@ -597,11 +618,18 @@ if (currentGroup === "読みたい本") {
 }
 
 title.innerHTML += `
-<div style="margin-top:10px;">
-
+<div style="
+margin-top:10px;
+font-size:18px;
+font-weight:bold;
+">
 並び順：
 
 <select
+style="
+font-size:18px;
+font-weight:bold;
+
     onchange="
     currentSort=this.value;
     BooksManager.renderBookList(
@@ -1323,13 +1351,14 @@ id="tabs"
 style="
 margin-top:15px;
 text-align:center;
-">
-
+"
+>
 <button
 class="tab-button"
 onclick="
 showBookGroup('読みたい本')
-">
+"
+>
 読みたい本
 </button>
 
@@ -1337,7 +1366,8 @@ showBookGroup('読みたい本')
 class="tab-button"
 onclick="
 showBookGroup('読書中')
-">
+"
+>
 読書中
 </button>
 
@@ -1345,25 +1375,21 @@ showBookGroup('読書中')
 class="tab-button"
 onclick="
 showBookGroup('読んだ本')
-">
+"
+>
 読んだ本
 </button>
 
 </div>
-
-<div
-id="empty-message"
-style="
-display:none;
-text-align:center;
-margin-top:15px;
-font-size:16px;
-">
-該当する本はありませんでした。
-</div>
 `;
 
 menuBody.appendChild(searchArea);
+
+menuBody.appendChild(
+document.getElementById(
+"bottom-area"
+)
+);
 
   /* -----------------------
      読書統計
@@ -2011,29 +2037,41 @@ function showSearchResults(results) {
 
     <div class="book-buttons-top">
 
-    <button style="font-size:14px;padding:4px 6px;"
-    onclick="
-    editBook(
-    BooksManager.getBooks()
-    .findIndex(
-    b=>b.isbn==='${book.isbn}'
-    )
-    )
-    ">
-    編集
-    </button>
+<button
+style="
+flex:1;
+font-size:18px;
+font-weight:bold;
+padding:10px 14px;
+"
+onclick="
+editBook(
+BooksManager.getBooks()
+.findIndex(
+b=>b.isbn==='${book.isbn}'
+)
+)
+">
+編集
+</button>
 
-    <button style="font-size:14px;padding:4px 6px;"
-    onclick="
-    BooksManager.confirmDelete(
-    BooksManager.getBooks()
-    .findIndex(
-    b=>b.isbn==='${book.isbn}'
-    )
-    )
-    ">
-    削除
-    </button>
+<button
+style="
+flex:1;
+font-size:18px;
+font-weight:bold;
+padding:10px 14px;
+"
+onclick="
+BooksManager.confirmDelete(
+BooksManager.getBooks()
+.findIndex(
+b=>b.isbn==='${book.isbn}'
+)
+)
+">
+削除
+</button>
 
     </div>
 

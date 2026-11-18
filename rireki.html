@@ -340,7 +340,8 @@ function goBack() {
         "search",
         "stats",
         "backup",
-        "restore"
+        "restore",
+        "edit"
     ];
 
     if (reloadScreens.includes(currentScreen)) {
@@ -355,7 +356,7 @@ function goBack() {
         return;
     }
 
-    history.back();
+    location.href = "index.html";
 }
 
 function formatDateJP(dateStr) {
@@ -626,17 +627,17 @@ font-weight:bold;
 並び順：
 
 <select
+onchange="
+currentSort=this.value;
+BooksManager.renderBookList(
+    currentSort,
+    currentGroup
+);
+"
 style="
 font-size:18px;
 font-weight:bold;
-
-    onchange="
-    currentSort=this.value;
-    BooksManager.renderBookList(
-        currentSort,
-        currentGroup 
-    );
-    "
+"
 >
 
 <option value="yomiAsc"
@@ -1092,7 +1093,42 @@ function drawTopButtons() {
   `);
 
   const top = document.getElementById("top-area");
-  top.innerHTML = "";
+top.innerHTML = "";
+
+let bottomArea =
+document.getElementById("bottom-area");
+
+if(!bottomArea){
+
+    bottomArea =
+    document.createElement("div");
+
+    bottomArea.id =
+    "bottom-area";
+
+    document.body.appendChild(
+        bottomArea
+    );
+}
+
+bottomArea.innerHTML =
+`
+<h3 id="list-title"></h3>
+
+<div
+id="empty-message"
+style="
+display:none;
+text-align:center;
+font-size:16px;
+font-weight:bold;
+margin:15px 0;
+">
+該当する本はありませんでした。
+</div>
+
+<div id="book-list"></div>
+`;
 
 const menuBox =
 document.createElement("div");
@@ -1483,7 +1519,7 @@ margin-top:4px;
   "top-menu-card";
 
   recordRow.style.cursor = "pointer";
-  
+ 
 recordRow.onclick = function(e){
 
     if(
@@ -1734,24 +1770,6 @@ document.getElementById(
 
   rightColumn.appendChild(statsCard);
 
-  recordRow.onclick = function() {
-
-    const area =
-    document.getElementById(
-        "backup-area"
-    );
-
-    if(area.style.display === "none"){
-
-        area.style.display = "block";
-
-    } else {
-
-        area.style.display = "none";
-
-    }
-
-};
 
 renderMonthChart();
 
@@ -2226,8 +2244,7 @@ style="font-size:16px; width:90%;">
 <input
 id="m-yomi"
 type="text"
-style="font-size:16px; width:90%;"
-oninput="this.value=this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g,'');">
+style="font-size:16px; width:90%;">
 </div>
 <div style="margin-bottom:12px;">
 感想：<br>
@@ -2343,7 +2360,9 @@ async function searchIsbn() {
    編集
 ----------------------------------- */
 function editBook(index) {
- 
+
+currentScreen = "edit";
+
 if (!confirm("この本の情報を編集しますか？")) {
 return;
 }
@@ -2427,7 +2446,6 @@ id="e-yomi"
 type="text"
 value="${book.yomi}"
 style="font-size:16px; width:90%;"
-oninput="this.value = this.value.replace(/[^ぁ-んa-zA-Z0-9ー]/g, '');">
 </div>
 
 <div style="margin-bottom:12px;">
@@ -2939,15 +2957,9 @@ if (info.status === "wishlist") {
 
 }
 
-    BooksManager.renderBookList(
-        currentSort,
-        group,
-        info.isbn
-    );
+    location.reload();
 
-    drawTopButtons();
-
-    return;
+return;
     }
 
     /* 新規保存 */
@@ -2971,22 +2983,12 @@ if (info.status === "wishlist") {
 
 }
 
-    BooksManager.renderBookList(
-        currentSort,
-        group,
-        info.isbn
-    );
+alert("登録しました");
 
-    alert("登録しました");
+location.reload();
 
-    drawTopButtons();
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+return;
 }
-
 
 function saveLastBackupDate() {
 
@@ -3715,16 +3717,7 @@ function stopCamera() {
 }
 
 function backToMain() {
-
-    drawTopButtons();
-
-    document.getElementById(
-        "book-list"
-    ).innerHTML = "";
-
-    document.getElementById(
-        "list-title"
-    ).textContent = "";
+    location.reload();
 }
 
 function renderMonthChart(){

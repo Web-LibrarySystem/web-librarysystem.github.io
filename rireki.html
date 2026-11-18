@@ -457,11 +457,16 @@ margin:4px 0 8px 0;
         </div>
         `;
 
-    }else{
+        setTimeout(() => {
+            area.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }, 100);
 
+    }else{
         area.style.display =
         "none";
-
     }
 }
 
@@ -3560,15 +3565,25 @@ function showCamera() {
     const top =
         document.getElementById("top-area");
 
-    top.innerHTML = "";
+top.innerHTML = `
+<div style="
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    color:#005588;
+    margin-bottom:10px;
+">
+本の裏面の２段になっているバーコードを読み取ってください
+</div>
+`;
 
-    const camDiv =
-        document.createElement("div");
+const camDiv =
+    document.createElement("div");
 
-    camDiv.id = "camera";
+camDiv.id = "camera";
 
-    camDiv.style =
-        "width:100%; max-width:400px; margin:auto;";
+camDiv.style =
+    "width:100%; max-width:280px; height:220px; margin:0 auto; overflow:hidden; border-radius:12px;";
 
     top.appendChild(camDiv);
 

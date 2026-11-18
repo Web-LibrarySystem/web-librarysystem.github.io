@@ -229,6 +229,7 @@ left:10px;
 <!-- 月別読書冊数 -->
 
 <div
+id="month-chart-area"
 style="
 width:90%;
 margin:15px auto;
@@ -2205,9 +2206,6 @@ top.innerHTML = `
 <h3 style="text-align:left;">
 手動登録</h3>
 
-<div style="margin-bottom:12px;">
-ISBN：<br>
-
 <div style="
 color:red;
 font-size:14px;
@@ -2216,6 +2214,9 @@ margin:4px 0 8px 0;
 ※ISBNには本の裏面の978から始まる番号を入力してください。<br>
 未入力でも登録できますが、入力すると本の絵が表示されます
 </div>
+
+<div style="margin-bottom:12px;">
+ISBN：<br>
 
 <input
 id="m-isbn"
@@ -3562,18 +3563,22 @@ function showCamera() {
     isProcessing = false;
     lastCode = "";
 
+document.getElementById(
+    "month-chart-area"
+).style.display = "none";
+
     const top =
         document.getElementById("top-area");
 
 top.innerHTML = `
 <div style="
-    text-align:center;
-    font-size:18px;
+    text-align:left;
+    font-size:16px;
     font-weight:bold;
     color:#005588;
     margin-bottom:10px;
 ">
-本の裏面の２段になっているバーコードを読み取ってください
+本の裏面の２段になっているバーコードを読み取ってください。
 </div>
 `;
 
@@ -3704,11 +3709,15 @@ camDiv.style =
 
 
 function stopCamera() {
-
     cameraStopped = true;
+
+    document.getElementById(
+        "month-chart-area"
+    ).style.display = "block";
 
     try {
         Quagga.stop();
+
     } catch(e) {}
 
     const cam =

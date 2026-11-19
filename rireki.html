@@ -2644,28 +2644,8 @@ if (info.status === "wishlist") {
 
 }
     alert("更新しました");
-
-if (window.isSearchMode === true) {
-
-    refreshSearchResults();
-    return;
-
-} else {
-
-    BooksManager.renderBookList(
-        currentSort,
-        group,
-        info.isbn
-    );
-
-    drawTopButtons();
-
-}
-
-window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-});
+location.reload();
+return;
 
 }
 
@@ -3542,13 +3522,8 @@ if (info.status === "wishlist") {
 
 }
 
-    BooksManager.renderBookList(
-        currentSort,
-        group,
-        info.isbn
-    );
-
-    drawTopButtons();
+    location.reload();
+return;
 
 }
 

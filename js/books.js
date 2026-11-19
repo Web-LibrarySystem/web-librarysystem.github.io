@@ -80,27 +80,28 @@ getBooks() {
        5. 削除確認（HTML 側で必要）
     ----------------------------------- */
     confirmDelete(index) {
-    
-        if (!confirm("本当に削除しますか？")) {
-            return;
-        }
 
-        this.deleteBook(index);
+    if (!confirm("本当に削除しますか？")) {
+        return;
+    }
 
-        if (window.isSearchMode) {
+    this.deleteBook(index);
 
-            refreshSearchResults();
+    if (window.isSearchMode) {
 
-        } else {
+        drawTopButtons();
+        renderMonthChart();
+        refreshSearchResults();
 
-            this.renderBookList(
-                window.currentSort,
-                window.currentGroup
-            );
+    } else {
 
-        }
+        refreshMainView(
+            window.currentGroup
+        );
 
-    },
+    }
+
+},
 
     /* -----------------------------------
        6. 重複チェック

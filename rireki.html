@@ -517,13 +517,14 @@ function moveToReserved(index) {
 
     alert("予約済の本へ移動しました");
 
-    if(window.isSearchMode){
-        refreshSearchResults();
-        return;
-    }
+if(window.isSearchMode){
+    refreshSearchResults();
+    return;
+}
 
-    refreshMainView(
-    "読みたい本"
+refreshAfterRegister(
+    "読みたい本",
+    books[index].isbn
 );
 }
 
@@ -2755,17 +2756,15 @@ if (info.status === "wishlist") {
     alert("更新しました");
 
 if (window.isSearchMode === true) {
-
     drawTopButtons();
     renderMonthChart();
     refreshSearchResults();
     return;
-
 } else {
-
-    refreshMainView(
-    group
-);
+    refreshAfterRegister(
+        group,
+        info.isbn
+    );
 }
 
 }
@@ -2794,13 +2793,14 @@ function moveToRead(index) {
 
     alert("読んだ本へ移動しました");
 
-    if(window.isSearchMode){
-        refreshSearchResults();
-        return;
-    }
+if(window.isSearchMode){
+    refreshSearchResults();
+    return;
+}
 
-    refreshMainView(
-    "読んだ本"
+refreshAfterRegister(
+    "読んだ本",
+    books[index].isbn
 );
 }
 
@@ -2830,16 +2830,17 @@ function moveToReading(index) {
     );
 
     alert(
-    "読書中へ移動しました"
-    );
+"読書中へ移動しました"
+);
 
-    if(window.isSearchMode){
-        refreshSearchResults();
-        return;
-    }
+if(window.isSearchMode){
+    refreshSearchResults();
+    return;
+}
 
-    refreshMainView(
-    "読書中"
+refreshAfterRegister(
+    "読書中",
+    books[index].isbn
 );
 
 }
@@ -2874,16 +2875,17 @@ function moveToWishlist(index) {
     );
 
     alert(
-        "読みたい本へ移動しました"
-    );
+    "読みたい本へ移動しました"
+);
 
-    if(window.isSearchMode){
-        refreshSearchResults();
-        return;
-    }
+if(window.isSearchMode){
+    refreshSearchResults();
+    return;
+}
 
-    refreshMainView(
-    "読みたい本"
+refreshAfterRegister(
+    "読みたい本",
+    books[index].isbn
 );
 }
 
@@ -3044,23 +3046,18 @@ alert("状態を更新しました");
 let group;
 
 if (info.status === "wishlist") {
-
     group = "読みたい本";
-
 } else if (
     info.status === "reading"
 ) {
-
     group = "読書中";
-
 } else {
-
     group = "読んだ本";
-
 }
 
-refreshMainView(
-    group
+refreshAfterRegister(
+    group,
+    info.isbn
 );
 
 return;
@@ -3651,21 +3648,10 @@ if (info.status === "wishlist") {
 
 }
 
-if (existing) {
-
-    refreshMainView(
-        group
-    );
-
-} else {
-
-    refreshAfterRegister(
-        group,
-        info.isbn
-    );
-
-}
-
+refreshAfterRegister(
+    group,
+    info.isbn
+);
 }
 
 
@@ -4342,13 +4328,14 @@ function toggleReserved(index) {
     );
 
     alert(
-        book.reserved
-        ? "予約済にしました"
-        : "予約済を解除しました"
-    );
+    book.reserved
+    ? "予約済にしました"
+    : "予約済を解除しました"
+);
 
-    refreshMainView(
-    "読みたい本"
+refreshAfterRegister(
+    "読みたい本",
+    book.isbn
 );
 }
 

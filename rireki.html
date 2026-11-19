@@ -499,13 +499,16 @@ function moveToReserved(index) {
         BooksManager.getBooks();
 
     books[index].status =
-        "wishlist";
+    "wishlist";
 
     books[index].reserved =
         true;
 
     books[index].regDate =
-    getTodayJP();
+        getTodayJP();
+
+    books[index].finishDate =
+        "";
 
     localStorage.setItem(
         "books",
@@ -519,11 +522,9 @@ function moveToReserved(index) {
         return;
     }
 
-    BooksManager.renderBookList(
-        currentSort,
-        "読みたい本",
-        books[index].isbn
-    );
+    refreshMainView(
+    "読みたい本"
+);
 }
 
 /* -----------------------------------
@@ -532,10 +533,14 @@ function moveToReserved(index) {
 BooksManager.renderBookList = function(sortType = "yomiAsc", group = null, topIsbn = null) {
  
 window.currentSort = sortType;
- 
+
 if (group !== null) {
-currentGroup = group;
+
+    currentGroup = group;
+
 }
+
+window.currentGroup = currentGroup;
  
 const allBooks = this.getBooks();
 let books = [...allBooks];
@@ -1881,6 +1886,7 @@ function showSearchForm() {
     drawTopButtons();
 }
 
+
 /* -------------------------
    読書記録タブ表示
 ------------------------- */
@@ -2191,6 +2197,109 @@ html += `
 `;
 
 top.innerHTML = html;
+
+}
+
+/* -----------------------------------
+   メイン画面再描画
+----------------------------------- */
+function refreshMainView(group){
+
+    drawTopButtons();
+
+    if(group){
+
+        BooksManager.renderBookList(
+            currentSort,
+            group
+        );
+
+        const msg =
+        document.getElementById(
+            "empty-message"
+        );
+
+        const cards =
+        document.querySelectorAll(
+            "#book-list .book-card"
+        );
+
+        if(msg){
+
+            msg.style.display =
+                cards.length === 0
+                ? "block"
+                : "none";
+
+        }
+
+        const anchor =
+        document.getElementById(
+            "book-list-anchor"
+        );
+
+        if(anchor){
+
+            anchor.scrollIntoView({
+                behavior:"smooth",
+                block:"start"
+            });
+
+        }
+
+    }
+
+    renderMonthChart();
+
+}
+
+function refreshAfterRegister(
+    group,
+    topIsbn
+){
+
+    drawTopButtons();
+
+    BooksManager.renderBookList(
+        currentSort,
+        group,
+        topIsbn
+    );
+
+    const msg =
+    document.getElementById(
+        "empty-message"
+    );
+
+    const cards =
+    document.querySelectorAll(
+        "#book-list .book-card"
+    );
+
+    if(msg){
+
+        msg.style.display =
+            cards.length === 0
+            ? "block"
+            : "none";
+
+    }
+
+    const anchor =
+    document.getElementById(
+        "book-list-anchor"
+    );
+
+    if(anchor){
+
+        anchor.scrollIntoView({
+            behavior:"smooth",
+            block:"start"
+        });
+
+    }
+
+    renderMonthChart();
 
 }
 
@@ -2644,8 +2753,20 @@ if (info.status === "wishlist") {
 
 }
     alert("更新しました");
-location.reload();
-return;
+
+if (window.isSearchMode === true) {
+
+    drawTopButtons();
+    renderMonthChart();
+    refreshSearchResults();
+    return;
+
+} else {
+
+    refreshMainView(
+    group
+);
+}
 
 }
 
@@ -2678,11 +2799,9 @@ function moveToRead(index) {
         return;
     }
 
-    BooksManager.renderBookList(
-        currentSort,
-        "読んだ本",
-        books[index].isbn
-    );
+    refreshMainView(
+    "読んだ本"
+);
 }
 
 /* -----------------------------------
@@ -2719,11 +2838,10 @@ function moveToReading(index) {
         return;
     }
 
-    BooksManager.renderBookList(
-        currentSort,
-        "読書中",
-        books[index].isbn
-    );
+    refreshMainView(
+    "読書中"
+);
+
 }
 
 /* -----------------------------------
@@ -2764,11 +2882,9 @@ function moveToWishlist(index) {
         return;
     }
 
-    BooksManager.renderBookList(
-        currentSort,
-        "読みたい本",
-        books[index].isbn
-    );
+    refreshMainView(
+    "読みたい本"
+);
 }
 
 /* -----------------------------------
@@ -2923,7 +3039,7 @@ ${statusName}
         JSON.stringify(books)
     );
 
-    alert("状態を更新しました");
+alert("状態を更新しました");
 
 let group;
 
@@ -2943,7 +3059,9 @@ if (info.status === "wishlist") {
 
 }
 
-    location.reload();
+refreshMainView(
+    group
+);
 
 return;
     }
@@ -2971,9 +3089,13 @@ if (info.status === "wishlist") {
 
 alert("登録しました");
 
-location.reload();
+refreshAfterRegister(
+    group,
+    info.isbn
+);
 
 return;
+
 }
 
 function saveLastBackupDate() {
@@ -3299,7 +3421,14 @@ margin-bottom:15px;
 
 <img
 src="https://books.google.com/books/content?vid=ISBN${info.isbn}&printsec=frontcover&img=1&zoom=1"
-onerror="this.src='https://cover.openbd.jp/${info.isbn}.jpg';"
+onerror="
+this.onerror=null;
+this.src='https://cover.openbd.jp/${info.isbn}.jpg';
+this.onerror=function(){
+    this.onerror=null;
+    this.src='noimage.png';
+};
+"
 style="
 width:80px;
 height:110px;
@@ -3522,8 +3651,20 @@ if (info.status === "wishlist") {
 
 }
 
-    location.reload();
-return;
+if (existing) {
+
+    refreshMainView(
+        group
+    );
+
+} else {
+
+    refreshAfterRegister(
+        group,
+        info.isbn
+    );
+
+}
 
 }
 
@@ -3833,14 +3974,8 @@ chart.innerHTML = html;
 }
 
 function showStatistics() {
-    currentScreen = "stats";
-    document.getElementById(
-        "book-list"
-    ).innerHTML = "";
 
-    document.getElementById(
-        "list-title"
-    ).textContent = "";
+    currentScreen = "stats";
 
     setDescription(`
         読書記録の統計情報です。<br>
@@ -4212,10 +4347,9 @@ function toggleReserved(index) {
         : "予約済を解除しました"
     );
 
-    BooksManager.renderBookList(
-        currentSort,
-        "読みたい本"
-    );
+    refreshMainView(
+    "読みたい本"
+);
 }
 
 

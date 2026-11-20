@@ -198,9 +198,18 @@ transform:translateY(-50%);
 ← 戻る
 </button>
 
-<div class="header-title">
+<a
+href="../index.html"
+class="header-title"
+style="
+display:block;
+text-decoration:none;
+color:inherit;
+cursor:pointer;
+"
+>
 📚 図書館アプリ📚
-</div>
+</a>
 
 </div>
 
@@ -235,7 +244,13 @@ transform:translateY(-50%);
     </button>
 
     <button class="menu-button"
-            onclick="location.href='../rireki.html'">
+            onclick="
+        sessionStorage.setItem(
+          'backPage',
+          location.href
+        );
+        location.href='../rireki.html';
+        ">
 
         <div class="menu-icon">📖</div>
         <div>読書ノート</div>

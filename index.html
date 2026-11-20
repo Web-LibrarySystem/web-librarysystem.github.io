@@ -246,20 +246,28 @@ function renderFavoriteLibraries(){
         );
 
 
-    let html =
+let html =
 `
 <div
 style="
-font-size:18px;
-font-weight:bold;
+background:linear-gradient(
+90deg,
+#559966,
+#6aae7b
+);
+color:white;
 text-align:center;
-margin-bottom:12px;
+font-size:20px;
+font-weight:bold;
+padding:6px 0;
+border-radius:12px 12px 0 0;
+margin:-15px -15px 10px -15px;
+box-shadow:none;
 "
 >
 図書館一覧
 </div>
 `;
-
 
     libraries.forEach(lib => {
 
@@ -325,7 +333,7 @@ font-weight:bold;
 box-shadow:0 3px 8px rgba(0,0,0,0.18);
 "
 >
-設　定
+登　録
 </button>
 `;
 
@@ -859,8 +867,7 @@ gap:10px;
 >
 
 
-<a
-href="rireki.html"
+<div
 class="library-card"
 style="
 margin:0;
@@ -870,21 +877,30 @@ color:#333;
 background:#ffffff;
 border:1px solid rgba(0,0,0,0.08);
 border-radius:12px;
+padding:15px;
+box-sizing:border-box;
 "
 >
-
 
 <div
 style="
-font-size:18px;
-font-weight:bold;
+background:linear-gradient(
+90deg,
+#559966,
+#6aae7b
+);
+color:white;
 text-align:center;
-margin-bottom:15px;
+font-size:20px;
+font-weight:bold;
+padding:6px 0;
+border-radius:12px 12px 0 0;
+margin:-15px -15px 10px -15px;
+box-shadow:none;
 "
 >
-📖読書ノート
+読書ノート
 </div>
-
 
 <div
 id="book-stats-card"
@@ -898,8 +914,10 @@ font-weight:bold;
 </div>
 
 
-<div
+<a
+href="rireki.html"
 style="
+display:block;
 width:100%;
 margin-top:10px;
 padding:10px;
@@ -910,17 +928,16 @@ font-size:14px;
 font-weight:bold;
 box-sizing:border-box;
 box-shadow:0 3px 8px rgba(0,0,0,0.18);
+text-decoration:none;
+color:#333;
 "
 >
-詳細をみる
-</div>
-
+詳細を見る
 
 </a>
 
-
 </div>
-
+</div>
 
   <!-- 右 -->
 

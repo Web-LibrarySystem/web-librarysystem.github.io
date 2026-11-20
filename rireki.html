@@ -36,19 +36,16 @@ body{
 }
 
 .tab-button{
+    color:#000000 !important;
     width:28%;
     min-height:40px;
-
     padding:5px 5px;
     margin:4px;
-
     font-size:16px;
-
     border:none;
     border-radius:12px;
-
     background:#ffffff;
-
+    color:#000000;
     box-shadow:
     0 2px 6px rgba(0,0,0,0.08);
 }
@@ -81,6 +78,7 @@ body{
     border:none;
     background:#ffffff;
     border-radius:10px;
+    color:#000000;
 }
 
 .book-buttons-top{
@@ -166,7 +164,8 @@ body{
 
 /*全体の色設定*/
 .back-button{
-
+    color:#000000 !important;
+    
     font-size:16px;
 
     font-weight:bold;
@@ -187,6 +186,7 @@ body{
 }
 
 .round-button{
+    color:#000000 !important;
     font-size:16px;
     font-weight:bold;
     padding:5px 10px;
@@ -195,6 +195,10 @@ body{
     background:#ffffff;
     box-shadow:0 2px 6px rgba(0,0,0,0.12);
     cursor:pointer;
+}
+
+button{
+    color:#000000 !important;
 }
 
   </style>
@@ -220,9 +224,18 @@ left:10px;
 ← 戻る
 </button>
 
-<div class="header-title">
+<a
+href="index.html"
+class="header-title"
+style="
+display:block;
+text-decoration:none;
+color:inherit;
+cursor:pointer;
+"
+>
 📚 図書館アプリ📚
-</div>
+</a>
 
 <!-- 上段：ボタン -->
 
@@ -357,7 +370,14 @@ function goBack() {
         return;
     }
 
-    location.href = "index.html";
+    const backPage =
+        sessionStorage.getItem("backPage");
+
+    if (backPage) {
+        location.href = backPage;
+    } else {
+        location.href = "index.html";
+    }
 }
 
 function formatDateJP(dateStr) {
@@ -423,29 +443,25 @@ document.getElementById(
         font-size:14px;
         line-height:1.8;
         ">
-<b>データの保存方法</b><br>
-【iPhone】<br>
+<b>データ保存（バックアップ）</b><br>
+データ消失を防ぐため、バックアップファイルを作成することが出来ます。<br>
+また、このファイルや文字列を他の端末にメールやAirDropで送ることで、データの引継ぎを行うことが出来ます。
+<br><br>
+【保存方法】<br>
 　①「ファイル作成」を押す<br>
 　②「バックアップファイルを・・・」と表示されるので、「閉じる」を押す<br>
 　③画面右下の、□と↑を合わせたマークを押す<br>
 　④「ファイルに保存」を押す<br>
 　　「ファイルに保存」がない場合は、画面下部を上にスワイプ（引き上げる）<br>
 　⑤画面右上の「保存」を押す<br>
-<br>
-【Android】<br>
-　各端末によって操作方法が異なります<br>
-　作成したファイルを、スマホの中に保存してください<br>
-<br>
-<b>データの復元方法</b><br>
-【iPhone】<br>
+<br><br>
+【復元方法】<br>
 　①「ファイル復元」を押す<br>
 　②「ファイル作成」で作成したファイルを選択する<br>
 　③「現在の・・・」と表示されるので、問題なければ「ＯＫ」を押す<br>
 　④「復元しました」と表示されるので、「閉じる」を押す<br>
 <br>
-【Android】<br>
-　各端末によって操作方法が異なります<br>
-　「ファイル作成」で作成したファイルを選択してください<br>
+※なお、詳細な操作方法は端末によって異なる場合がございます。<br>
 <br>
 
 <div style="
@@ -1533,7 +1549,6 @@ margin-top:4px;
   recordRow.style.cursor = "pointer";
  
 recordRow.onclick = function(e){
-
     if(
         e.target.tagName === "BUTTON"
     ){
@@ -1545,20 +1560,25 @@ recordRow.onclick = function(e){
         "backup-area"
     );
 
+    const helpArea =
+    document.getElementById(
+        "global-help-area"
+    );
+
     if(
         area.style.display === "none"
     ){
-
         area.style.display =
         "block";
-
     }else{
-
         area.style.display =
         "none";
 
+        if(helpArea){
+            helpArea.style.display =
+            "none";
+        }
     }
-
 };
 
 recordRow.style =
@@ -1581,7 +1601,7 @@ recordRow.style =
   font-weight:bold;
   min-width:90px;
   ">
-  💾データ保存
+  💾記録を保存
   </span>
   `;
 
@@ -1663,7 +1683,7 @@ recordRow.style =
   document.createElement("button");
 
   btnHelp.textContent =
-  "⭐ 説 明 ⭐";
+  "⭐ 保存方法 ⭐";
 
   btnHelp.className =
   "back-button";
@@ -3680,7 +3700,7 @@ top.innerHTML = `
     color:#005588;
     margin-bottom:10px;
 ">
-本の裏面の２段になっているバーコードを読み取ってください。
+本の裏面の２段になっているバーコードをカメラで読み取ってください。
 </div>
 `;
 

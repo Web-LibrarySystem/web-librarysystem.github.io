@@ -322,7 +322,7 @@ ${lib.name}
 onclick="toggleLibraryArea()"
 style="
 width:100%;
-margin-top:10px;
+margin-top:8px;/*登録の上の余白*/
 padding:10px;
 background:#f0f0f0;
 border:none;
@@ -330,6 +330,7 @@ border-radius:12px;
 cursor:pointer;
 font-size:14px;
 font-weight:bold;
+color:#000000;
 box-shadow:0 3px 8px rgba(0,0,0,0.18);
 "
 >
@@ -627,35 +628,46 @@ function renderFavoriteSlideshow(){
                 text-decoration:none;
             "
         >
-            <img
-                src="${data.image}"
-                style="
-                    width:100%;
-                    height:140px;
-                    object-fit:cover;
-                    display:block;
-                    border-radius:10px;
-                "
-            >
-        </a>
+<img
+    src="${data.image}"
+    style="
+        width:100%;
+        height:140px;
+        object-fit:contain;
+        background:#DDF0DD;
+        display:block;
+        border-radius:10px;
+    "
+>
+</a>
 
-        <div style="
-            text-align:center;
-            margin-top:8px;
-        ">
-            ${dots}
-        </div>
-        `;
-    }
+<div
+style="
+    text-align:center;
+    font-size:13px;
+    font-weight:bold;
+    color:#336633;
+    margin-top:6px;13:48 2026/11/21
+    margin-bottom:4px;
+">
+    画像クリックで各館メニューへ移動
+</div>
 
-    draw();
+<div style="
+    text-align:center;
+    margin-top:8px;
+">
+    ${dots}
+</div>
+`;
 
-    if(slideTimer){
-        clearInterval(slideTimer);
-    }
+}
 
-    if(slides.length > 1){
+if(slideTimer){
+    clearInterval(slideTimer);
+}
 
+if(slides.length > 1){
         slideTimer =
             setInterval(()=>{
 
@@ -680,7 +692,6 @@ slideArea.ontouchstart = function(e){
 };
 
 slideArea.ontouchend = function(e){
-
     const touchEndX =
         e.changedTouches[0].screenX;
 
@@ -688,7 +699,6 @@ slideArea.ontouchend = function(e){
         touchStartX - touchEndX;
 
     if(diff > 50){
-
         slideIndex =
             (slideIndex + 1)
             % slides.length;
@@ -706,8 +716,9 @@ slideArea.ontouchend = function(e){
     }
 };
 
-}
+draw();
 
+}
 
 function toggleLibraryArea(){
 
@@ -1100,7 +1111,76 @@ cursor:pointer;
 </details>
 
 
+<!-- 読書ガイド -->
 
+<details
+  class="library-card"
+  style="
+    width:90%;
+    margin:0 auto 20px auto;
+    box-sizing:border-box;
+  "
+>
+
+  <summary
+    style="
+      cursor:pointer;
+      font-size:18px;
+      font-weight:bold;
+    "
+  >
+    📚 読書ガイド
+  </summary>
+
+  <div
+    style="
+      margin-top:15px;
+      line-height:2;
+    "
+  >
+
+    <a
+      href="https://www.hontai.or.jp/history/"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        display:block;
+        text-decoration:none;
+        font-weight:bold;
+      "
+    >
+      🏆 本屋大賞 歴代受賞作
+    </a>
+
+    <a
+      href="https://bungakushinko.or.jp/award/akutagawa/list.html"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        display:block;
+        text-decoration:none;
+        font-weight:bold;
+      "
+    >
+      ✒️ 芥川賞 受賞者一覧
+    </a>
+
+    <a
+      href="https://bungakushinko.or.jp/award/naoki/list.html"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        display:block;
+        text-decoration:none;
+        font-weight:bold;
+      "
+    >
+      📖 直木賞 受賞者一覧
+    </a>
+
+  </div>
+
+</details>
 
 
 

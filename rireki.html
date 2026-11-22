@@ -345,10 +345,15 @@ let statsRange = "6m";
 /* 検索状態保持 */
 window.isSearchMode = false;
 window.currentSearchKeyword = "";
+window.editReturnMode = "";
 
 let descriptionVisible = false;
 
 function goBack() {
+
+    window.isSearchMode = false;
+    window.currentSearchKeyword = "";
+    window.editReturnMode = "";
 
     const reloadScreens = [
         "camera",
@@ -522,9 +527,6 @@ function moveToReserved(index) {
     books[index].reserved =
         true;
 
-    books[index].regDate =
-        getTodayJP();
-
     books[index].finishDate =
         "";
 
@@ -598,17 +600,16 @@ switch (currentSort) {
         );
         break;
 
-    case "dateNew":
-        books.sort((a, b) =>
-            (b.regDate || "").localeCompare(a.regDate || "")
-        );
-        break;
-
-    case "dateOld":
-        books.sort((a, b) =>
-            (a.regDate || "").localeCompare(b.regDate || "")
-        );
-        break;
+case "dateNew":
+    books.sort((a, b) =>
+        (b.createDate || "").localeCompare(a.createDate || "")
+    );
+    break;
+case "dateOld":
+    books.sort((a, b) =>
+        (a.createDate || "").localeCompare(b.createDate || "")
+    );
+    break;
 }
  
 if (topIsbn) {
@@ -781,7 +782,7 @@ ${book.title}</div>
 <div class="book-meta">
 登録日：
 ${formatDateJP(
-    book.createDate || book.regDate
+    book.createDate
 )}
 </div>
 
@@ -815,7 +816,10 @@ font-size:18px;
 font-weight:bold;
 padding:10px 14px;
 "
-onclick="editBook(${originalIndex})">
+onclick="
+window.editReturnMode='group';
+editBook(${originalIndex})
+">
 編集
 </button>
  
@@ -1294,10 +1298,11 @@ registerArea.appendChild(btn2);
   const topRow =
   document.createElement("div");
 
-  topRow.style =
+topRow.style =
 "display:flex;" +
 "gap:8px;" +
-"margin-bottom:8px;";
+"margin-bottom:8px;" +
+"align-items:flex-start;";
 
 const rightColumn =
 document.createElement("div");
@@ -1342,9 +1347,9 @@ noteCard.className =
 noteCard.style =
 "display:flex;" +
 "flex-direction:column;" +
-"justify-content:center;" +
 "align-items:center;" +
-"width:35%;";
+"width:35%;" +
+"align-self:stretch;";
 
 noteCard.innerHTML = `
 <div
@@ -1375,6 +1380,8 @@ font-weight:bold;
 読書中　：${readingCount}冊<br>
 読んだ　：${readCount}冊
 </div>
+
+<div style="flex:1;"></div>
 `;
 
 /*regRow.style.width = "35%";*/
@@ -1402,7 +1409,7 @@ margin-top:15px;
 <input
 id="search-keyword"
 type="text"
-placeholder="タイトル・著者・ISBN"
+placeholder="タイトル・著者・よみ・感想・ISBN"
 style="
 width:70%;
 height:36px;
@@ -1846,32 +1853,35 @@ function searchBooks() {
     const books =
         BooksManager.getBooks();
 
-    const results =
-        books.filter(book => {
-
-        return (
-            (book.title || "")
-                .normalize("NFKC")
-                .toLowerCase()
-                .includes(keyword)
-
-            ||
-
-            (book.author || "")
-                .normalize("NFKC")
-                .toLowerCase()
-                .includes(keyword)
-
-            ||
-
-            (book.isbn || "")
-                .normalize("NFKC")
-                .includes(keyword)
-
-        );
-
-    });
-
+const results =
+    books.filter(book => {
+    return (
+        (book.title || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(keyword)
+        ||
+        (book.author || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(keyword)
+        ||
+        (book.yomi || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(keyword)
+        ||
+        (book.comment || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(keyword)
+        ||
+        (book.isbn || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(keyword)
+    );
+});
     showSearchResults(results);
 }
 
@@ -1884,36 +1894,46 @@ function refreshSearchResults() {
     const books =
         BooksManager.getBooks();
 
-    const results =
-        books.filter(book => {
-
-        return (
-            (book.title || "")
-                .normalize("NFKC")
-                .toLowerCase()
-                .includes(window.currentSearchKeyword)
-
-            ||
-
-            (book.author || "")
-                .normalize("NFKC")
-                .toLowerCase()
-                .includes(window.currentSearchKeyword)
-
-            ||
-
-            (book.isbn || "")
-                .normalize("NFKC")
-                .includes(window.currentSearchKeyword)
-        );
-
-    });
+const results =
+    books.filter(book => {
+    return (
+        (book.title || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(window.currentSearchKeyword)
+        ||
+        (book.author || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(window.currentSearchKeyword)
+        ||
+        (book.yomi || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(window.currentSearchKeyword)
+        ||
+        (book.comment || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(window.currentSearchKeyword)
+        ||
+        (book.isbn || "")
+            .normalize("NFKC")
+            .toLowerCase()
+            .includes(window.currentSearchKeyword)
+    );
+});
 
     showSearchResults(results);
 }
 
 
 function showSearchForm() {
+
+    window.isSearchMode = false;
+    window.currentSearchKeyword = "";
+    window.editReturnMode = "";
+
     drawTopButtons();
 }
 
@@ -2072,9 +2092,9 @@ function showSearchResults(results) {
     <b>${statusName}</b><br>
 
     登録日：
-    ${formatDateJP(
-        book.createDate || book.regDate
-    )}<br>
+${formatDateJP(
+    book.createDate
+)}<br>
 
     読了日：
     ${formatDateJP(book.finishDate)}<br>
@@ -2106,6 +2126,7 @@ font-weight:bold;
 padding:10px 14px;
 "
 onclick="
+window.editReturnMode='search';
 editBook(
 BooksManager.getBooks()
 .findIndex(
@@ -2589,7 +2610,7 @@ style="font-size:16px; width:90%;">
 id="e-yomi"
 type="text"
 value="${book.yomi}"
-style="font-size:16px; width:90%;"
+style="font-size:16px; width:90%;">
 </div>
 
 <div style="margin-bottom:12px;">
@@ -2598,15 +2619,6 @@ style="font-size:16px; width:90%;"
 id="e-createdate"
 type="date"
 value="${book.createDate || ""}"
-style="font-size:16px; width:90%;">
-</div>
-
-<div style="margin-bottom:12px;">
-更新日：
-<input
-id="e-regdate"
-type="date"
-value="${book.regDate}"
 style="font-size:16px; width:90%;">
 </div>
 
@@ -2640,7 +2652,7 @@ padding:5px 5px;
 </button>
  
 <button
-onclick="drawTopButtons()"
+onclick="cancelEdit()"
 style="
 margin-left:10px;
 font-size:18px;
@@ -2696,11 +2708,6 @@ const info = {
         comment:
             document.getElementById(
                 "e-comment"
-            ).value,
-
-        regDate:
-            document.getElementById(
-                "e-regdate"
             ).value,
 
         finishDate:
@@ -2783,19 +2790,49 @@ if (info.status === "wishlist") {
 }
     alert("更新しました");
 
-if (window.isSearchMode === true) {
+if (
+    window.editReturnMode === "search"
+) {
+    window.editReturnMode = "";
+
     drawTopButtons();
     renderMonthChart();
     refreshSearchResults();
     return;
-} else {
-    refreshAfterRegister(
-        group,
-        info.isbn
+}
+
+window.editReturnMode = "";
+
+refreshAfterRegister(
+    group,
+    info.isbn
+);
+
+}
+
+function cancelEdit() {
+
+    if (
+        window.editReturnMode === "search"
+    ) {
+
+        window.editReturnMode = "";
+
+        refreshSearchResults();
+
+        return;
+    }
+
+    window.editReturnMode = "";
+
+    drawTopButtons();
+
+    BooksManager.renderBookList(
+        currentSort,
+        currentGroup
     );
 }
 
-}
 
 /* -----------------------------------
    読んだ本へ移動
@@ -2807,9 +2844,6 @@ function moveToRead(index) {
     books[index].status = "read";
 
     books[index].reserved = false;
-
-    books[index].regDate =
-    getTodayJP();
 
     books[index].finishDate =
     getTodayJP();
@@ -2840,17 +2874,14 @@ function moveToReading(index) {
     const books =
         BooksManager.getBooks();
 
-    books[index].status =
-    "reading";
+books[index].status =
+"reading";
 
-    books[index].reserved =
-        false;
+books[index].reserved =
+    false;
 
-    books[index].regDate =
-    getTodayJP();
-
-    books[index].finishDate =
-        "";
+books[index].finishDate =
+    "";
 
     localStorage.setItem(
         "books",
@@ -2881,21 +2912,14 @@ function moveToWishlist(index) {
     const books =
         BooksManager.getBooks();
 
-    books[index].status =
-        "wishlist";
+books[index].status =
+    "wishlist";
 
-    /* ------------------------------
-       読みたい本へ戻した場合は
-       予約状態は解除する
-    ------------------------------ */
-    books[index].reserved =
-        false;
+books[index].reserved =
+    false;
 
-    books[index].regDate =
-    getTodayJP();
-
-    books[index].finishDate =
-        "";
+books[index].finishDate =
+    "";
 
     localStorage.setItem(
         "books",
@@ -2927,11 +2951,22 @@ function manualSave() {
             'input[name="book-status"]:checked'
         ).value;
 
-    const info = {
-        isbn: document.getElementById("m-isbn")
+const info = {
+    isbn:
+        document.getElementById("m-isbn")
             .value
             .trim()
-            .replace(/-/g, ""),
+            .replace(/-/g, "")
+        ||
+        (
+            "TEMP-" +
+            Date.now() +
+            "-" +
+            Math.random()
+                .toString(36)
+                .slice(2, 6)
+                .toUpperCase()
+        ),
 
         title: document.getElementById("m-title")
             .value
@@ -2955,9 +2990,6 @@ function manualSave() {
             .value,
 
         createDate:
-            getTodayJP(),
-
-        regDate:
             getTodayJP(),
 
         finishDate:
@@ -3048,9 +3080,6 @@ ${statusName}
 
     books[index].reserved =
         info.reserved;
-
-    books[index].regDate =
-    getTodayJP();
 
     if (info.status === "read") {
 
@@ -3546,9 +3575,6 @@ async function saveCameraBook(isbn) {
 
     info.comment = "";
 
-    info.regDate =
-        getTodayJP();
-
     info.createDate =
         getTodayJP();
 
@@ -3620,9 +3646,6 @@ ${statusName}
 
         books[index].reserved =
             info.reserved;
-
-        books[index].regDate =
-            info.regDate;
 
         if (info.status === "read") {
 
@@ -4338,19 +4361,21 @@ function toggleReserved(index) {
 
     book.reserved = !book.reserved;
 
-    book.regDate =
-    getTodayJP();
-
     localStorage.setItem(
         "books",
         JSON.stringify(books)
     );
 
-    alert(
-    book.reserved
-    ? "予約済にしました"
-    : "予約済を解除しました"
+alert(
+book.reserved
+? "予約済にしました"
+: "予約済を解除しました"
 );
+
+if(window.isSearchMode){
+    refreshSearchResults();
+    return;
+}
 
 refreshAfterRegister(
     "読みたい本",

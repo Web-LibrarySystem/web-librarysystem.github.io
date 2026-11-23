@@ -242,7 +242,6 @@ cursor:pointer;
 <!-- 上段：ボタン -->
 
 <!-- 月別読書冊数 -->
-
 <div
 id="month-chart-area"
 style="
@@ -279,6 +278,7 @@ box-sizing:border-box;
 >
 </div>
 
+</div>
 </div>
 
 <div
@@ -387,6 +387,128 @@ function goBack() {
     }
 }
 
+function getRatingStars(rating) {
+  rating = Number(rating) || 0;
+  return "⭐".repeat(rating) + "☆".repeat(5 - rating);
+}
+
+function changeRating(bookIndex) {
+
+  const books = BooksManager.getBooks();
+
+  const current =
+    Number(books[bookIndex].rating) || 0;
+
+  let starsHtml = "";
+
+  for(let i=1;i<=5;i++){
+    starsHtml += `
+      <span
+        onclick="setRating(${bookIndex},${i})"
+        style="
+          font-size:20px;/*☆の大きさ*/
+          cursor:pointer;
+          margin:0 4px;
+        ">
+        ${i <= current ? "⭐" : "☆"}
+      </span>
+    `;
+  }
+
+  const dialog = document.createElement("div");
+
+  dialog.id = "rating-dialog";
+
+  dialog.style = `
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+  `;
+
+  dialog.innerHTML = `
+<div
+  style="
+    background:white;
+    border-radius:12px;
+    padding:10px;
+    text-align:center;
+    width:240px;
+  ">
+      <div
+        style="
+          font-size:18px;
+          font-weight:bold;
+          margin-bottom:10px;
+        ">
+        本の評価
+      </div>
+
+      <div
+  style="
+    white-space:nowrap;
+  ">
+  ${starsHtml}
+</div>
+
+<div style="margin-top:15px;">
+  <button
+    class="back-button"
+    onclick="setRating(${bookIndex},0)">
+    未評価にする
+  </button>
+</div>
+
+<button
+  class="back-button"
+  style="margin-top:10px;"
+  onclick="
+    document.getElementById('rating-dialog')
+    .remove();
+  ">
+  閉じる
+</button>
+    </div>
+  `;
+
+  document.body.appendChild(dialog);
+}
+
+function setRating(bookIndex, rating) {
+
+  const books = BooksManager.getBooks();
+
+  books[bookIndex].rating = rating;
+
+  localStorage.setItem(
+    "books",
+    JSON.stringify(books)
+  );
+
+  const dialog =
+    document.getElementById("rating-dialog");
+
+  if(dialog){
+    dialog.remove();
+  }
+
+  if(window.isSearchMode){
+    refreshSearchResults();
+    return;
+  }
+
+  refreshAfterRegister(
+    currentGroup,
+    books[bookIndex].isbn
+  );
+}
+
 function formatDateJP(dateStr) {
 
     if (!dateStr) {
@@ -454,29 +576,53 @@ document.getElementById(
 データ消失を防ぐため、バックアップファイルを作成することが出来ます。<br>
 また、このファイルや文字列を他の端末にメールやAirDropで送ることで、データの引継ぎを行うことが出来ます。
 <br><br>
-【保存方法】<br>
-　①「ファイル作成」を押す<br>
-　②「バックアップファイルを・・・」と表示されるので、「閉じる」を押す<br>
-　③画面右下の、□と↑を合わせたマークを押す<br>
-　④「ファイルに保存」を押す<br>
-　　「ファイルに保存」がない場合は、画面下部を上にスワイプ（引き上げる）<br>
-　⑤画面右上の「保存」を押す<br>
-<br><br>
-【復元方法】<br>
-　①「ファイル復元」を押す<br>
-　②「ファイル作成」で作成したファイルを選択する<br>
-　③「現在の・・・」と表示されるので、問題なければ「ＯＫ」を押す<br>
-　④「復元しました」と表示されるので、「閉じる」を押す<br>
+【保存方法】
+<ul class="notice-list">
+<li>
+「ファイル作成」を押す
+</li>
+<li>
+「バックアップファイルを・・・」と表示されるので、「閉じる」を押す
+</li>
+<li>
+画面右下の、□と↑を合わせたマークを押す
+</li>
+<li>
+「ファイルに保存」を押す
+</li>
+<li>
+「ファイルに保存」がない場合は、画面下部を上にスワイプ（引き上げる
+</li>
+<li>
+画面右上の「保存」を押す
+</li>
+</ul>
+
 <br>
-※なお、詳細な操作方法は端末によって異なる場合がございます。<br>
-<br>
+【復元方法】
+<ul class="notice-list">
+<li>
+「ファイル復元」を押す
+</li>
+<li>
+「ファイル作成」で作成したファイルを選択する
+</li>
+<li>
+「現在の・・・」と表示されるので、問題なければ「ＯＫ」を押す
+</li>
+<li>
+「復元しました」と表示されるので、「閉じる」を押す
+</li>
+</ul>
+
+※詳細な操作方法は端末によって異なる場合がございます。
 
 <div style="
 color:red;
 font-size:14px;
 margin:4px 0 8px 0;
 ">
-※なお、本アプリでは個人情報の収集や読書履歴等のデータ管理は行っておらず、データが消失した場合であっても、開発者や図書館がデータを復旧することはできません。定期的なバックアップを推奨します。
+※本アプリでは個人情報の収集や読書履歴等のデータ管理は行っておらず、データが消失した場合であっても、開発者や図書館がデータを復旧することはできません。定期的なバックアップを推奨します。
         </div>
         </div>
         `;
@@ -610,6 +756,55 @@ case "dateOld":
         (a.createDate || "").localeCompare(b.createDate || "")
     );
     break;
+
+case "ratingHigh":
+    books.sort((a, b) => {
+
+        const ra =
+            a.rating > 0
+            ? a.rating
+            : -1;
+
+        const rb =
+            b.rating > 0
+            ? b.rating
+            : -1;
+
+        return rb - ra;
+    });
+    break;
+
+case "ratingLow":
+    books.sort((a, b) => {
+
+        const ra =
+            a.rating > 0
+            ? a.rating
+            : 999;
+
+        const rb =
+            b.rating > 0
+            ? b.rating
+            : 999;
+
+        return ra - rb;
+    });
+    break;
+
+
+case "finishNew":
+    books.sort((a, b) =>
+        (b.finishDate || "")
+        .localeCompare(a.finishDate || "")
+    );
+    break;
+
+case "finishOld":
+    books.sort((a, b) =>
+        (a.finishDate || "")
+        .localeCompare(b.finishDate || "")
+    );
+    break;
 }
  
 if (topIsbn) {
@@ -690,6 +885,30 @@ ${currentSort==="dateNew"?"selected":""}>
 ${currentSort==="dateOld"?"selected":""}>
 登録日（古い順）
 </option>
+
+${currentGroup === "読んだ本" ? `
+
+<option value="ratingHigh"
+${currentSort==="ratingHigh"?"selected":""}>
+評価順（高い順）
+</option>
+
+<option value="ratingLow"
+${currentSort==="ratingLow"?"selected":""}>
+評価順（低い順）
+</option>
+
+<option value="finishNew"
+${currentSort==="finishNew"?"selected":""}>
+読了日順（新しい順）
+</option>
+
+<option value="finishOld"
+${currentSort==="finishOld"?"selected":""}>
+読了日順（古い順）
+</option>
+
+` : ""}
 
 </select>
 
@@ -776,7 +995,7 @@ font-weight:bold;
 ${book.title}</div>
 
 <div class="book-meta">
-著者：${book.author}
+著　者：${book.author}
 </div>
 
 <div class="book-meta">
@@ -791,9 +1010,25 @@ ${formatDateJP(
 ${formatDateJP(book.finishDate)}
 </div>
 
+${book.status === "read"
+? `<div
+style="
+margin-top:4px;
+cursor:pointer;
+color:#000000 !important;
+"
+onclick="changeRating(${originalIndex})"
+>
+評　価：
+${book.rating
+ ? getRatingStars(book.rating)
+ : "未評価（タップで評価）"}
+</div>`
+: ""}
+
 ${book.comment ?
 `<div class="book-meta">
-感想：${
+感　想：${
 book.comment.length > 30
 ? book.comment.substring(0,30) + "..."
 : book.comment
@@ -1117,8 +1352,14 @@ return null;
    初期ボタン描画
 ----------------------------------- */
 function drawTopButtons() {
-  currentScreen = "main";
-  setDescription(`
+
+    currentScreen = "main";
+
+    document.getElementById(
+        "month-chart-area"
+    ).style.display = "block";
+
+    setDescription(`
   読み取りボタンを押して、カメラで本のバーコードを読み込んでください。<br>
   読み込むバーコードは、本の裏面の２段のバーコードです。<br>
   上手く読み込めない場合は、再度読み込むか、手動で登録することも可能です。<br>
@@ -1219,9 +1460,9 @@ style="
 font-size:1.17em;
 font-weight:bold;
 text-align:center;
-padding:1px;
-">
-📚 本の登録
+padding:0;
+line-height:1;
+">📚 本の登録
 </div>
 
 <div id="register-area"
@@ -1383,6 +1624,12 @@ font-weight:bold;
 
 <div style="flex:1;"></div>
 `;
+noteCard.style.cursor = "pointer";
+
+noteCard.onclick = function () {
+    showBookGroup("読みたい本");
+};
+
 
 /*regRow.style.width = "35%";*/
 
@@ -1470,87 +1717,7 @@ document.getElementById(
 )
 );
 
-  /* -----------------------
-     読書統計
-  ----------------------- */
 
-const statsRow = document.createElement("div");
-statsRow.className = "top-menu-card";
-
-statsRow.style =
-"display:flex;" +
-"flex-direction:column;" +
-"align-items:center;" +
-"justify-content:center;" +
-"gap:8px;";
-
-statsRow.innerHTML = `
-<span style="
-font-size:1.17em;
-font-weight:bold;
-">
-読書統計
-</span>
-`;
-
-const totalRead =
-allBooks.filter(
-b => b.status === "read"
-).length;
-
-const currentMonth =
-new Date().toISOString().substring(0,7);
-
-const monthRead =
-allBooks.filter(
-b =>
-b.status === "read" &&
-b.finishDate &&
-b.finishDate.substring(0,7)
-=== currentMonth
-).length;
-
-const statsInfo =
-document.createElement("div");
-
-statsInfo.innerHTML =
-`
-<div style="
-font-size:20px;
-font-weight:bold;
-color:#005588;
-">
-📚 累計 ${totalRead}冊
-</div>
-
-<div style="
-font-size:18px;
-font-weight:bold;
-color:#559966;
-margin-top:4px;
-">
-📖 今月 ${monthRead}冊
-</div>
-`;
-
-  const statsBtn =
-  document.createElement("button");
-
-  statsBtn.textContent =
-  "統計を見る";
-
-  statsBtn.style =
-  "width:180px;" +
-  "height:44px;" +
-  "font-size:18px;";
-
-  statsBtn.onclick =
-  showStatistics;
-
-  statsRow.appendChild(statsInfo);
-  statsRow.appendChild(statsBtn);
-
- 
   /* -----------------------
      読書記録＋バックアップ
   ----------------------- */
@@ -1561,7 +1728,6 @@ margin-top:4px;
   recordRow.className =
   "top-menu-card";
 
-  recordRow.style.cursor = "pointer";
  
 recordRow.onclick = function(e){
     if(
@@ -1759,32 +1925,20 @@ recordRow.style.width = "100%";
 rightColumn.appendChild(regRow);
 rightColumn.appendChild(recordRow);
 
-const statsCard =
-document.createElement("div");
+const statsCard = document.createElement("div");
 
-statsCard.className =
-"top-menu-card";
-
-statsCard.style =
-"display:flex;" +
-"flex-direction:column;" +
-"justify-content:center;" +
-"align-items:center;" +
-"width:100%;" +
-"min-height:40px;" +
-"padding-top:4px;" +
-"padding-bottom:4px;" +
-"cursor:pointer;";
+statsCard.className = "top-menu-card";
+statsCard.style.width = "100%";
+statsCard.style.cursor = "pointer";
 
 statsCard.innerHTML =
 `
 <div style="
-font-size:18px;
+font-size:1.17em;
 font-weight:bold;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100%;
+text-align:center;
+padding:0;
+line-height:1;
 ">
 📈 詳細統計
 </div>
@@ -2715,8 +2869,12 @@ const info = {
                 "e-finishdate"
             ).value,
 
-        reserved:
-            books[index].reserved || false
+reserved:
+    books[index].reserved || false,
+
+rating:
+    books[index].rating || 0
+
     };
 
     /* ------------------------------
@@ -2985,12 +3143,14 @@ const info = {
             ? "wishlist"
             : selectedStatus,
 
-        comment:
-        document.getElementById("m-comment")
-            .value,
+comment:
+document.getElementById("m-comment")
+    .value,
 
-        createDate:
-            getTodayJP(),
+rating: 0,
+
+createDate:
+    getTodayJP(),
 
         finishDate:
             selectedStatus === "read"
@@ -3574,7 +3734,7 @@ async function saveCameraBook(isbn) {
         : result;
 
     info.comment = "";
-
+    info.rating = 0;
     info.createDate =
         getTodayJP();
 
@@ -4008,6 +4168,10 @@ function showStatistics() {
 
     currentScreen = "stats";
 
+    document.getElementById(
+        "month-chart-area"
+    ).style.display = "none";
+
     setDescription(`
         読書記録の統計情報です。<br>
         読んだ本を対象に、月別読了冊数や累計読了冊数の推移を表示します。<br>
@@ -4070,6 +4234,145 @@ function showStatistics() {
 
         const totalRead =
             books.length;
+
+const ratingCount = {
+  1: 0,
+  2: 0,
+  3: 0,
+  4: 0,
+  5: 0
+};
+
+const authorCount = {};
+
+let ratingTotal = 0;
+let ratedBooks = 0;
+
+books.forEach(book => {
+
+  const rating =
+    Number(book.rating) || 0;
+
+  if (
+    rating >= 1 &&
+    rating <= 5
+  ) {
+
+    ratingCount[rating]++;
+
+    ratingTotal += rating;
+
+    ratedBooks++;
+  }
+
+const authorKey =
+    (book.author || "")
+    .replace(/\s/g,"")
+    .replace(/　/g,"")
+    .replace(/\(.+\)/g,"")
+    .replace(/（.+）/g,"")
+    .replace(/［.+］/g,"")
+    .replace(/\[.+\]/g,"");
+
+  const authorName =
+    (book.author || "")
+    .trim();
+
+  if(authorKey){
+
+      if(!authorCount[authorKey]){
+
+          authorCount[authorKey] = {
+    name: authorName,
+    count: 0,
+    ratingTotal: 0,
+    ratingCount: 0
+};
+
+      }
+if(rating > 0){
+
+    authorCount[authorKey].ratingTotal += rating;
+
+    authorCount[authorKey].ratingCount++;
+
+}
+      authorCount[authorKey].count++;
+
+  }
+
+});
+
+const avgRating =
+  ratedBooks === 0
+  ? "-"
+  : (
+      ratingTotal /
+      ratedBooks
+    ).toFixed(1);
+
+const maxRatingCount =
+Math.max(
+    ratingCount[1],
+    ratingCount[2],
+    ratingCount[3],
+    ratingCount[4],
+    ratingCount[5],
+    1
+);
+
+let ratingHtml = "";
+
+for(let star=5;star>=1;star--){
+
+    const count =
+        ratingCount[star];
+
+    const width =
+        (count /
+         maxRatingCount) * 100;
+
+    ratingHtml += `
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        margin-bottom:8px;
+    ">
+
+<div style="
+    width:30px;
+    font-weight:bold;
+    color:#000 !important;
+">
+    ☆${star}
+</div>
+
+        <div style="
+            flex:1;
+            height:18px;
+            background:#eeeeee;
+            border-radius:10px;
+            overflow:hidden;
+        ">
+            <div style="
+                width:${width}%;
+                height:100%;
+                background:#FFB300;
+            "></div>
+        </div>
+
+        <div style="
+            width:40px;
+            text-align:right;
+            font-weight:bold;
+        ">
+            ${count}冊
+        </div>
+
+    </div>
+    `;
+}
 
     const periodLabel =
         `${startDate.getFullYear()}年`
@@ -4137,54 +4440,207 @@ if (months.length > 0) {
 
 }
 
+const maxMonthCount =
+Math.max(
+    ...months.map(
+        month =>
+        monthlyMap[month] || 0
+    ),
+    1
+);
+
 let monthlyHtml = "";
 
-if (months.length === 0) {
-
-    monthlyHtml =
-        "<div>読了データがありません。</div>";
-
-}
-
-    months.forEach(month => {
+months.forEach(month => {
 
     const count =
         monthlyMap[month] || 0;
 
-    let bookMark;
-
-    if (count === 0) {
-
-        bookMark = "-";
-
-    } else if (count <= 10) {
-
-        bookMark =
-            "📘".repeat(count);
-
-    } else {
-
-        bookMark =
-            "📘×" + count;
-
-    }
+    const width =
+        (count /
+        maxMonthCount) * 100;
 
     monthlyHtml += `
     <div style="
-        margin-bottom:10px;
-        font-size:18px;
-        line-height:1.8;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        margin-bottom:8px;
     ">
-        ${month}
-        ${bookMark}
-        （${count}冊）
+
+        <div style="
+            width:70px;
+            font-weight:bold;
+            font-size:14px;
+        ">
+            ${month}
+        </div>
+
+        <div style="
+            flex:1;
+            height:18px;
+            background:#eeeeee;
+            border-radius:10px;
+            overflow:hidden;
+        ">
+            <div style="
+                width:${width}%;
+                height:100%;
+                background:#2196F3;
+            ">
+            </div>
+        </div>
+
+        <div style="
+            width:40px;
+            text-align:right;
+            font-weight:bold;
+        ">
+            ${count}冊
+        </div>
+
+    </div>
+    `;
+
+});
+
+const authorRanking =
+Object.values(authorCount)
+.sort((a,b)=>
+    b.count - a.count
+)
+.slice(0,10);
+
+const authorRatingRanking =
+Object.values(authorCount)
+.filter(author =>
+    author.count >= 3 &&
+    author.ratingCount > 0
+)
+.map(author => ({
+    ...author,
+    avgRating:
+        author.ratingTotal /
+        author.ratingCount
+}))
+.sort((a,b)=>
+    b.avgRating - a.avgRating
+)
+.slice(0,10);
+
+const maxAuthorCount =
+Math.max(
+    ...authorRanking.map(
+        a => a.count
+    ),
+    1
+);
+
+let authorHtml = "";
+
+authorRanking.forEach(author => {
+
+const avgRating =
+author.ratingCount > 0
+? (
+    author.ratingTotal /
+    author.ratingCount
+  ).toFixed(1)
+: "-";
+
+    const width =
+        (author.count /
+        maxAuthorCount) * 100;
+
+    authorHtml += `
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        margin-bottom:8px;
+    ">
+
+        <div style="
+            width:120px;
+            font-size:14px;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        ">
+            ${author.name}
+        </div>
+
+        <div style="
+            flex:1;
+            height:18px;
+            background:#eeeeee;
+            border-radius:10px;
+            overflow:hidden;
+        ">
+            <div style="
+                width:${width}%;
+                height:100%;
+                background:#4CAF50;
+            ">
+            </div>
+        </div>
+
+<div style="
+    width:30px;
+    text-align:right;
+    font-weight:bold;
+">
+    ${author.count}冊
+</div>
+
+<div style="
+    width:55px;
+    text-align:right;
+    font-weight:bold;
+    color:#000;
+">
+    ☆${avgRating}
+</div>
+    </div>
+    `;
+
+});
+
+let authorRatingHtml = "";
+
+authorRatingRanking.forEach(author => {
+
+    authorRatingHtml += `
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:8px;
+    ">
+
+        <div style="
+            flex:1;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        ">
+            ${author.name}
+        </div>
+
+        <div style="
+            width:100px;
+            text-align:right;
+            font-weight:bold;
+        ">
+            ☆${author.avgRating.toFixed(1)}
+        </div>
+
     </div>
     `;
 });
 
-    let running = 0;
-
-    const cumulativeData = [];
+let running = 0;
+const cumulativeData = [];
 
     months.forEach(month => {
 
@@ -4202,6 +4658,90 @@ if (months.length === 0) {
 
     const graphWidth = 300;
     const graphHeight = 180;
+
+let yAxisHtml = "";
+let xAxisHtml = "";
+
+months.forEach((month,index)=>{
+
+    const x =
+    months.length <= 1
+    ? 20
+    : 20 +
+      (
+      index /
+      (months.length - 1)
+      ) *
+      (graphWidth - 40);
+
+    let label;
+
+    if(statsRange === "3y"){
+
+        if(index % 6 !== 0){
+            return;
+        }
+
+        label =
+        month.substring(2,4)
+        + "/"
+        +
+        Number(month.substring(5,7));
+
+    }else{
+
+        label =
+        Number(month.substring(5,7))
+        + "月";
+
+    }
+
+    xAxisHtml += `
+    <text
+        x="${x}"
+        y="175"
+        font-size="9"
+        text-anchor="middle"
+        fill="#666">
+        ${label}
+    </text>
+    `;
+});
+
+for(let i=0;i<=5;i++){
+
+    const value =
+        Math.round(
+            totalRead *
+            (5 - i) / 5
+        );
+
+    const y =
+        20 +
+        (
+            (graphHeight - 40)
+            * i / 5
+        );
+
+    yAxisHtml += `
+        <text
+            x="2"
+            y="${y+4}"
+            font-size="10"
+            fill="#666">
+            ${value}
+        </text>
+
+        <line
+            x1="20"
+            y1="${y}"
+            x2="280"
+            y2="${y}"
+            stroke="#eeeeee"
+            stroke-width="1">
+        </line>
+    `;
+}
 
     cumulativeData.forEach((item, index) => {
 
@@ -4274,48 +4814,138 @@ if (months.length === 0) {
 
     </div>
 
-    <h3>読書統計</h3>
+    <h3 style="
+margin-bottom:0px;
+">
+読書統計
+</h3>
 
-    <div style="
-        background:#f5f5f5;
-        padding:10px;
-        border-radius:8px;
-        margin-bottom:20px;
-        text-align:center;
-    ">
+<div style="
+    background:#f5f5f5;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:20px;
+    text-align:left;
+">
 
-    集計期間：
+    集計期間　　　：
     <b>${periodLabel}</b>
 
-    <br><br>
+    <br>
 
-    累計既読冊数　：
+    累計読書冊数　：
     <b>${totalRead}</b>冊
 
-    <br><br>
+    <br>
 
-    月平均既読冊数：
+    月平均読書冊数：
     <b>${averagePerMonth}</b>冊
 
     </div>
 
-    <h3>月別の既読冊数</h3>
+<hr style="margin:20px 0;">
 
-    ${monthlyHtml}
+<h3>月別の読書冊数</h3>
 
-    <hr style="margin:20px 0;">
+${monthlyHtml}
 
-    <h3>累計既読冊数の推移</h3>
+<hr style="margin:20px 0;">
+
+<h3>評価別冊数</h3>
+
+<div style="
+background:#f5f5f5;
+padding:10px;
+border-radius:8px;
+margin-bottom:20px;
+">
+
+平均評価：
+<b>${avgRating}</b>
+
+<br><br>
+
+${ratingHtml}
+
+</div>
+
+<hr style="margin:20px 0;">
+
+<h3>作家別読書冊数 TOP10</h3>
+
+<div style="
+background:#f5f5f5;
+padding:10px;
+border-radius:8px;
+margin-bottom:20px;
+">
+
+${authorHtml}
+
+</div>
+
+<hr style="margin:20px 0;">
+
+<h3 style="
+margin-bottom:0px;
+">
+作家別平均評価 TOP10
+</h3>
+
+<div style="
+font-size:14px;
+margin-bottom:8px;
+margin-top:-5px;
+color:#666;
+">
+（3冊以上読んだ作家）
+</div>
+
+
+<div style="
+background:#f5f5f5;
+padding:10px;
+border-radius:8px;
+margin-bottom:20px;
+">
+
+${authorRatingHtml}
+
+</div>
+
+<hr style="margin:20px 0;">
+
+<h3>累計読書冊数の推移</h3>
 
     <svg
         width="100%"
-        height="220"
+        height="240"
         viewBox="0 0 300 180"
         style="
             border:1px solid #ccc;
             background:#fff;
         ">
+        ${yAxisHtml}
 
+${xAxisHtml}
+
+<line
+x1="20"
+    y1="20"
+    x2="20"
+    y2="160"
+    stroke="#999"
+    stroke-width="1">
+</line>
+
+<line
+    x1="20"
+    y1="160"
+    x2="280"
+    y2="160"
+    stroke="#999"
+    stroke-width="1">
+</line>
         <polyline
             fill="none"
             stroke="#2196F3"

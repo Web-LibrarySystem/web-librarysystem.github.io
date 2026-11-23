@@ -4172,17 +4172,50 @@ chart.innerHTML = html;
    作家名正規化
 ----------------------------------- */
 function normalizeAuthorName(author) {
-  return (author || "")
+
+  let name = (author || "")
     .normalize("NFKC")
+    .trim();
+
+  // NDL形式
+  // 宮部,みゆき,1960-
+  // 夏目,漱石,1867-1916
+  // 東野,圭吾,1958-
+  if (/^[^,]+,[^,]+,\s*\d{4}(-\d{4})?-?$/.test(name)) {
+    const parts = name.split(",");
+    name = parts[0] + parts[1];
+  }
+
+  return name
+
+    // 空白除去
     .replace(/\s+/g, "")
+
+    // 丸括弧内情報除去
     .replace(/\([^)]*\)/g, "")
     .replace(/（[^）]*）/g, "")
+
+    // 角括弧内情報除去
     .replace(/\[[^\]]*\]/g, "")
     .replace(/［[^］]*］/g, "")
+
+    // 生没年除去
+    .replace(/,\d{4}-?$/g, "")
+    .replace(/,\d{4}-\d{4}$/g, "")
+
+    // 残ったカンマ除去
+    .replace(/,/g, "")
+
+    // 役割表記除去
     .replace(/著$/g, "")
     .replace(/編$/g, "")
     .replace(/訳$/g, "")
     .replace(/監修$/g, "")
+    .replace(/原作$/g, "")
+    .replace(/文$/g, "")
+    .replace(/写真$/g, "")
+    .replace(/構成$/g, "")
+
     .trim();
 }
 
@@ -4288,25 +4321,25 @@ books.forEach(book => {
   }
 
 const authorKey =
-    normalizeAuthorName(book.author);
+  normalizeAuthorName(book.author);
 
 if(authorKey){
 
-    if(!authorCount[authorKey]){
-        authorCount[authorKey] = {
-            name: authorKey,   // ← 正規化後の名前を表示用にも使用
-            count: 0,
-            ratingTotal: 0,
-            ratingCount: 0
-        };
-    }
+  if(!authorCount[authorKey]){
+    authorCount[authorKey] = {
+      name: authorKey, // 表示名も正規化後
+      count: 0,
+      ratingTotal: 0,
+      ratingCount: 0
+    };
+  }
 
-    if(rating > 0){
-        authorCount[authorKey].ratingTotal += rating;
-        authorCount[authorKey].ratingCount++;
-    }
+  if(rating > 0){
+    authorCount[authorKey].ratingTotal += rating;
+    authorCount[authorKey].ratingCount++;
+  }
 
-    authorCount[authorKey].count++;
+  authorCount[authorKey].count++;
 }
 });
 

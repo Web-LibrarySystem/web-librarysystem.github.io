@@ -481,9 +481,7 @@ function changeRating(bookIndex) {
 }
 
 function setRating(bookIndex, rating) {
-
   const books = BooksManager.getBooks();
-
   books[bookIndex].rating = rating;
 
   localStorage.setItem(
@@ -497,20 +495,6 @@ function setRating(bookIndex, rating) {
   if(dialog){
     dialog.remove();
   }
-
-  if(window.isSearchMode){
-    refreshSearchResults();
-    return;
-  }
-
-drawTopButtons();
-
-BooksManager.renderBookList(
-  currentSort,
-  currentGroup
-);
-
-renderMonthChart();
 }
 
 function formatDateJP(dateStr) {
@@ -2249,13 +2233,19 @@ function showSearchResults(results) {
     状態：
     <b>${statusName}</b><br>
 
-    登録日：
+登録日：
 ${formatDateJP(
     book.createDate
 )}<br>
 
-    読了日：
-    ${formatDateJP(book.finishDate)}<br>
+読了日：
+${formatDateJP(book.finishDate)}<br>
+
+評価：
+${book.rating
+ ? getRatingStars(book.rating)
+ : "未評価"}
+<br>
 
     ${book.comment ?
     `感想：
@@ -2275,6 +2265,24 @@ ${formatDateJP(
     <div class="book-buttons">
 
     <div class="book-buttons-top">
+
+<button
+style="
+flex:1;
+font-size:18px;
+font-weight:bold;
+padding:10px 14px;
+"
+onclick="
+changeRating(
+BooksManager.getBooks()
+.findIndex(
+b=>b.isbn==='${book.isbn}'
+)
+)
+">
+評価
+</button>
 
 <button
 style="
@@ -2790,6 +2798,45 @@ style="font-size:16px; width:90%;">
 </div>
 
 <div style="margin-bottom:12px;">
+評価：
+<select
+id="e-rating"
+style="font-size:16px; width:90%;">
+
+<option value="0"
+${(book.rating||0)==0?"selected":""}>
+未評価
+</option>
+
+<option value="1"
+${book.rating==1?"selected":""}>
+★1
+</option>
+
+<option value="2"
+${book.rating==2?"selected":""}>
+★2
+</option>
+
+<option value="3"
+${book.rating==3?"selected":""}>
+★3
+</option>
+
+<option value="4"
+${book.rating==4?"selected":""}>
+★4
+</option>
+
+<option value="5"
+${book.rating==5?"selected":""}>
+★5
+</option>
+
+</select>
+</div>
+
+<div style="margin-bottom:12px;">
 感想：<br>
 <textarea
 id="e-comment"
@@ -2800,6 +2847,7 @@ width:90%;
 height:80px;
 ">${book.comment || ""}</textarea>
 </div>
+
 <button
 onclick="saveEdit(${index})"
 style="
@@ -2877,7 +2925,11 @@ reserved:
     books[index].reserved || false,
 
 rating:
-    books[index].rating || 0
+    Number(
+      document.getElementById(
+        "e-rating"
+      ).value
+    )
 
     };
 
@@ -4554,8 +4606,7 @@ Object.values(authorCount)
 const authorRatingRanking =
 Object.values(authorCount)
 .filter(author =>
-    author.count >= 3 &&
-    author.ratingCount > 0
+    author.ratingCount >= 3
 )
 .map(author => ({
     ...author,

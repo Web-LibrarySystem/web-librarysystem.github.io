@@ -4173,12 +4173,16 @@ chart.innerHTML = html;
 ----------------------------------- */
 function normalizeAuthorName(author) {
   return (author || "")
-    .normalize("NFKC")         // 全角半角統一
-    .replace(/\s+/g, "")       // 半角・全角スペース除去
-    .replace(/\([^)]*\)/g, "") // (1980-) など除去
-    .replace(/（[^）]*）/g, "") // （1980-）など除去
-    .replace(/\[[^\]]*\]/g, "") // [著] など除去
-    .replace(/［[^］]*］/g, "") // ［著］など除去
+    .normalize("NFKC")
+    .replace(/\s+/g, "")
+    .replace(/\([^)]*\)/g, "")
+    .replace(/（[^）]*）/g, "")
+    .replace(/\[[^\]]*\]/g, "")
+    .replace(/［[^］]*］/g, "")
+    .replace(/著$/g, "")
+    .replace(/編$/g, "")
+    .replace(/訳$/g, "")
+    .replace(/監修$/g, "")
     .trim();
 }
 
@@ -4287,26 +4291,23 @@ const authorKey =
     normalizeAuthorName(book.author);
 
 if(authorKey){
+
     if(!authorCount[authorKey]){
         authorCount[authorKey] = {
-            name: authorKey,
+            name: authorKey,   // ← 正規化後の名前を表示用にも使用
             count: 0,
             ratingTotal: 0,
             ratingCount: 0
         };
     }
 
-if(rating > 0){
+    if(rating > 0){
+        authorCount[authorKey].ratingTotal += rating;
+        authorCount[authorKey].ratingCount++;
+    }
 
-    authorCount[authorKey].ratingTotal += rating;
-
-    authorCount[authorKey].ratingCount++;
-
+    authorCount[authorKey].count++;
 }
-      authorCount[authorKey].count++;
-
-  }
-
 });
 
 const avgRating =

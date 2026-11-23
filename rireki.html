@@ -481,7 +481,9 @@ function changeRating(bookIndex) {
 }
 
 function setRating(bookIndex, rating) {
+
   const books = BooksManager.getBooks();
+
   books[bookIndex].rating = rating;
 
   localStorage.setItem(
@@ -492,8 +494,44 @@ function setRating(bookIndex, rating) {
   const dialog =
     document.getElementById("rating-dialog");
 
-  if(dialog){
-    dialog.remove();
+if(dialog){
+  dialog.remove();
+}
+
+const ratingArea =
+document.getElementById(
+  `rating-view-${bookIndex}`
+);
+
+if(ratingArea){
+
+  ratingArea.innerHTML =
+    "評　価：" +
+    (
+      rating
+      ? getRatingStars(rating)
+      : "未評価（タップで評価）"
+    );
+
+}
+
+if(window.isSearchMode){
+
+    const scrollY =
+      window.scrollY;
+
+    refreshSearchResults();
+
+    setTimeout(() => {
+
+      window.scrollTo({
+        top: scrollY,
+        behavior: "auto"
+      });
+
+    },10);
+
+    return;
   }
 }
 
@@ -1000,6 +1038,7 @@ ${formatDateJP(book.finishDate)}
 
 ${book.status === "read"
 ? `<div
+id="rating-view-${originalIndex}"
 style="
 margin-top:4px;
 cursor:pointer;
@@ -1971,14 +2010,12 @@ function setDescription(html) {
 }
 
 function searchBooks() {
-    const keyword =
+const keyword =
+normalizeSearchText(
     document.getElementById(
         "search-keyword"
-    )
-    .value
-    .trim()
-    .normalize("NFKC")
-    .toLowerCase();
+    ).value
+);
 
     if (!keyword) {
 
@@ -1995,28 +2032,26 @@ function searchBooks() {
     const books =
         BooksManager.getBooks();
 
-const results =
-    books.filter(book => {
-    return (
-        (book.title || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(keyword)
+    const results =
+        books.filter(book => {
+        return (
+    normalizeSearchText(
+        book.title
+    ).includes(keyword)
         ||
-        (book.author || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(keyword)
+    normalizeSearchText(
+        normalizeAuthorName(
+            book.author
+        )
+    ).includes(keyword)
         ||
-        (book.yomi || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(keyword)
+    normalizeSearchText(
+        book.yomi
+    ).includes(keyword)
         ||
-        (book.comment || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(keyword)
+    normalizeSearchText(
+        book.comment
+    ).includes(keyword)
         ||
         (book.isbn || "")
             .normalize("NFKC")
@@ -2036,37 +2071,51 @@ function refreshSearchResults() {
     const books =
         BooksManager.getBooks();
 
-const results =
-    books.filter(book => {
-    return (
-        (book.title || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(window.currentSearchKeyword)
-        ||
-        (book.author || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(window.currentSearchKeyword)
-        ||
-        (book.yomi || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(window.currentSearchKeyword)
-        ||
-        (book.comment || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(window.currentSearchKeyword)
-        ||
-        (book.isbn || "")
-            .normalize("NFKC")
-            .toLowerCase()
-            .includes(window.currentSearchKeyword)
-    );
-});
+    const keyword =
+        window.currentSearchKeyword;
+
+    const results =
+        books.filter(book => {
+
+            return (
+
+                normalizeSearchText(
+                    book.title
+                ).includes(keyword)
+
+                ||
+
+                normalizeSearchText(
+                    normalizeAuthorName(
+                        book.author
+                    )
+                ).includes(keyword)
+
+                ||
+
+                normalizeSearchText(
+                    book.yomi
+                ).includes(keyword)
+
+                ||
+
+                normalizeSearchText(
+                    book.comment
+                ).includes(keyword)
+
+                ||
+
+                (book.isbn || "")
+                    .normalize("NFKC")
+                    .toLowerCase()
+                    .includes(keyword)
+
+            );
+
+        });
 
     showSearchResults(results);
+
 }
 
 
@@ -4269,6 +4318,18 @@ function normalizeAuthorName(author) {
     .replace(/構成$/g, "")
 
     .trim();
+}
+
+function normalizeSearchText(text){
+
+  return (text || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/\s+/g,"")
+    .replace(/[、，,]/g,"")
+    .replace(/・/g,"")
+    .trim();
+
 }
 
 function showStatistics() {

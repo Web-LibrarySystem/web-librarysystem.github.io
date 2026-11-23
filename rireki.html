@@ -503,10 +503,14 @@ function setRating(bookIndex, rating) {
     return;
   }
 
-  refreshAfterRegister(
-    currentGroup,
-    books[bookIndex].isbn
-  );
+drawTopButtons();
+
+BooksManager.renderBookList(
+  currentSort,
+  currentGroup
+);
+
+renderMonthChart();
 }
 
 function formatDateJP(dateStr) {
@@ -4164,6 +4168,20 @@ html += "</div>";
 chart.innerHTML = html;
 }
 
+/* -----------------------------------
+   作家名正規化
+----------------------------------- */
+function normalizeAuthorName(author) {
+  return (author || "")
+    .normalize("NFKC")         // 全角半角統一
+    .replace(/\s+/g, "")       // 半角・全角スペース除去
+    .replace(/\([^)]*\)/g, "") // (1980-) など除去
+    .replace(/（[^）]*）/g, "") // （1980-）など除去
+    .replace(/\[[^\]]*\]/g, "") // [著] など除去
+    .replace(/［[^］]*］/g, "") // ［著］など除去
+    .trim();
+}
+
 function showStatistics() {
 
     currentScreen = "stats";
@@ -4266,30 +4284,18 @@ books.forEach(book => {
   }
 
 const authorKey =
-    (book.author || "")
-    .replace(/\s/g,"")
-    .replace(/　/g,"")
-    .replace(/\(.+\)/g,"")
-    .replace(/（.+）/g,"")
-    .replace(/［.+］/g,"")
-    .replace(/\[.+\]/g,"");
+    normalizeAuthorName(book.author);
 
-  const authorName =
-    (book.author || "")
-    .trim();
+if(authorKey){
+    if(!authorCount[authorKey]){
+        authorCount[authorKey] = {
+            name: authorKey,
+            count: 0,
+            ratingTotal: 0,
+            ratingCount: 0
+        };
+    }
 
-  if(authorKey){
-
-      if(!authorCount[authorKey]){
-
-          authorCount[authorKey] = {
-    name: authorName,
-    count: 0,
-    ratingTotal: 0,
-    ratingCount: 0
-};
-
-      }
 if(rating > 0){
 
     authorCount[authorKey].ratingTotal += rating;

@@ -1700,6 +1700,16 @@ class="round-button">
 </div>
 
 <div
+style="
+font-size:16px;
+color:#000;
+text-align:center;
+margin-top:4px;
+">
+※「未評価」と検索すると、評価未設定の本を表示できます
+</div>
+
+<div
 id="tabs"
 style="
 margin-top:15px;
@@ -2032,6 +2042,22 @@ normalizeSearchText(
     const books =
         BooksManager.getBooks();
 
+/* 未評価検索 */
+if (
+    keyword === "未評価" ||
+    keyword === "みひょうか"
+) {
+
+    const results =
+        books.filter(book =>
+            book.status === "read" &&
+            (!book.rating || book.rating === 0)
+        );
+
+    showSearchResults(results);
+    return;
+}
+
     const results =
         books.filter(book => {
         return (
@@ -2073,6 +2099,22 @@ function refreshSearchResults() {
 
     const keyword =
         window.currentSearchKeyword;
+
+/* 未評価検索 */
+if (
+    keyword === "未評価" ||
+    keyword === "みひょうか"
+) {
+
+    const results =
+        books.filter(book =>
+            book.status === "read" &&
+            (!book.rating || book.rating === 0)
+        );
+
+    showSearchResults(results);
+    return;
+}
 
     const results =
         books.filter(book => {
@@ -2290,10 +2332,26 @@ ${formatDateJP(
 読了日：
 ${formatDateJP(book.finishDate)}<br>
 
+<div
+id="search-rating-${book.isbn}"
+style="
+cursor:pointer;
+margin-top:4px;
+"
+onclick="
+changeRating(
+BooksManager.getBooks()
+.findIndex(
+b=>b.isbn==='${book.isbn}'
+)
+)
+"
+>
 評価：
 ${book.rating
  ? getRatingStars(book.rating)
- : "未評価"}
+ : "未評価（タップで評価）"}
+</div>
 <br>
 
     ${book.comment ?
@@ -2314,24 +2372,6 @@ ${book.rating
     <div class="book-buttons">
 
     <div class="book-buttons-top">
-
-<button
-style="
-flex:1;
-font-size:18px;
-font-weight:bold;
-padding:10px 14px;
-"
-onclick="
-changeRating(
-BooksManager.getBooks()
-.findIndex(
-b=>b.isbn==='${book.isbn}'
-)
-)
-">
-評価
-</button>
 
 <button
 style="

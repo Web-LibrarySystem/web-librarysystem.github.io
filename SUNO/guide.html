@@ -7,43 +7,117 @@
   <link rel="stylesheet" href="css/style.css">
 
 <style>
-body {
-    background-color: #f5ecf4;
+body{
+    background:#f6faf6;
+    margin:0;
+    font-family:sans-serif;
 }
+
+.page-title{
+    text-align:center;
+    font-size:30px;
+    font-weight:bold;
+    margin:20px 0;
+}
+
+.info-card{
+    width:90%;
+    margin:15px auto;
+    background:#ffffff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+.info-header{
+    color:white;
+    font-size:22px;
+    font-weight:bold;
+    text-align:center;
+    padding:8px 0;
+}
+
+.loan{background:#4C78A8;}
+.return{background:#27AE60;}
+.reserve{background:#F39C12;}
+.extend{background:#8E44AD;}
+.other{background:#607D8B;}
+
+.info-body{
+    padding:15px;
+    line-height:2;
+    font-size:17px;
+}
+
+.info-body ul{
+    margin:0;
+    padding-left:20px;
+}
+
+.back-button{
+    color:#000000 !important;
+    
+    font-size:16px;
+
+    font-weight:bold;
+
+    padding:5px 10px;
+
+    border:none;
+
+    border-radius:16px;
+
+    background:#ffffff;
+
+    box-shadow:
+    0 2px 6px rgba(0,0,0,0.12);
+
+    cursor:pointer;
+
+}
+
 </style>
+
 </head>
 
 <body>
-  <!-- 戻るボタン（ページ上部） -->
-  <div style="text-align:left; margin:10px;">
-    <button onclick="location.href='index.html'"
-            style="padding:10px 20px; font-size:16px;">
-      ← 戻る
-    </button>
-  </div>
 
-<div style="text-align:left; margin:20px;">
+<button
+class="back-button"
+onclick="location.href='index.html'"
+style="
+position:absolute;
+left:10px;
+">
+← 戻る
+</button>
 
-  <h1>利用案内</h1>
+<div class="page-title">
+    📚 利用案内
+</div>
 
-  <p><strong>＜貸出について＞</strong><br>
-　・図書　　１０冊<br>
-　・雑誌　　　２冊<br>
-　・CD・DVD　２点　　計１４点まで<br>
-　いずれも、貸出日を含めて１５日間まで<br>
-  </p>
+<div class="info-card">
+    <div class="info-header loan">
+        📚 貸出について
+    </div>
+    <div class="info-body">
+        図書：10冊まで<br>
+        雑誌：2冊まで<br>
+        CD・DVD：2点まで<br><br>
+        貸出日を含め15日間利用できます。
+    </div>
+</div>
 
-  <p><strong>＜返却について＞</strong><br>
-　・大垣市立図書館<br>
-　・上石津図書館<br>
-　・墨俣図書館<br>
-　・大垣駅北市民サービスセンター<br>
-　  （アクアウォーク大垣２F）<br>
-　・南部サービスセンター<br>
-　  （イオンモール大垣２F）<br><br>
-
-  夜間返却口はこちら<br>
-  <img src="hennkyaku.png"
+<div class="info-card">
+    <div class="info-header return">
+        🔄 返却について
+    </div>
+    <div class="info-body">
+        <ul>
+            <li>墨俣図書館</li>
+        </ul>
+  　夜間返却口はこちら<br>
+ <img src="hennkyaku.png"
        alt="夜間返却口"
        style="
          width:100%;
@@ -52,27 +126,58 @@ body {
          border-radius:16px;
          box-shadow:0 2px 8px rgba(0,0,0,0.08);
        ">
-<br>
+    <div class="info-body">
+        <ul>
+            <li>大垣市立図書館</li>
+            <li>上石津図書館</li>
+            <li>大垣駅北市民サービスセンター</li>
+            <li>南部サービスセンター</li>
+        </ul>
+    </div>
+</div>
+</div>
 
-  <p><strong>＜予約について＞</strong><br>
-　・図書　　　１０冊<br>
-　・雑誌　　　　２冊<br>
-　・CD・DVD　　２点　　計１４点まで<br>
-　
-　</p>
+<div class="info-card">
+    <div class="info-header reserve">
+        📌 予約について
+    </div>
+    <div class="info-body">
+        図書：10冊まで<br>
+        雑誌：2冊まで<br>
+        CD・DVD：2点まで<br>
+    </div>
+</div>
 
-  <p><strong>＜更新について＞</strong><br>
-　・貸出期限内であること<br>
-　・次の予約がないこと<br>
-　・１度目の延長であること<br>
-　上記を全てを満たす場合に限り、延長手続日から１５日間延長可能<br>
-  </p>
+<div class="info-card">
+    <div class="info-header extend">
+        ⏰ 更新について
+    </div>
+    <div class="info-body">
+        次の条件をすべて満たす場合のみ延長できます。
+        <ul>
+            <li>貸出期限内であること</li>
+            <li>次の予約がないこと</li>
+            <li>初回延長であること</li>
+        </ul>
 
-  <p><strong>＜その他＞</strong><br>
-　その他・詳細事項は、<a href="https://www.ocpl.ogaki.gifu.jp/" target="_blank">図書館ホームページ</a>をご覧ください
+        延長手続日から15日間延長できます。<br>
+        図書館HP（マイページ）、電話等で延長できます。
+    </div>
+</div>
 
-  </p>
-
+<div class="info-card">
+    <div class="info-header other">
+        🌐 その他
+    </div>
+    <div class="info-body">
+        詳細は
+        <a
+            href="https://www.ocpl.ogaki.gifu.jp/"
+            target="_blank">
+            図書館ホームページ
+        </a>
+        をご確認ください。
+    </div>
 </div>
 </body>
 </html>

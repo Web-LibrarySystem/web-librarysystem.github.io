@@ -1040,6 +1040,7 @@ ${book.status === "read"
 ? `<div
 id="rating-view-${originalIndex}"
 style="
+margin-top:4px;
 cursor:pointer;
 color:#000000 !important;
 "
@@ -1081,7 +1082,7 @@ onclick="
 window.editReturnMode='group';
 editBook(${originalIndex})
 ">
-編　集
+編集
 </button>
  
 <button
@@ -1092,7 +1093,7 @@ font-weight:bold;
 padding:10px 14px;
 "
 onclick="BooksManager.confirmDelete(${originalIndex})">
-削　除
+削除
 </button>
 
 </div>
@@ -5068,12 +5069,12 @@ margin-bottom:0px;
 作家別読書冊数 TOP10（全期間）
 </h3>
 <div style="
-font-size:15px;
+font-size:13px;
 margin-bottom:8px;
 margin-top:-5px;
 color:#666;
 ">
-作家別の読んだ冊数が多い順と平均点
+読んだ冊数が多い順の、評価した冊数/読んだ冊数、平均評価
 </div>
 
 <div style="
@@ -5096,12 +5097,13 @@ margin-bottom:0px;
 </h3>
 
 <div style="
-font-size:15px;
+font-size:13px;
 margin-bottom:8px;
 margin-top:-5px;
 color:#666;
 ">
-作家別の評価点（3冊以上評価を付けた作家のみ）
+平均評価順の評価点、評価した冊数/読んだ冊数<br>
+ただし、３冊以上評価を付けた作家のみ集計
 </div>
 
 

@@ -301,7 +301,6 @@ margin-bottom:8px;
 text-decoration:none;
 color:#333;
 font-weight:bold;
-font-size:15px;
 background:${bgColor};
 border-radius:10px;
 box-shadow:0 2px 6px rgba(0,0,0,0.15);
@@ -323,13 +322,13 @@ ${lib.name}
 onclick="toggleLibraryArea()"
 style="
 width:100%;
-margin-top:8px;
+margin-top:8px;/*登録の上の余白*/
 padding:10px;
 background:#f0f0f0;
 border:none;
 border-radius:12px;
 cursor:pointer;
-font-size:15px;
+font-size:14px;
 font-weight:bold;
 color:#000000;
 box-shadow:0 3px 8px rgba(0,0,0,0.18);
@@ -354,17 +353,15 @@ function renderBookStats(){
         );
 
 
-    const wishlist =
-        books.filter(
-            b => b.status === "wishlist" && !b.reserved
-        ).length;
+const reserved =
+    books.filter(
+        b => b.reserved
+    ).length;
 
-
-    const reserved =
-        books.filter(
-            b => b.reserved
-        ).length;
-
+const wishlist =
+    books.filter(
+        b => b.status === "wishlist"
+    ).length;
 
     const reading =
         books.filter(
@@ -387,14 +384,11 @@ function renderBookStats(){
     if(statsArea){
 
 
-        statsArea.innerHTML =
-
-
-            "読みたい：" + wishlist + "冊<br>" +
-            "予約済　：" + reserved + "冊<br>" +
-            "読書中　：" + reading + "冊<br>" +
-            "読んだ　：" + read + "冊";
-
+statsArea.innerHTML =
+    "読みたい：" + wishlist + "冊" +
+    "<br><span style='font-size:12px;'>（うち予約済：" + reserved + "冊）</span><br>" +
+    "読書中　：" + reading + "冊<br>" +
+    "読んだ　：" + read + "冊";
 
     }
 
@@ -700,21 +694,17 @@ slideArea.ontouchend = function(e){
         touchStartX - touchEndX;
 
     if(diff > 50){
-        slideIndex =
-            (slideIndex + 1)
-            % slides.length;
-
-        draw();
-
-    }else if(diff < -50){
-
-        slideIndex =
-            (slideIndex - 1 +
-             slides.length)
-            % slides.length;
-
-        draw();
-    }
+    slideIndex =
+        (slideIndex - 1 +
+         slides.length)
+        % slides.length;
+    draw();
+}else if(diff < -50){
+    slideIndex =
+        (slideIndex + 1)
+        % slides.length;
+    draw();
+}
 };
 
 draw();
@@ -936,7 +926,7 @@ padding:10px;
 background:#f0f0f0;
 border-radius:12px;
 text-align:center;
-font-size:15px;
+font-size:14px;
 font-weight:bold;
 box-sizing:border-box;
 box-shadow:0 3px 8px rgba(0,0,0,0.18);
@@ -1076,68 +1066,47 @@ cursor:pointer;
     "
   >
 
-<a
-  href="https://www.hontai.or.jp/history/"
-  target="_blank"
-  rel="noopener noreferrer"
-  style="
-    display:block;
-    text-decoration:none;
-    font-weight:bold;
-    color:#000000;
-    text-align:left;
-    padding:10px;
-    margin-bottom:8px;
-    background:#ffffff;
-    border-radius:12px;
-    box-shadow:0 3px 8px rgba(0,0,0,0.18);
-    border:1px solid rgba(0,0,0,0.08);
-  "
->
-  🏆 本屋大賞 歴代受賞作
-</a>
+    <a
+      href="https://www.hontai.or.jp/history/"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        display:block;
+        text-decoration:none;
+        font-weight:bold;
+        color:#000000;
+      "
+    >
+      🏆 本屋大賞 歴代受賞作
+    </a>
 
-<a
-  href="https://bungakushinko.or.jp/award/akutagawa/list.html"
-  target="_blank"
-  rel="noopener noreferrer"
-  style="
-    display:block;
-    text-decoration:none;
-    font-weight:bold;
-    color:#000000;
-    text-align:left;
-    padding:10px;
-    margin-bottom:8px;
-    background:#ffffff;
-    border-radius:12px;
-    box-shadow:0 3px 8px rgba(0,0,0,0.18);
-    border:1px solid rgba(0,0,0,0.08);
-  "
->
-  ✒️ 芥川賞 受賞者一覧
-</a>
+    <a
+      href="https://bungakushinko.or.jp/award/akutagawa/list.html"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        display:block;
+        text-decoration:none;
+        font-weight:bold;
+        color:#000000;
+      "
+    >
+      ✒️ 芥川賞 受賞者一覧
+    </a>
 
-<a
-  href="https://bungakushinko.or.jp/award/naoki/list.html"
-  target="_blank"
-  rel="noopener noreferrer"
-  style="
-    display:block;
-    text-decoration:none;
-    font-weight:bold;
-    color:#000000;
-    text-align:left;
-    padding:10px;
-    margin-bottom:8px;
-    background:#ffffff;
-    border-radius:12px;
-    box-shadow:0 3px 8px rgba(0,0,0,0.18);
-    border:1px solid rgba(0,0,0,0.08);
-  "
->
-  📖 直木賞 受賞者一覧
-</a>
+    <a
+      href="https://bungakushinko.or.jp/award/naoki/list.html"
+      target="_blank"
+      rel="noopener noreferrer"
+      style="
+        display:block;
+        text-decoration:none;
+        font-weight:bold;
+        color:#000000;
+      "
+    >
+      📖 直木賞 受賞者一覧
+    </a>
 
   </div>
 
@@ -1192,50 +1161,16 @@ cursor:pointer;
 
 </details>
 
-<div style="text-align:center; line-height:2; width:90%; margin:0 auto;">
-
-  <a
-    href="javascript:void(0);"
-    onclick="
-      const area=document.getElementById('guide-area');
-      area.style.display=
-        area.style.display==='none' ? 'block' : 'none';
-    "
-  >
+<div style="text-align:center; line-height:2;">
+  <a href="guide.html">
     初めて利用される方へ
   </a>
-
-  <div
-    id="guide-area"
-    style="
-      display:none;
-      text-align:left;
-      margin-top:15px;
-      margin-bottom:15px;
-      line-height:1.8;
-    "
-  >
-    本アプリをご利用いただきありがとうございます。<br>
-    ホーム画面に追加すると、アプリのようにワンタップで開くことができ、便利にご利用いただけます。<br><br>
-
-    <strong>【iPhoneの場合】</strong><br>
-    ① この画面を開いたまま、画面下部の「…」を押します。<br>
-    ② 「共有」ボタンを押します。<br>
-    ③ 「表示を増やす」を押します。<br>
-    ④ 「ホーム画面に追加」を押します。<br>
-    ⑤ 右上の「追加」を押します。<br><br>
-
-    ※「表示を増やす」が見つからない場合は、メニューを下から上へスクロールしてください。<br><br>
-
-    <strong>【Androidの場合】</strong><br>
-    各端末ごとに設定方法が異なるため各端末の設定に従ってください。
-  </div>
-<br>
+  <br>
   <a href="mennseki.html">
     免責事項
   </a>
-
 </div>
+
 <br>
 
 

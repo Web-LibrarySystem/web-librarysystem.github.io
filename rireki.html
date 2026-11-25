@@ -601,9 +601,9 @@ document.getElementById(
         ">
 <b>データ保存（バックアップ）</b><br>
 データ消失を防ぐため、バックアップファイルを作成することが出来ます。<br>
-また、このファイルや文字列を他の端末にメールやAirDropで送ることで、データの引継ぎを行うことが出来ます。
+また、このファイルを他の端末にメールやAirDropで送ることで、データの引継ぎを行うことが出来ます。
 <br><br>
-【保存方法】
+<b>【保存方法】</b>
 <ul class="notice-list">
 <li>
 「ファイル作成」を押す
@@ -626,7 +626,7 @@ document.getElementById(
 </ul>
 
 <br>
-【復元方法】
+<b>【復元方法】</b>
 <ul class="notice-list">
 <li>
 「ファイル復元」を押す
@@ -1131,7 +1131,7 @@ onclick="
 window.editReturnMode='group';
 editBook(${originalIndex})
 ">
-編集
+編　集
 </button>
  
 <button
@@ -1142,7 +1142,7 @@ font-weight:bold;
 padding:10px 14px;
 "
 onclick="BooksManager.confirmDelete(${originalIndex})">
-削除
+削　除
 </button>
 
 </div>
@@ -2374,14 +2374,14 @@ function showSearchResults(results) {
     ${book.title}
     </b><br>
 
-    著者：${book.author}<br>
+    著　者：${book.author}<br>
 
     ISBN：
     <span style="font-size:14px;">
     ${book.isbn}
     </span><br>
 
-    状態：
+    状　態：
     <b>${statusName}</b><br>
 
 登録日：
@@ -2407,7 +2407,7 @@ b=>b.isbn==='${book.isbn}'
 )
 "
 >
-評価：
+評　価：
 ${book.rating
  ? getRatingStars(book.rating)
  : "未評価（タップで評価）"}
@@ -2449,7 +2449,7 @@ b=>b.isbn==='${book.isbn}'
 )
 )
 ">
-編集
+編　集
 </button>
 
 <button
@@ -2467,7 +2467,7 @@ b=>b.isbn==='${book.isbn}'
 )
 )
 ">
-削除
+削　除
 </button>
 
     </div>

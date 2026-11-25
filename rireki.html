@@ -338,6 +338,7 @@ box-shadow:
 <script>
 let currentSort = "yomiAsc";
 let currentGroup = "読んだ本";
+let wishlistFilter = "all";
 
 /* 統計期間 */
 let statsRange = "6m";
@@ -744,7 +745,19 @@ if (currentGroup === "読みたい本") {
         book.status === "wishlist"
     );
 
-} else if (currentGroup === "読書中") {
+    if (wishlistFilter === "reservedOnly") {
+        books = books.filter(book =>
+            book.reserved
+        );
+    }
+
+    if (wishlistFilter === "reservedExclude") {
+        books = books.filter(book =>
+            !book.reserved
+        );
+    }
+} 
+else if (currentGroup === "読書中") {
 
     books = books.filter(book =>
         book.status === "reading"
@@ -873,10 +886,47 @@ if (currentGroup === "読みたい本") {
 title.innerHTML += `
 <div style="
 margin-top:10px;
-font-size:18px;
+font-size:16px;
 font-weight:bold;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:4px;
+flex-wrap:wrap;
 ">
-並び順：
+
+<span>並び順：</span>
+
+${currentGroup === "読みたい本" ? `
+<select
+onchange="
+wishlistFilter=this.value;
+BooksManager.renderBookList(
+    currentSort,
+    currentGroup
+);
+"
+style="
+font-size:16px;
+font-weight:bold;
+"
+>
+<option value="all"
+${wishlistFilter==="all"?"selected":""}>
+全件
+</option>
+
+<option value="reservedOnly"
+${wishlistFilter==="reservedOnly"?"selected":""}>
+予約済のみ
+</option>
+
+<option value="reservedExclude"
+${wishlistFilter==="reservedExclude"?"selected":""}>
+予約済除く
+</option>
+</select>
+` : ""}
 
 <select
 onchange="
@@ -887,11 +937,10 @@ BooksManager.renderBookList(
 );
 "
 style="
-font-size:18px;
+font-size:16px;
 font-weight:bold;
 "
 >
-
 <option value="yomiAsc"
 ${currentSort==="yomiAsc"?"selected":""}>
 五十音順（昇順）
@@ -913,7 +962,6 @@ ${currentSort==="dateOld"?"selected":""}>
 </option>
 
 ${currentGroup === "読んだ本" ? `
-
 <option value="ratingHigh"
 ${currentSort==="ratingHigh"?"selected":""}>
 評価順（高い順）
@@ -933,7 +981,6 @@ ${currentSort==="finishNew"?"selected":""}>
 ${currentSort==="finishOld"?"selected":""}>
 読了日順（古い順）
 </option>
-
 ` : ""}
 
 </select>

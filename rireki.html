@@ -4740,11 +4740,95 @@ author.ratingCount > 0
   ).toFixed(1)
 : "-";
 
-    const width =
-        (author.count /
-        maxAuthorCount) * 100;
+const width =
+(author.count /
+maxAuthorCount) * 100;
 
-    authorHtml += `
+const ratedText =
+`${author.ratingCount}/${author.count}冊`;
+
+let displayName = author.name;
+
+if(displayName.length > 8){
+    displayName =
+    displayName.substring(0,8) + "...";
+}
+
+authorHtml += `
+<div style="
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+">
+   <div style="
+        width:120px;
+        font-size:14px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+    ">
+        ${displayName}
+    </div>
+
+    <div style="
+        flex:1;
+        height:18px;
+        background:#eeeeee;
+        border-radius:10px;
+        overflow:hidden;
+    ">
+        <div style="
+            width:${width}%;
+            height:100%;
+            background:#4CAF50;
+        ">
+        </div>
+    </div>
+
+    <div style="
+        width:60px;　/*作家別読書冊数　の5/5部分の幅*/
+        text-align:right;
+        font-weight:bold;
+    ">
+        ${ratedText}
+    </div>
+
+    <div style="
+        width:40px;/*作家別読書冊数の☆3.8部分の幅*/
+        text-align:right;
+        font-weight:bold;
+        color:#000;
+    ">
+        ☆${avgRating}
+    </div>
+
+</div>
+`;
+
+});
+
+const maxAuthorRatingCount =
+Math.max(
+    ...authorRatingRanking.map(a => a.avgRating),
+    5
+);
+
+let authorRatingHtml = "";
+
+authorRatingRanking.forEach(author => {
+
+    let displayName = author.name;
+
+    if(displayName.length > 8){
+        displayName =
+        displayName.substring(0,8) + "...";
+    }
+
+    const width =
+    (author.avgRating / maxAuthorRatingCount) * 100;
+
+    authorRatingHtml += `
     <div style="
         display:flex;
         align-items:center;
@@ -4754,12 +4838,12 @@ author.ratingCount > 0
 
         <div style="
             width:120px;
-            font-size:14px;
             overflow:hidden;
             text-overflow:ellipsis;
             white-space:nowrap;
+            font-size:14px;
         ">
-            ${author.name}
+            ${displayName}
         </div>
 
         <div style="
@@ -4772,59 +4856,25 @@ author.ratingCount > 0
             <div style="
                 width:${width}%;
                 height:100%;
-                background:#4CAF50;
+                background:#FF80AB;
             ">
             </div>
         </div>
 
-<div style="
-    width:30px;
-    text-align:right;
-    font-weight:bold;
-">
-    ${author.count}冊
-</div>
-
-<div style="
-    width:55px;
-    text-align:right;
-    font-weight:bold;
-    color:#000;
-">
-    ☆${avgRating}
-</div>
-    </div>
-    `;
-
-});
-
-let authorRatingHtml = "";
-
-authorRatingRanking.forEach(author => {
-
-    authorRatingHtml += `
-    <div style="
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:8px;
-    ">
-
         <div style="
-            flex:1;
-            overflow:hidden;
-            text-overflow:ellipsis;
-            white-space:nowrap;
-        ">
-            ${author.name}
-        </div>
-
-        <div style="
-            width:100px;
+            width:50px;/*作家別平均評価の☆3.8部分の幅*/
             text-align:right;
             font-weight:bold;
         ">
             ☆${author.avgRating.toFixed(1)}
+        </div>
+
+        <div style="
+            width:50px;/*作家別平均評価の5/5冊部分の幅*/
+            text-align:right;
+            font-weight:bold;
+        ">
+            ${author.ratingCount}/${author.count}冊
         </div>
 
     </div>
@@ -5074,7 +5124,7 @@ margin-bottom:8px;
 margin-top:-5px;
 color:#666;
 ">
-読んだ冊数が多い順の、評価した冊数/読んだ冊数、平均評価
+読んだ冊数が多い順の、評価冊数/読んだ冊数、平均点
 </div>
 
 <div style="
@@ -5102,8 +5152,8 @@ margin-bottom:8px;
 margin-top:-5px;
 color:#666;
 ">
-平均評価順の評価点、評価した冊数/読んだ冊数<br>
-ただし、３冊以上評価を付けた作家のみ集計
+平均評価順の、評価点、評価冊数/読んだ冊数<br>
+ただし、３冊以上評価した作家のみ集計
 </div>
 
 

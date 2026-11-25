@@ -1090,7 +1090,6 @@ ${book.status === "read"
 ? `<div
 id="rating-view-${originalIndex}"
 style="
-margin-top:4px;
 cursor:pointer;
 color:#000000 !important;
 "
@@ -1637,8 +1636,7 @@ BooksManager.getBooks();
 
 const wishlistCount =
 allBooks.filter(
-b => b.status === "wishlist" &&
-!b.reserved
+b => b.status === "wishlist"
 ).length;
 
 const reservedCount =
@@ -1688,13 +1686,22 @@ box-sizing:border-box;
 
 <div
 style="
-line-height:2;
+line-height:1.8;
 text-align:center;
 font-size:15px;
 font-weight:bold;
-">
+"
+>
 読みたい：${wishlistCount}冊<br>
-予約済　：${reservedCount}冊<br>
+<span style="
+font-size:13px;
+font-weight:normal;
+color:#000;
+">
+（うち予約済：${reservedCount}冊）
+</span>
+<br>
+
 読書中　：${readingCount}冊<br>
 読んだ　：${readCount}冊
 </div>

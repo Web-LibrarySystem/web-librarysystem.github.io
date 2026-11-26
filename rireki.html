@@ -4628,13 +4628,12 @@ for(let star=5;star>=1;star--){
          maxRatingCount) * 100;
 
     ratingHtml += `
-    <div style="
-        display:flex;
-        align-items:center;
-        gap:8px;
-        margin-bottom:8px;
-    ">
-
+<div style="
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+">
 <div style="
     width:30px;
     font-weight:bold;
@@ -4642,32 +4641,29 @@ for(let star=5;star>=1;star--){
 ">
     ☆${star}
 </div>
-
+    <div style="
+        flex:0.8;
+        height:18px;
+        background:#eeeeee;
+        border-radius:10px;
+        overflow:hidden;
+    ">
         <div style="
-            flex:1;
-            height:18px;
-            background:#eeeeee;
-            border-radius:10px;
-            overflow:hidden;
-        ">
-            <div style="
-                width:${width}%;
-                height:100%;
-                background:#FFB300;
-            "></div>
-        </div>
-
-        <div style="
-            width:40px;
-            text-align:right;
-            font-weight:bold;
-            font-size:13px;
-        ">
-            ${count}冊
-        </div>
-
+            width:${width}%;
+            height:100%;
+            background:#FFB300;
+        "></div>
     </div>
-    `;
+    <div style="
+        width:70px;
+        text-align:right;
+        font-weight:bold;
+        font-size:13px;
+    ">
+        ${count}冊
+    </div>
+</div>
+`;
 }
 
     const periodLabel =
@@ -4757,47 +4753,43 @@ months.forEach(month => {
         maxMonthCount) * 100;
 
     monthlyHtml += `
+<div style="
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:8px;
+">
     <div style="
-        display:flex;
-        align-items:center;
-        gap:8px;
-        margin-bottom:8px;
+        width:70px;
+        font-weight:bold;
+        font-size:14px;
     ">
-
-        <div style="
-            width:70px;
-            font-weight:bold;
-            font-size:14px;
-        ">
-            ${month}
-        </div>
-
-        <div style="
-            flex:1;
-            height:18px;
-            background:#eeeeee;
-            border-radius:10px;
-            overflow:hidden;
-        ">
-            <div style="
-                width:${width}%;
-                height:100%;
-                background:#2196F3;
-            ">
-            </div>
-        </div>
-
-        <div style="
-            width:40px;
-            text-align:right;
-            font-weight:bold;
-            font-size:13px;
-        ">
-            ${count}冊
-        </div>
-
+        ${month}
     </div>
-    `;
+    <div style="
+        flex:0.8;
+        height:18px;
+        background:#eeeeee;
+        border-radius:10px;
+        overflow:hidden;
+    ">
+        <div style="
+            width:${width}%;
+            height:100%;
+            background:#2196F3;
+        ">
+        </div>
+    </div>
+    <div style="
+        width:70px;
+        text-align:right;
+        font-weight:bold;
+        font-size:13px;
+    ">
+        ${count}冊
+    </div>
+</div>
+`;
 
 });
 
@@ -4853,9 +4845,9 @@ const ratedText =
 
 let displayName = author.name;
 
-if(displayName.length > 8){
+if(displayName.length > 6){
     displayName =
-    displayName.substring(0,8) + "...";
+    displayName.substring(0,6) + "...";
 }
 
 authorHtml += `
@@ -4866,18 +4858,18 @@ authorHtml += `
     margin-bottom:8px;
 ">
    <div style="
-        width:120px;
-        font-size:14px;
-        overflow:hidden;
-        text-overflow:ellipsis;
-        white-space:nowrap;
-    ">
-        ${displayName}
-    </div>
+    width:90px;
+    font-size:14px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+">
+    ${displayName}
+</div>
 
-    <div style="
-        flex:1;
-        height:18px;
+<div style="
+    flex:0.9;
+    height:18px;
         background:#eeeeee;
         border-radius:10px;
         overflow:hidden;
@@ -4891,7 +4883,7 @@ authorHtml += `
     </div>
 
     <div style="
-        width:60px;　/*作家別読書冊数　の5/5部分の幅*/
+        width:85px;　/*作家別読書冊数　の5/5部分の幅*/
         text-align:right;
         font-weight:bold;
         font-size:13px;
@@ -4926,9 +4918,9 @@ authorRatingRanking.forEach(author => {
 
     let displayName = author.name;
 
-    if(displayName.length > 8){
+    if(displayName.length > 6){
         displayName =
-        displayName.substring(0,8) + "...";
+        displayName.substring(0,6) + "...";
     }
 
     const width =
@@ -4942,19 +4934,19 @@ authorRatingRanking.forEach(author => {
         margin-bottom:8px;
     ">
 
-        <div style="
-            width:120px;
-            overflow:hidden;
-            text-overflow:ellipsis;
-            white-space:nowrap;
-            font-size:14px;
-        ">
-            ${displayName}
-        </div>
+<div style="
+    width:90px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    font-size:14px;
+">
+    ${displayName}
+</div>
 
-        <div style="
-            flex:1;
-            height:18px;
+<div style="
+    flex:0.9;
+    height:18px;
             background:#eeeeee;
             border-radius:10px;
             overflow:hidden;
@@ -4968,7 +4960,7 @@ authorRatingRanking.forEach(author => {
         </div>
 
         <div style="
-            width:50px;/*作家別平均評価の☆3.8部分の幅*/
+            width:60px;/*作家別平均評価の☆3.8部分の幅*/
             text-align:right;
             font-weight:bold;
             font-size:13px;
@@ -4977,7 +4969,7 @@ authorRatingRanking.forEach(author => {
         </div>
 
         <div style="
-            width:50px;/*作家別平均評価の5/5冊部分の幅*/
+            width:85px;/*作家別平均評価の5/5冊部分の幅*/
             text-align:right;
             font-weight:bold;
             font-size:13px;

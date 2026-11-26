@@ -236,7 +236,7 @@ color:inherit;
 cursor:pointer;
 "
 >
-　 図書館アプリ📚
+　 📖読書ノート📖
 </a>
 
 <!-- 上段：ボタン -->
@@ -693,6 +693,11 @@ function moveToReserved(index) {
 
     const books =
         BooksManager.getBooks();
+
+    confirmRatingReset(
+    books[index],
+    "wishlist"
+);
 
     books[index].status =
     "wishlist";
@@ -1681,7 +1686,7 @@ width:calc(100% + 30px);
 border-radius:12px 12px 0 0;
 box-sizing:border-box;
 ">
-読書ノート
+登録状況
 </div>
 
 <div
@@ -3029,6 +3034,8 @@ function saveEdit(index) {
 
     const books = BooksManager.getBooks();
 
+    const oldBook = books[index];
+
 const info = {
     isbn:
         document.getElementById("e-isbn")
@@ -3195,6 +3202,22 @@ function cancelEdit() {
     );
 }
 
+function confirmRatingReset(book, newStatus) {
+    if (
+        book.status === "read" &&
+        newStatus !== "read" &&
+        Number(book.rating || 0) > 0
+    ) {
+        const reset = confirm(
+            "この本は評価済です。\n\n未評価状態に戻しますか？"
+        );
+
+        if (reset) {
+            book.rating = 0;
+        }
+    }
+}
+
 
 /* -----------------------------------
    読んだ本へ移動
@@ -3236,6 +3259,11 @@ function moveToReading(index) {
     const books =
         BooksManager.getBooks();
 
+confirmRatingReset(
+    books[index],
+    "reading"
+);
+
 books[index].status =
 "reading";
 
@@ -3273,6 +3301,11 @@ function moveToWishlist(index) {
 
     const books =
         BooksManager.getBooks();
+
+confirmRatingReset(
+    books[index],
+    "wishlist"
+);
 
 books[index].status =
     "wishlist";
@@ -3438,6 +3471,11 @@ ${statusName}
         books.findIndex(
             b => b.isbn === info.isbn
         );
+
+confirmRatingReset(
+    books[index],
+    info.status
+);
 
     books[index].status =
         info.status;
@@ -4004,6 +4042,11 @@ ${statusName}
             books.findIndex(
                 b => b.isbn === info.isbn
             );
+
+confirmRatingReset(
+    books[index],
+    info.status
+);
 
         books[index].status =
             info.status;
@@ -4618,6 +4661,7 @@ for(let star=5;star>=1;star--){
             width:40px;
             text-align:right;
             font-weight:bold;
+            font-size:13px;
         ">
             ${count}冊
         </div>
@@ -4747,6 +4791,7 @@ months.forEach(month => {
             width:40px;
             text-align:right;
             font-weight:bold;
+            font-size:13px;
         ">
             ${count}冊
         </div>
@@ -4849,6 +4894,7 @@ authorHtml += `
         width:60px;　/*作家別読書冊数　の5/5部分の幅*/
         text-align:right;
         font-weight:bold;
+        font-size:13px;
     ">
         ${ratedText}
     </div>
@@ -4858,6 +4904,7 @@ authorHtml += `
         text-align:right;
         font-weight:bold;
         color:#000;
+        font-size:13px;
     ">
         ☆${avgRating}
     </div>
@@ -4924,6 +4971,7 @@ authorRatingRanking.forEach(author => {
             width:50px;/*作家別平均評価の☆3.8部分の幅*/
             text-align:right;
             font-weight:bold;
+            font-size:13px;
         ">
             ☆${author.avgRating.toFixed(1)}
         </div>
@@ -4932,6 +4980,7 @@ authorRatingRanking.forEach(author => {
             width:50px;/*作家別平均評価の5/5冊部分の幅*/
             text-align:right;
             font-weight:bold;
+            font-size:13px;
         ">
             ${author.ratingCount}/${author.count}冊
         </div>

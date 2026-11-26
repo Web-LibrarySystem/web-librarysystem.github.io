@@ -231,8 +231,29 @@ h1{
     white-space:nowrap;
 }
 
+#nightMode{	/*閉館モードの設定*/
+    display:none;
+    position:fixed;
+    inset:0;
+
+    background:#000;/*背景色*/
+
+    color:#999;/*文字色*/
+
+    font-size:48px;
+    font-weight:bold;
+
+    justify-content:center;
+    align-items:center;
+
+    text-align:center;
+
+    z-index:99999;
+}
+
 </style>
 </head>
+
 
 <body>
 
@@ -1032,7 +1053,57 @@ function showMenu(){
     "block";
 }
 
+function updateNightMode(){
+
+    const now = new Date();
+
+    const day =
+        now.getDay();
+
+    const minutes =
+        now.getHours() * 60 +
+        now.getMinutes();
+
+    const startTime =
+        8 * 60 + 30;
+
+    let endTime;
+
+    if(day === 0 || day === 6){
+
+        endTime = 18 * 60;
+
+    }else{
+
+        endTime = 20 * 60;
+
+    }
+
+    const isClosed =
+        minutes < startTime ||
+        minutes >= endTime;
+
+    document.getElementById(
+        "nightMode"
+    ).style.display =
+        isClosed
+        ? "flex"
+        : "none";
+
+}  // ← これを追加
+
+updateNightMode();
+
+setInterval(
+    updateNightMode,
+    60000
+);
+
 </script>
+
+<div id="nightMode">
+    閉館中です
+</div>
 
 </body>
 </html>

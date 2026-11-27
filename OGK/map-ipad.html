@@ -277,10 +277,18 @@ text-align:Left;
 font-size:18px;
 margin-bottom:20px;
 color:#000;">
-赤色の棚が目的の場所です<br>
-詳細な場所は、検索端末でご確認ください<br>
+　赤色の棚が目的の場所です<br>
+　詳細な場所は、検索端末でご確認ください<br>
+
+<span style="
+text-decoration:underline;
+text-decoration-color:red;
+text-decoration-thickness:1px;">
+
 <b>【貸出冊数】</b>　本：１０冊、雑誌：２冊、ＣＤ等：２点まで<br>
 <b>【貸出期間】</b>　貸出日を含め１５日間以内
+
+</span>
 </div>
 
 <!-- １階 -->
@@ -607,7 +615,7 @@ onclick="showArea('ipad1/bunngaku.png','文学')">
 </button>
 
 <button class="genre-btn"
-onclick="showArea('ipad1/YA.png','進路・勉強・ﾗｲﾄﾉﾍﾞﾙ')">
+onclick="showArea('ipad1/YA.png','進路・ﾗｲﾄﾉﾍﾞﾙ等')">
     <img
     src="btn/btn-YA.png"
     class="btn-image"
@@ -742,6 +750,10 @@ onclick="showArea('ipad1/kyoudo.png','郷土')">
     <div id="message"></div>
 </div>
 
+<div id="nightMode">
+    閉館中です
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
@@ -863,7 +875,7 @@ location:"１階 児童室",
 detail:""
 },
 
-"進路・勉強・ﾗｲﾄﾉﾍﾞﾙ":{
+"進路・ﾗｲﾄﾉﾍﾞﾙ等":{
 location:"２階 ＹＡコーナー",
 detail:""
 },
@@ -963,7 +975,7 @@ const areaIdMap = {
 "よみもの":"zidou",
 "学習":"gakusyu",
 "はてなコーナー":"hatena",
-"進路・勉強・ﾗｲﾄﾉﾍﾞﾙ": "YA",
+"進路・ﾗｲﾄﾉﾍﾞﾙ等": "YA",
 "パソコン": "PC",
 "金融・商業": "kinnyuu",
 "政治・経済": "seizi",
@@ -1054,56 +1066,35 @@ function showMenu(){
 }
 
 function updateNightMode(){
-
     const now = new Date();
-
-    const day =
-        now.getDay();
-
+    const day = now.getDay();
     const minutes =
         now.getHours() * 60 +
         now.getMinutes();
 
-    const startTime =
-        8 * 60 + 30;
+    const startTime = 8 * 60 + 30;
 
     let endTime;
-
     if(day === 0 || day === 6){
-
         endTime = 18 * 60;
-
     }else{
-
         endTime = 20 * 60;
-
     }
 
     const isClosed =
         minutes < startTime ||
         minutes >= endTime;
 
-    document.getElementById(
-        "nightMode"
-    ).style.display =
-        isClosed
-        ? "flex"
-        : "none";
+    document.getElementById("nightMode").style.display =
+        isClosed ? "flex" : "none";
+}
 
-}  // ← これを追加
-
-updateNightMode();
-
-setInterval(
-    updateNightMode,
-    60000
-);
+window.addEventListener("load", () => {
+    updateNightMode();
+    setInterval(updateNightMode, 60000);
+});
 
 </script>
-
-<div id="nightMode">
-    閉館中です
-</div>
 
 </body>
 </html>
